@@ -20,8 +20,19 @@ export default function Nav() {
           : "bg-transparent"
       }`}
     >
-      <div className="max-w-6xl mx-auto px-6 md:px-10 py-5 flex items-center justify-between">
-        <a href="#top" className="flex items-baseline gap-3">
+      <div className="max-w-6xl mx-auto px-6 md:px-10 py-5 grid grid-cols-3 items-center">
+        <div className="hidden md:flex items-center gap-10 text-xs tracking-widest2 text-ink-soft uppercase justify-self-start">
+          <a href="#origin" className="hover:text-tea-deep transition">
+            Origin
+          </a>
+          <a href="#brand" className="hover:text-tea-deep transition">
+            Brand
+          </a>
+        </div>
+        <a
+          href="#top"
+          className="flex items-baseline gap-3 justify-self-center col-start-1 col-span-3 md:col-start-2 md:col-span-1"
+        >
           <span className="font-serif-mix text-2xl tracking-wider2 text-ink">
             BrezNu
           </span>
@@ -29,13 +40,7 @@ export default function Nav() {
             碧森妮
           </span>
         </a>
-        <div className="hidden md:flex items-center gap-10 text-xs tracking-widest2 text-ink-soft uppercase">
-          <a href="#origin" className="hover:text-tea-deep transition">
-            Origin
-          </a>
-          <a href="#brand" className="hover:text-tea-deep transition">
-            Brand
-          </a>
+        <div className="hidden md:flex items-center gap-10 text-xs tracking-widest2 text-ink-soft uppercase justify-self-end">
           <a href="#belief" className="hover:text-tea-deep transition">
             Belief
           </a>
