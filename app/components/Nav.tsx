@@ -16,7 +16,7 @@ export default function Nav() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
         scrolled
-          ? "bg-cream/85 backdrop-blur-md border-b border-tea/10"
+          ? "bg-cream/30 backdrop-blur-sm border-b border-tea/10"
           : "bg-transparent"
       }`}
     >
