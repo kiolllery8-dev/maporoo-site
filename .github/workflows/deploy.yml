@@ -1,0 +1,45 @@
+name: Deploy to home server
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-breznu
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, breznu]
+    timeout-minutes: 15
+
+    steps:
+      - name: Sync /opt/breznu with main branch
+        run: |
+          set -e
+          cd /opt/breznu
+          git fetch origin main
+          git reset --hard origin/main
+          git log -1 --pretty=format:'  HEAD = %h %s%n'
+
+      - name: Build + restart container
+        run: |
+          set -e
+          cd /opt/breznu
+          docker compose up -d --build
+          docker compose ps
+
+      - name: Health check (internal HTTPS)
+        run: |
+          set -e
+          # wait up to 60s for healthy
+          for i in $(seq 1 12); do
+            STATUS=$(docker inspect breznu --format '{{.State.Health.Status}}' 2>/dev/null || echo none)
+            echo "  attempt $i: health=$STATUS"
+            [ "$STATUS" = "healthy" ] && break
+            sleep 5
+          done
+          [ "$STATUS" = "healthy" ] || { echo "FAILED: container never healthy"; docker logs breznu --tail 60; exit 1; }
+          curl -sk -o /dev/null -w "  external HTTPS %{http_code}\n" -I https://localhost/ -H "Host: breznu.aloomoo.cc" | grep -q 200 || { echo "FAILED: nginx not 200"; exit 1; }
+          echo "✓ deploy verified"

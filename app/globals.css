@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@300;400;500;600;700&display=swap");
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background-color: #FAF5EA;
+  color: #2A241D;
+  font-family: "Noto Sans TC", system-ui, sans-serif;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: 0.02em;
+}
+
+::selection {
+  background: #D4A574;
+  color: #2A241D;
+}
+
+.font-serif-mix {
+  font-family: "Cormorant Garamond", "Noto Serif TC", "Noto Serif JP", serif;
+}
+
+.text-vertical {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+.divider-line {
+  display: inline-block;
+  width: 1px;
+  height: 4rem;
+  background: linear-gradient(to bottom, transparent, #A4845A 50%, transparent);
+}
+
+.divider-line-h {
+  display: inline-block;
+  height: 1px;
+  width: 4rem;
+  background: linear-gradient(to right, transparent, #A4845A 50%, transparent);
+}
+
+.paper-grain {
+  background-image:
+    radial-gradient(rgba(164, 132, 90, 0.04) 1px, transparent 1px),
+    radial-gradient(rgba(118, 88, 59, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px, 36px 36px;
+  background-position: 0 0, 12px 12px;
+}
