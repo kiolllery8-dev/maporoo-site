@@ -6,20 +6,9 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden paper-grain"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      <div className="absolute inset-0 -z-10">
-        <div
-          className="absolute inset-0 opacity-[0.18]"
-          style={{
-            backgroundImage: "url(/images/hero-01.jpg)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            filter: "sepia(0.2) saturate(0.7) brightness(1.05)"
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-cream via-cream/60 to-cream" />
-      </div>
+      {/* hero overlay removed — body bg image carries the visual */}
 
       <div className="relative text-center px-6 max-w-3xl">
         <motion.div

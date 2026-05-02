@@ -4,7 +4,7 @@ import FadeIn from "./FadeIn";
 
 export default function Closing() {
   return (
-    <section className="relative py-32 md:py-48 px-6 bg-cream-200">
+    <section className="relative py-32 md:py-48 px-6">
       <div className="max-w-2xl mx-auto text-center space-y-10">
         <FadeIn>
           <p className="text-xs tracking-widest2 uppercase text-tea-deep">

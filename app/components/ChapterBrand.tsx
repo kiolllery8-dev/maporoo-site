@@ -16,7 +16,7 @@ export default function ChapterBrand() {
     <section
       id="brand"
       ref={ref}
-      className="relative bg-cream-200 py-32 md:py-48 px-6 overflow-hidden"
+      className="relative py-32 md:py-48 px-6 overflow-hidden"
     >
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 md:gap-24 items-center">
         <motion.div style={{ y }} className="relative aspect-[4/5] order-2 md:order-1">
