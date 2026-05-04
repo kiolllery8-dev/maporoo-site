@@ -1,14 +1,40 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
 export default function Hero() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollY } = useScroll();
+
+  // Measure actual Hero height so the LOGO timing self-adjusts to viewport size.
+  const [heroH, setHeroH] = useState(800);
+  useEffect(() => {
+    const update = () => {
+      if (ref.current) setHeroH(ref.current.offsetHeight);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  // LOGO behaviour (continuous motion driven by scrollY):
+  // - scrollY 0           → top: 60   (high near the top)
+  // - scrollY heroH       → top: 0    (locked at the top of viewport = the
+  //                                    bottom-line of the top section)
+  // - scrollY heroH + 200 → top: -120 (LOGO has exited above the viewport)
+  // - scrollY > heroH+200 → clamped at -120 (gone, doesn't reappear)
+  // Net effect: while scrolling Hero, LOGO visibly moves with the page;
+  // when Hero is gone, LOGO leaves with it, never lingers in chapter 1.
+  const logoTop = useTransform(
+    scrollY,
+    [0, heroH, heroH + 200],
+    [60, 0, -120]
+  );
+
   return (
-    <section
-      id="top"
-      className="relative min-h-screen overflow-hidden"
-    >
-      {/* Layer 0: paper-waves bg — viewport-sized, NOT scaled up */}
+    <section id="top" ref={ref} className="relative min-h-screen">
+      {/* Layer 0: paper-waves bg — viewport-sized */}
       <div
         className="absolute inset-0 z-0"
         style={{
@@ -19,8 +45,10 @@ export default function Hero() {
         }}
       />
 
-      {/* Layer 1: hand image — absolute, oversized, can be cropped */}
-      <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+      {/* Layer 1: hand image — wrapped in its own overflow:hidden so the
+          oversized image crops cleanly without forcing the whole section
+          to be overflow-hidden (which would break sticky/fixed children). */}
+      <div className="absolute inset-0 z-10 overflow-hidden flex items-center justify-center pointer-events-none">
         <motion.img
           src="/images/hero-hand-mint.png"
           alt=""
@@ -33,57 +61,45 @@ export default function Hero() {
         />
       </div>
 
-      {/* Layer 2: flow content. The LOGO is `position: sticky; top: 0`,
-          which gives:
-            (a) 1:1 scroll-along for the first 7vh (LOGO scrolls with the
-                page like normal flow content),
-            (b) once the LOGO's top edge reaches the viewport top, it
-                STICKS at the very top — the "bottom line of top section"
-                shifts up with the user's scroll, and the LOGO stays
-                pinned at the top of the viewport (= the top edge of the
-                top section) the whole time the top section is in view,
-            (c) when the parent's bottom approaches the LOGO's bottom
-                (i.e. the user has scrolled near the end of Hero), sticky
-                releases and the LOGO scrolls out with Hero — it does NOT
-                follow into chapter 1, and it does NOT remain on screen
-                via fade. Just naturally leaves the viewport. */}
-      <div className="relative z-20 min-h-screen flex flex-col items-center pt-[7vh]">
-        <div className="sticky top-0 flex justify-center w-full pointer-events-none">
-          <motion.img
-            src="/images/bn-logo.png"
-            alt="BrezNu 碧森妮"
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.4, delay: 1.0, ease: [0.22, 1, 0.36, 1] }}
-            draggable={false}
-            className="w-[50vw] max-w-[500px] h-auto select-none mx-auto"
-          />
-        </div>
+      {/* === LOGO ===
+          Lives inside <section id="top"> in DOM, but uses position:fixed
+          so it can be anchored to the viewport while its `top` is
+          scroll-driven. Centered horizontally via full-width flex. */}
+      <motion.div
+        style={{ top: logoTop, left: 0, right: 0 }}
+        className="fixed z-[60] flex justify-center pointer-events-none"
+      >
+        <motion.img
+          src="/images/bn-logo.png"
+          alt="BrezNu 碧森妮"
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.4, delay: 1.0, ease: [0.22, 1, 0.36, 1] }}
+          draggable={false}
+          className="w-[50vw] max-w-[500px] h-auto select-none"
+        />
+      </motion.div>
 
-        {/* spacer pushes slogan + scroll hint to the bottom */}
-        <div className="flex-1" />
+      {/* slogan — anchored near viewport bottom while Hero is in view */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.6, delay: 1.6 }}
+        className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 font-serif text-ink text-base md:text-lg text-center px-6 whitespace-nowrap"
+      >
+        呼吸清新的空氣，<span className="text-tea-deep">是生命的泉源</span>
+      </motion.p>
 
-        {/* slogan */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.6, delay: 1.6 }}
-          className="text-center mb-12 font-serif text-ink text-base md:text-lg px-6 whitespace-nowrap"
-        >
-          呼吸清新的空氣，<span className="text-tea-deep">是生命的泉源</span>
-        </motion.p>
-
-        {/* scroll hint */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2.2, duration: 1.2 }}
-          className="flex flex-col items-center gap-2 text-ink-mute mb-4"
-        >
-          <span className="text-[10px] tracking-widest2 uppercase">Scroll</span>
-          <span className="block w-px h-8 bg-ink-mute/40 animate-scroll-hint" />
-        </motion.div>
-      </div>
+      {/* scroll hint */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2.2, duration: 1.2 }}
+        className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 text-ink-mute"
+      >
+        <span className="text-[10px] tracking-widest2 uppercase">Scroll</span>
+        <span className="block w-px h-8 bg-ink-mute/40 animate-scroll-hint" />
+      </motion.div>
     </section>
   );
 }
