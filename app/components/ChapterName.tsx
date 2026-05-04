@@ -5,7 +5,7 @@ import FadeIn from "./FadeIn";
 export default function ChapterName() {
   return (
     <section className="relative py-40 md:py-56 px-6 paper-grain">
-      <div className="max-w-3xl mx-auto text-center space-y-12">
+      <div className="max-w-3xl ml-auto mr-[6%] md:mr-[10%] text-center space-y-12">
         <FadeIn>
           <p className="text-xs tracking-widest2 uppercase text-tea-deep">
             The Name · 品牌名

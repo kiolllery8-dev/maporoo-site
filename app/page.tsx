@@ -15,14 +15,16 @@ export default function Home() {
     <main className="min-h-screen">
       <Nav />
       <Hero />
-      <Prologue />
-      <ChapterOrigin />
-      <ChapterEra80 />
-      <ChapterBrand />
-      <ChapterName />
-      <ChapterMission />
-      <ChapterBelief />
-      <Closing />
+      <div className="text-shadow-soft">
+        <Prologue />
+        <ChapterOrigin />
+        <ChapterEra80 />
+        <ChapterBrand />
+        <ChapterName />
+        <ChapterMission />
+        <ChapterBelief />
+        <Closing />
+      </div>
       <Footer />
     </main>
   );

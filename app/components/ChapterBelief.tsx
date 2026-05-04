@@ -5,7 +5,7 @@ import FadeIn from "./FadeIn";
 export default function ChapterBelief() {
   return (
     <section id="belief" className="relative py-40 md:py-56 px-6 paper-grain">
-      <div className="max-w-3xl mx-auto space-y-14">
+      <div className="max-w-3xl ml-auto mr-[6%] md:mr-[10%] space-y-14">
         <FadeIn>
           <p className="text-xs tracking-widest2 uppercase text-tea-deep text-center">
             Our Belief · 信念

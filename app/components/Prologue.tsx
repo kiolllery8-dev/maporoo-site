@@ -5,7 +5,7 @@ import FadeIn from "./FadeIn";
 export default function Prologue() {
   return (
     <section className="py-32 md:py-48 px-6">
-      <div className="max-w-2xl mx-auto text-center space-y-10">
+      <div className="max-w-2xl ml-auto mr-[6%] md:mr-[12%] text-center space-y-10">
         <FadeIn>
           <p className="text-xs tracking-widest2 uppercase text-tea-deep">
             Prologue · 序
