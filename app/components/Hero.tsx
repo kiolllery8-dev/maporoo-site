@@ -41,7 +41,7 @@ export default function Hero() {
             the LOGO is gone with it (no fade, no lingering).
           - Browser handles all the math — no need to hard-code LOGO height. */}
       <div className="relative z-20 min-h-screen">
-        <div className="sticky top-[80px] z-[60] flex justify-center w-full pointer-events-none">
+        <div className="sticky top-[180px] z-[60] flex justify-center w-full pointer-events-none">
           <motion.img
             src="/images/bn-logo.png"
             alt="BrezNu 碧森妮"

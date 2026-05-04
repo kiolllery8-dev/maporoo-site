@@ -62,7 +62,7 @@ export default function Nav() {
             src="/images/bn-logo-leaf.png"
             alt="BrezNu 碧森妮"
             draggable={false}
-            className="absolute left-1/2 top-0 -translate-x-1/2 h-[58px] md:h-[78px] w-auto select-none"
+            className="absolute left-1/2 top-0 -translate-x-1/2 h-[78px] md:h-[108px] w-auto select-none"
           />
         </a>
 
