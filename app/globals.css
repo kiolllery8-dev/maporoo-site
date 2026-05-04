@@ -15,9 +15,11 @@ html {
   scroll-padding-top: 80px;
 }
 
-html,
-body {
+html {
   background-color: #DCE3D6;
+}
+
+body {
   color: #1F1A14;
   font-family: "Noto Sans TC", system-ui, sans-serif;
   font-weight: 500;
@@ -27,6 +29,7 @@ body {
   letter-spacing: 0.015em;
   /* Prevent horizontal scroll from full-bleed sections. */
   overflow-x: hidden;
+  background-color: transparent;
 }
 
 p { font-weight: 500; }
@@ -36,28 +39,29 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0.02em;
 }
 
-/* iOS Safari + many mobile browsers don't reliably support
-   background-attachment: fixed. Use a fixed positioned ::before
-   layer so the spa photo stays put as the user scrolls. */
-body::before {
-  content: "";
+/* Site-wide fixed photo background.
+   Rendered as a real DOM element via <SiteBackground /> so it's
+   reliable on iOS Safari (which is flaky with bg-attachment: fixed
+   and with body::before + negative z-index). */
+.site-bg {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: 0;
   background-image: url("/images/bg-spa-green.png");
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  /* Slight blur on small screens softens the dense plant texture
-     so the centered text stays legible. */
-  will-change: transform;
+  pointer-events: none;
 }
 
 @media (max-width: 767px) {
-  body::before {
+  .site-bg {
     background-position: 30% center;
   }
 }
+
+/* Lift main content above the fixed bg. */
+main { position: relative; z-index: 1; }
 
 ::selection {
   background: #D4A574;

@@ -12,20 +12,23 @@ import Footer from "./components/Footer";
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
-      <Nav />
-      <Hero />
-      <div className="text-shadow-soft">
-        <Prologue />
-        <ChapterOrigin />
-        <ChapterEra80 />
-        <ChapterBrand />
-        <ChapterName />
-        <ChapterMission />
-        <ChapterBelief />
-        <Closing />
-      </div>
-      <Footer />
-    </main>
+    <>
+      <div className="site-bg" aria-hidden />
+      <main className="min-h-screen">
+        <Nav />
+        <Hero />
+        <div className="text-shadow-soft">
+          <Prologue />
+          <ChapterOrigin />
+          <ChapterEra80 />
+          <ChapterBrand />
+          <ChapterName />
+          <ChapterMission />
+          <ChapterBelief />
+          <Closing />
+        </div>
+        <Footer />
+      </main>
+    </>
   );
 }

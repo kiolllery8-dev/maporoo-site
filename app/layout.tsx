@@ -54,7 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="/images/bg-paper-waves.png"
         />
       </head>
-      <body className="bg-cream text-ink font-sans">{children}</body>
+      <body className="text-ink font-sans">{children}</body>
     </html>
   );
 }
