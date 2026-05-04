@@ -12,8 +12,8 @@ export default function Hero() {
 
   // LOGO travels from upper Hero down to the nav center as the user
   // scrolls the entire Hero. NO scaling — size stays constant.
-  // top: ~38vh (just above the hand image) → 14px (snapped at nav top)
-  const logoTop = useTransform(scrollYProgress, [0, 1], ["38vh", "14px"]);
+  // top: ~46vh (sits right above the hand image) → 14px (snapped at nav)
+  const logoTop = useTransform(scrollYProgress, [0, 1], ["46vh", "14px"]);
 
   return (
     <>
@@ -84,7 +84,7 @@ export default function Hero() {
           src="/images/bn-logo.png"
           alt="BrezNu 碧森妮"
           draggable={false}
-          className="w-[min(50vw,320px)] h-auto select-none"
+          className="w-[min(38vw,240px)] h-auto select-none"
         />
       </motion.div>
     </>

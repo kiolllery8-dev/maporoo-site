@@ -54,7 +54,7 @@ export default function Nav() {
           href="#top"
           onClick={() => setOpen(false)}
           aria-label="BrezNu 碧森妮"
-          className="justify-self-center col-start-2 col-span-1 flex items-center justify-center h-10 md:h-12 w-[min(50vw,320px)]"
+          className="justify-self-center col-start-2 col-span-1 flex items-center justify-center h-10 md:h-12 w-[min(38vw,240px)]"
         >
           <span className="sr-only">BrezNu 碧森妮</span>
         </a>
