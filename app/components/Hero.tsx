@@ -12,8 +12,8 @@ export default function Hero() {
 
   // LOGO travels from upper Hero down to the nav center as the user
   // scrolls the entire Hero. NO scaling — size stays constant.
-  // top: ~46vh (sits right above the hand image) → 14px (snapped at nav)
-  const logoTop = useTransform(scrollYProgress, [0, 1], ["46vh", "14px"]);
+  // top: 190px (sits right above the hand image) → 14px (snapped at nav)
+  const logoTop = useTransform(scrollYProgress, [0, 1], ["190px", "14px"]);
 
   return (
     <>
