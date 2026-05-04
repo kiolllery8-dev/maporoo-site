@@ -33,23 +33,21 @@ export default function Hero() {
         />
       </div>
 
-      {/* Layer 2: flow content. LOGO is `position: sticky` — it scrolls 1:1
-          with content for the first ~63px, then sticks at top: 15vh until
-          the section bottom passes it. Because the sticky element is
-          contained by Hero, when Hero exits the viewport the LOGO exits
-          with it (it cannot remain on screen). */}
-      <div className="relative z-20 min-h-screen flex flex-col items-center pt-[24vh]">
-        <div className="sticky top-[3vh] flex justify-center w-full pointer-events-none">
-          <motion.img
-            src="/images/bn-logo.png"
-            alt="BrezNu 碧森妮"
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.4, delay: 1.0, ease: [0.22, 1, 0.36, 1] }}
-            draggable={false}
-            className="w-[50vw] max-w-[500px] h-auto select-none mx-auto"
-          />
-        </div>
+      {/* Layer 2: flow content. LOGO sits in NORMAL flow at the top of
+          Hero (pt-[10vh]) — it scrolls 1:1 with the page just like
+          regular content. Once the user has scrolled past it, the LOGO
+          naturally exits the viewport from the top, so it cannot stay
+          on screen. (No sticky / no fixed positioning.) */}
+      <div className="relative z-20 min-h-screen flex flex-col items-center pt-[10vh]">
+        <motion.img
+          src="/images/bn-logo.png"
+          alt="BrezNu 碧森妮"
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.4, delay: 1.0, ease: [0.22, 1, 0.36, 1] }}
+          draggable={false}
+          className="w-[50vw] max-w-[500px] h-auto select-none mx-auto"
+        />
 
         {/* spacer pushes slogan + scroll hint to the bottom */}
         <div className="flex-1" />
