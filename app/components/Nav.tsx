@@ -40,7 +40,7 @@ export default function Nav() {
     >
       <div className="max-w-6xl mx-auto px-5 md:px-10 py-4 md:py-5 grid grid-cols-3 items-center">
         {/* Left links (desktop) */}
-        <div className="hidden md:flex items-center gap-10 text-xs tracking-widest2 text-ink-soft uppercase justify-self-start">
+        <div className="hidden md:flex items-center gap-10 text-base tracking-widest2 text-ink-soft uppercase justify-self-start font-medium">
           {LINKS_LEFT.map((l) => (
             <a key={l.href} href={l.href} className="hover:text-tea-deep transition">
               {l.label}
@@ -67,7 +67,7 @@ export default function Nav() {
         </a>
 
         {/* Right links (desktop) */}
-        <div className="hidden md:flex items-center gap-10 text-xs tracking-widest2 text-ink-soft uppercase justify-self-end">
+        <div className="hidden md:flex items-center gap-10 text-base tracking-widest2 text-ink-soft uppercase justify-self-end font-medium">
           {LINKS_RIGHT.map((l) => (
             <a key={l.href} href={l.href} className="hover:text-tea-deep transition">
               {l.label}
