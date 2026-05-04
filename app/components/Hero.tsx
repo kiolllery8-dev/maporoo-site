@@ -1,25 +1,21 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
 
 export default function Hero() {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"]
-  });
+  // Bind to global scrollY so the LOGO moves 1:1 with the page —
+  // it appears to scroll with the content until the resting point.
+  const { scrollY } = useScroll();
 
-  // LOGO travels from upper Hero down to the nav center as the user
-  // scrolls the entire Hero. NO scaling — size stays constant.
-  // top: 190px (sits right above the hand image) → 14px (snapped at nav)
-  const logoTop = useTransform(scrollYProgress, [0, 1], ["190px", "14px"]);
+  // LOGO start: 190px from viewport top (just above the hand image).
+  // LOGO rest: 0px (snapped to the very top once user scrolls 190px down).
+  // Scrolling up reverses the mapping automatically.
+  const logoTop = useTransform(scrollY, [0, 190], [190, 0]);
 
   return (
     <>
       <section
         id="top"
-        ref={ref}
         className="relative min-h-screen overflow-hidden"
       >
         {/* Layer 0: paper-waves bg (kept) */}
