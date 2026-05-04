@@ -48,23 +48,13 @@ export default function Nav() {
           ))}
         </div>
 
-        {/* Center logo — leaf-shaped wordmark. The anchor cell has a fixed
-            height matching the nav row, and the leaf image is absolutely
-            positioned with top:0 + a taller height, so the leaf's bottom
-            edge protrudes below the nav row. */}
-        <a
-          href="#top"
-          onClick={() => setOpen(false)}
-          aria-label="BrezNu 碧森妮"
-          className="justify-self-center col-start-2 col-span-1 relative flex items-center justify-center h-9 md:h-11 w-[min(40vw,260px)]"
-        >
-          <img
-            src="/images/bn-logo-leaf.png"
-            alt="BrezNu 碧森妮"
-            draggable={false}
-            className="absolute left-1/2 top-0 -translate-x-1/2 h-[100px] md:h-[140px] w-auto select-none"
-          />
-        </a>
+        {/* Empty cell preserves the grid spacing — the actual logo is
+            absolutely positioned to the nav (below) so its top edge sits
+            flush at the very top of the viewport, ignoring nav padding. */}
+        <span
+          aria-hidden
+          className="justify-self-center col-start-2 col-span-1 h-9 md:h-11 w-[min(40vw,260px)]"
+        />
 
         {/* Right links (desktop) */}
         <div className="hidden md:flex items-center gap-10 text-base tracking-widest2 text-ink-soft uppercase justify-self-end font-medium">
@@ -102,6 +92,23 @@ export default function Nav() {
           </span>
         </button>
       </div>
+
+      {/* Leaf logo — absolutely anchored to nav top:0 so the image's top
+          edge sits flush with the very top of the viewport, regardless of
+          nav vertical padding. */}
+      <a
+        href="#top"
+        onClick={() => setOpen(false)}
+        aria-label="BrezNu 碧森妮"
+        className="absolute top-0 left-1/2 -translate-x-1/2 z-[55] pointer-events-auto"
+      >
+        <img
+          src="/images/bn-logo-leaf.png"
+          alt="BrezNu 碧森妮"
+          draggable={false}
+          className="h-[100px] md:h-[140px] w-auto select-none block"
+        />
+      </a>
 
       {/* Mobile drawer */}
       <div
