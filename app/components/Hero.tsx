@@ -54,18 +54,18 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* slogan — enlarged 2.5x with drop+glow shadow for depth */}
+      {/* slogan — all white, enlarged 2.5x, dark drop shadow for legibility */}
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1.6, delay: 1.6 }}
-        className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20 font-serif text-ink text-3xl md:text-4xl lg:text-5xl text-center px-6 whitespace-nowrap font-medium tracking-wide"
+        className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20 font-serif text-white text-3xl md:text-4xl lg:text-5xl text-center px-6 whitespace-nowrap font-medium tracking-wide"
         style={{
           textShadow:
-            "0 2px 8px rgba(31, 26, 20, 0.45), 0 0 24px rgba(250, 245, 234, 0.85), 0 1px 0 rgba(250, 245, 234, 0.95)"
+            "0 2px 10px rgba(0, 0, 0, 0.55), 0 4px 18px rgba(0, 0, 0, 0.4), 0 0 28px rgba(31, 26, 20, 0.35)"
         }}
       >
-        呼吸清新的空氣，<span className="text-white">是生命的泉源</span>
+        呼吸清新的空氣，是生命的泉源
       </motion.p>
     </section>
   );
