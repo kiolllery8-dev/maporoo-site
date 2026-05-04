@@ -38,8 +38,8 @@ export default function Hero() {
           the section bottom passes it. Because the sticky element is
           contained by Hero, when Hero exits the viewport the LOGO exits
           with it (it cannot remain on screen). */}
-      <div className="relative z-20 min-h-screen flex flex-col items-center pt-[30vh]">
-        <div className="sticky top-[8vh] flex justify-center w-full pointer-events-none">
+      <div className="relative z-20 min-h-screen flex flex-col items-center pt-[24vh]">
+        <div className="sticky top-[3vh] flex justify-center w-full pointer-events-none">
           <motion.img
             src="/images/bn-logo.png"
             alt="BrezNu 碧森妮"
