@@ -60,7 +60,7 @@ export default function ChapterEra80() {
           </FadeIn>
         </div>
 
-        <motion.div style={{ y }} className="relative aspect-[4/5]">
+        <motion.div style={{ y }} className="relative aspect-[4/5] min-h-[80vw] md:min-h-[26rem]">
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{
