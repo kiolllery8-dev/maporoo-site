@@ -1,35 +1,10 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 
 export default function Hero() {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollY } = useScroll();
-
-  // Measure Hero height so timing self-adjusts to viewport size.
-  const [heroH, setHeroH] = useState(800);
-  useEffect(() => {
-    const update = () => {
-      if (ref.current) setHeroH(ref.current.offsetHeight);
-    };
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
-
-  // LOGO behaviour:
-  // - scrollY 0      → top: 80px  (high near top, slight margin below the nav row)
-  // - scrollY heroH  → top: -60px (LOGO has scrolled all the way up so its
-  //                                 BOTTOM edge lands on viewport top: 0,
-  //                                 which == the line between #top and the
-  //                                 next chapter at the moment Hero exits)
-  // - scrollY > heroH → clamped at -60 (LOGO is above viewport, gone, no
-  //                                      lingering on top of chapter 1)
-  const logoTop = useTransform(scrollY, [0, heroH], [80, -60]);
-
   return (
-    <section id="top" ref={ref} className="relative min-h-screen">
+    <section id="top" className="relative min-h-screen">
       {/* Layer 0: paper-waves bg */}
       <div
         className="absolute inset-0 z-0"
@@ -55,24 +30,29 @@ export default function Hero() {
         />
       </div>
 
-      {/* === LOGO ===
-          Fixed-positioned. Vertical position scroll-driven so the LOGO
-          appears to follow the page from "near the top" all the way to
-          "just exited at the boundary line between #top and chapter 1". */}
-      <motion.div
-        style={{ top: logoTop, left: 0, right: 0 }}
-        className="fixed z-[60] flex justify-center pointer-events-none"
-      >
-        <motion.img
-          src="/images/bn-logo.png"
-          alt="BrezNu 碧森妮"
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.4, delay: 1.0, ease: [0.22, 1, 0.36, 1] }}
-          draggable={false}
-          className="w-[50vw] max-w-[500px] h-auto select-none"
-        />
-      </motion.div>
+      {/* Layer 2: flow content — sticky LOGO (greenvines pattern).
+          - LOGO sticks at top: 80px while Hero is in view (the "top" position).
+          - When the parent's bottom approaches the LOGO's bottom (i.e. the
+            user has scrolled near the end of Hero), sticky RELEASES and the
+            LOGO bottom anchors to the parent's bottom — which IS the line
+            between #top and the next chapter.
+          - From that moment, LOGO bottom stays glued to that line and
+            scrolls out together with Hero. Once Hero leaves the viewport,
+            the LOGO is gone with it (no fade, no lingering).
+          - Browser handles all the math — no need to hard-code LOGO height. */}
+      <div className="relative z-20 min-h-screen">
+        <div className="sticky top-[80px] z-[60] flex justify-center w-full pointer-events-none">
+          <motion.img
+            src="/images/bn-logo.png"
+            alt="BrezNu 碧森妮"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.4, delay: 1.0, ease: [0.22, 1, 0.36, 1] }}
+            draggable={false}
+            className="w-[50vw] max-w-[500px] h-auto select-none"
+          />
+        </div>
+      </div>
 
       {/* slogan */}
       <motion.p
