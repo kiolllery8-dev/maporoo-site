@@ -8,7 +8,16 @@ export default function Hero() {
       id="top"
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* hero overlay removed — body bg image carries the visual */}
+      {/* Hero uses the original paper-waves image as a top banner */}
+      <div
+        className="absolute inset-0 -z-0"
+        style={{
+          backgroundImage: "url(/images/bg-paper-waves.png)",
+          backgroundSize: "cover",
+          backgroundPosition: "center center",
+          backgroundRepeat: "no-repeat"
+        }}
+      />
 
       <div className="relative text-center px-6 max-w-3xl">
         <motion.div
