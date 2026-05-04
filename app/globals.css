@@ -2,10 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@400;500;600;700;900&display=swap");
+/* Use only weights we actually use; preconnect-friendly Google Fonts call. */
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;500;600;700&display=swap");
 
 :root {
   color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Account for fixed nav (~68px) when scrolling to anchors. */
+  scroll-padding-top: 80px;
 }
 
 html,
@@ -18,23 +25,38 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   letter-spacing: 0.015em;
+  /* Prevent horizontal scroll from full-bleed sections. */
+  overflow-x: hidden;
 }
 
-p {
-  font-weight: 500;
-}
+p { font-weight: 500; }
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   letter-spacing: 0.02em;
 }
 
-body {
+/* iOS Safari + many mobile browsers don't reliably support
+   background-attachment: fixed. Use a fixed positioned ::before
+   layer so the spa photo stays put as the user scrolls. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
   background-image: url("/images/bg-spa-green.png");
-  background-attachment: fixed;
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
+  /* Slight blur on small screens softens the dense plant texture
+     so the centered text stays legible. */
+  will-change: transform;
+}
+
+@media (max-width: 767px) {
+  body::before {
+    background-position: 30% center;
+  }
 }
 
 ::selection {
@@ -84,9 +106,16 @@ body {
     0 2px 4px rgba(31, 26, 20, 0.18);
 }
 
-/* Helpers for pushing content into the right half of the viewport
-   (the spa photo's white/foggy area). */
-.right-rail {
-  margin-left: auto;
-  margin-right: clamp(1rem, 6vw, 6rem);
+/* Tap targets: ensure links/buttons in the nav meet 44px on mobile. */
+@media (max-width: 767px) {
+  nav a { padding-block: 0.25rem; }
+}
+
+/* Reduce-motion fallback */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

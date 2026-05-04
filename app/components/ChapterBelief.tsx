@@ -4,8 +4,8 @@ import FadeIn from "./FadeIn";
 
 export default function ChapterBelief() {
   return (
-    <section id="belief" className="relative py-40 md:py-56 px-6 paper-grain">
-      <div className="max-w-3xl mx-auto space-y-14">
+    <section id="belief" className="relative py-24 md:py-56 px-6">
+      <div className="max-w-3xl mx-auto space-y-10 md:space-y-14">
         <FadeIn>
           <p className="text-xs tracking-widest2 uppercase text-tea-deep text-center">
             Our Belief · 信念
@@ -13,7 +13,7 @@ export default function ChapterBelief() {
         </FadeIn>
 
         <FadeIn delay={0.2}>
-          <h2 className="font-serif font-medium text-3xl md:text-5xl leading-[1.5] text-ink text-center">
+          <h2 className="font-serif font-medium text-[1.6rem] md:text-5xl leading-[1.5] text-ink text-center">
             我們的信念&nbsp;<span className="text-tea-deep">很簡單</span>
           </h2>
         </FadeIn>
@@ -25,7 +25,7 @@ export default function ChapterBelief() {
         </FadeIn>
 
         <FadeIn delay={0.45}>
-          <blockquote className="font-serif text-2xl md:text-3xl text-ink leading-[2] text-center tracking-wider">
+          <blockquote className="font-serif text-xl md:text-3xl text-ink leading-[2] text-center tracking-wider">
             「&nbsp;只想發展&nbsp;<span className="text-tea-deep">天然品</span>&nbsp;」
           </blockquote>
         </FadeIn>

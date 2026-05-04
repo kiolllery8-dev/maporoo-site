@@ -4,8 +4,8 @@ import FadeIn from "./FadeIn";
 
 export default function ChapterMission() {
   return (
-    <section className="relative py-32 md:py-48 px-6">
-      <div className="max-w-3xl mx-auto space-y-12">
+    <section className="relative py-20 md:py-48 px-6">
+      <div className="max-w-3xl mx-auto space-y-8 md:space-y-12">
         <FadeIn>
           <p className="text-xs tracking-widest2 uppercase text-tea-deep">
             Chapter Four · 時代的回應
@@ -13,7 +13,7 @@ export default function ChapterMission() {
         </FadeIn>
 
         <FadeIn delay={0.2}>
-          <h2 className="font-serif font-medium text-3xl md:text-4xl leading-[1.7] text-ink">
+          <h2 className="font-serif font-medium text-2xl md:text-4xl leading-[1.7] text-ink">
             在這個紛擾不休的世代，<br />
             每個人都在為自己的<span className="text-tea-deep">情緒與壓力</span>
             <br />

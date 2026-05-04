@@ -24,13 +24,13 @@ export default function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
-          className="space-y-10"
+          className="space-y-8 md:space-y-10"
         >
           <p className="text-xs tracking-widest2 uppercase text-tea-deep">
             since 1960s · A Sixty-Year Pursuit of Nature
           </p>
 
-          <h1 className="font-serif font-medium text-ink leading-[1.5] text-3xl md:text-5xl">
+          <h1 className="font-serif font-medium text-ink leading-[1.5] text-[1.6rem] md:text-5xl">
             呼吸清新的空氣
             <br />
             <span className="text-tea-deep">是生命的泉源</span>

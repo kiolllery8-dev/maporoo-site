@@ -16,9 +16,9 @@ export default function ChapterOrigin() {
     <section
       id="origin"
       ref={ref}
-      className="relative py-32 md:py-48 px-6 overflow-hidden"
+      className="relative py-20 md:py-48 px-6 overflow-hidden"
     >
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 md:gap-24 items-center">
+      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 md:gap-24 items-center">
         <motion.div style={{ y }} className="relative aspect-[4/5] order-2 md:order-1">
           <div
             className="absolute inset-0 bg-cover bg-center"
@@ -32,7 +32,7 @@ export default function ChapterOrigin() {
 
         <div className="order-1 md:order-2 space-y-8">
           <FadeIn>
-            <p className="font-en text-tea-deep text-5xl md:text-6xl tracking-wider leading-none">
+            <p className="font-en text-tea-deep text-4xl md:text-6xl tracking-wider leading-none">
               1960<span className="text-tea">s</span>
             </p>
           </FadeIn>
@@ -44,7 +44,7 @@ export default function ChapterOrigin() {
           </FadeIn>
 
           <FadeIn delay={0.2}>
-            <h2 className="font-serif font-medium text-3xl md:text-4xl leading-[1.6] text-ink">
+            <h2 className="font-serif font-medium text-2xl md:text-4xl leading-[1.6] text-ink">
               從一份對天然的<br />
               <span className="text-tea-deep">偏執之愛</span>&nbsp;開始
             </h2>

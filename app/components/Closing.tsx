@@ -4,8 +4,8 @@ import FadeIn from "./FadeIn";
 
 export default function Closing() {
   return (
-    <section className="relative py-32 md:py-48 px-6">
-      <div className="max-w-2xl mx-auto text-center space-y-10">
+    <section className="relative py-20 md:py-48 px-6">
+      <div className="max-w-2xl mx-auto text-center space-y-8 md:space-y-10">
         <FadeIn>
           <p className="text-xs tracking-widest2 uppercase text-tea-deep">
             Epilogue · 結語
@@ -13,7 +13,7 @@ export default function Closing() {
         </FadeIn>
 
         <FadeIn delay={0.2}>
-          <h2 className="font-serif font-medium text-2xl md:text-3xl leading-[2] text-ink">
+          <h2 className="font-serif font-medium text-xl md:text-3xl leading-[2] text-ink">
             願你深深&nbsp;吸一口氣<br />
             從每一滴植翠精華裡，<br />
             <span className="text-tea-deep">感受大自然的&nbsp;能量</span>

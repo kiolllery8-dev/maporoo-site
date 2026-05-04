@@ -4,8 +4,8 @@ import FadeIn from "./FadeIn";
 
 export default function ChapterName() {
   return (
-    <section className="relative py-40 md:py-56 px-6 paper-grain">
-      <div className="max-w-3xl mx-auto text-center space-y-12">
+    <section className="relative py-24 md:py-56 px-6">
+      <div className="max-w-3xl mx-auto text-center space-y-8 md:space-y-12">
         <FadeIn>
           <p className="text-xs tracking-widest2 uppercase text-tea-deep">
             The Name · 品牌名
@@ -13,7 +13,7 @@ export default function ChapterName() {
         </FadeIn>
 
         <FadeIn delay={0.2}>
-          <p className="font-en italic text-tea-deep text-6xl md:text-8xl tracking-wider">
+          <p className="font-en italic text-tea-deep text-5xl md:text-8xl tracking-wider">
             BrezNu
           </p>
         </FadeIn>
@@ -25,7 +25,7 @@ export default function ChapterName() {
         </FadeIn>
 
         <FadeIn delay={0.45}>
-          <h2 className="font-serif font-medium text-2xl md:text-3xl leading-[2] text-ink">
+          <h2 className="font-serif font-medium text-xl md:text-3xl leading-[2] text-ink">
             取意為——<br />
             <span className="text-tea-deep">「呼吸清新的空氣，是生命的泉源」</span>
           </h2>

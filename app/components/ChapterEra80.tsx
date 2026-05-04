@@ -15,12 +15,12 @@ export default function ChapterEra80() {
   return (
     <section
       ref={ref}
-      className="relative py-32 md:py-48 px-6 overflow-hidden"
+      className="relative py-20 md:py-48 px-6 overflow-hidden"
     >
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 md:gap-24 items-center">
+      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 md:gap-24 items-center">
         <div className="space-y-8">
           <FadeIn>
-            <p className="font-en text-tea-deep text-5xl md:text-6xl tracking-wider leading-none">
+            <p className="font-en text-tea-deep text-4xl md:text-6xl tracking-wider leading-none">
               1980<span className="text-tea">s</span>
             </p>
           </FadeIn>
@@ -32,7 +32,7 @@ export default function ChapterEra80() {
           </FadeIn>
 
           <FadeIn delay={0.2}>
-            <h2 className="font-serif font-medium text-3xl md:text-4xl leading-[1.6] text-ink">
+            <h2 className="font-serif font-medium text-2xl md:text-4xl leading-[1.6] text-ink">
               為顧客<span className="text-tea-deep">&nbsp;品質把關</span>
             </h2>
           </FadeIn>
