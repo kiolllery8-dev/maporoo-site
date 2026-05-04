@@ -5,7 +5,7 @@ import FadeIn from "./FadeIn";
 export default function ChapterMission() {
   return (
     <section className="relative py-32 md:py-48 px-6">
-      <div className="max-w-3xl ml-auto mr-[6%] md:mr-[10%] space-y-12">
+      <div className="max-w-3xl mx-auto space-y-12">
         <FadeIn>
           <p className="text-xs tracking-widest2 uppercase text-tea-deep">
             Chapter Four · 時代的回應

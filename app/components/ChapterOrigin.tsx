@@ -18,7 +18,7 @@ export default function ChapterOrigin() {
       ref={ref}
       className="relative py-32 md:py-48 px-6 overflow-hidden"
     >
-      <div className="max-w-3xl ml-auto mr-[6%] md:mr-[8%] grid md:grid-cols-[1fr_1.4fr] gap-10 md:gap-14 items-center">
+      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 md:gap-24 items-center">
         <motion.div style={{ y }} className="relative aspect-[4/5] order-2 md:order-1">
           <div
             className="absolute inset-0 bg-cover bg-center"
