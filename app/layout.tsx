@@ -52,6 +52,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="preload"
           as="image"
           href="/images/bg-paper-waves.png"
+          fetchPriority="high"
+        />
+        <link
+          rel="preload"
+          as="image"
+          href="/images/hero-hand-mint.png"
+          fetchPriority="high"
+        />
+        <link
+          rel="preload"
+          as="image"
+          href="/images/bn-logo.png"
+          fetchPriority="high"
         />
       </head>
       <body className="text-ink font-sans">{children}</body>

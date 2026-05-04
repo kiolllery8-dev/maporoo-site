@@ -15,9 +15,16 @@ const ALL_LINKS = [...LINKS_LEFT, ...LINKS_RIGHT];
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  // Once user has scrolled into Hero, the morphing BN-LOGO is on its way
+  // to landing at nav center — fade out the text logo to make room.
+  const [textLogoFaded, setTextLogoFaded] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 80);
+      // Fade once user has scrolled past 30% of viewport height into Hero
+      setTextLogoFaded(window.scrollY > window.innerHeight * 0.3);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -48,11 +55,15 @@ export default function Nav() {
           ))}
         </div>
 
-        {/* Logo (always center) */}
+        {/* Logo placeholder — text shows at top of page, fades as morphing
+            BN-LOGO image migrates into this position (handled in Hero). */}
         <a
           href="#top"
           onClick={() => setOpen(false)}
-          className="flex items-baseline gap-2 md:gap-3 justify-self-center col-start-2 md:col-start-2 col-span-1"
+          aria-label="BrezNu 碧森妮"
+          className={`flex items-baseline gap-2 md:gap-3 justify-self-center col-start-2 md:col-start-2 col-span-1 transition-opacity duration-500 ${
+            textLogoFaded ? "opacity-0 pointer-events-none" : "opacity-100"
+          }`}
         >
           <span className="font-serif-mix text-xl md:text-2xl tracking-wider2 text-ink">
             BrezNu
