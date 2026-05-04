@@ -13,7 +13,7 @@ export default function Prologue() {
         </FadeIn>
 
         <FadeIn delay={0.2}>
-          <h2 className="font-serif font-medium text-2xl md:text-3xl leading-[2] text-ink">
+          <h2 className="font-serif font-light text-2xl md:text-3xl leading-[2] text-ink">
             一個品牌的誕生&ensp;絕非偶然<br />
             一項產品的開發&ensp;也非一時半刻<br />
             一門事業的經營&ensp;更要兢兢業業

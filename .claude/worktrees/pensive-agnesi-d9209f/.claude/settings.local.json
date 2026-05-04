@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.diaominasia.com)",
+      "WebSearch",
+      "Bash(command -v pandoc)",
+      "Bash(python -c \"import docx; print\\('OK'\\)\")",
+      "Bash(pip install *)",
+      "Bash(python md_to_docx.py)",
+      "mcp__Claude_Preview__preview_start"
+    ]
+  }
+}

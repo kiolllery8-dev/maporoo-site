@@ -25,7 +25,7 @@ export default function ChapterName() {
         </FadeIn>
 
         <FadeIn delay={0.45}>
-          <h2 className="font-serif font-medium text-2xl md:text-3xl leading-[2] text-ink">
+          <h2 className="font-serif font-light text-2xl md:text-3xl leading-[2] text-ink">
             取意為——<br />
             <span className="text-tea-deep">「呼吸清新的空氣，是生命的泉源」</span>
           </h2>

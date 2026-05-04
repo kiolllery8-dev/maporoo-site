@@ -6,9 +6,20 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden paper-grain"
     >
-      {/* hero overlay removed — body bg image carries the visual */}
+      <div className="absolute inset-0 -z-10">
+        <div
+          className="absolute inset-0 opacity-[0.18]"
+          style={{
+            backgroundImage: "url(/images/hero-01.jpg)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            filter: "sepia(0.2) saturate(0.7) brightness(1.05)"
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-cream via-cream/60 to-cream" />
+      </div>
 
       <div className="relative text-center px-6 max-w-3xl">
         <motion.div
@@ -21,7 +32,7 @@ export default function Hero() {
             since 1960s · A Sixty-Year Pursuit of Nature
           </p>
 
-          <h1 className="font-serif font-medium text-ink leading-[1.5] text-3xl md:text-5xl">
+          <h1 className="font-serif font-light text-ink leading-[1.5] text-3xl md:text-5xl">
             呼吸清新的空氣
             <br />
             <span className="text-tea-deep">是生命的泉源</span>

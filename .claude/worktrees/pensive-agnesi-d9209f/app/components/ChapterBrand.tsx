@@ -16,7 +16,7 @@ export default function ChapterBrand() {
     <section
       id="brand"
       ref={ref}
-      className="relative py-32 md:py-48 px-6 overflow-hidden"
+      className="relative bg-cream-200 py-32 md:py-48 px-6 overflow-hidden"
     >
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 md:gap-24 items-center">
         <motion.div style={{ y }} className="relative aspect-[4/5] order-2 md:order-1">
@@ -44,7 +44,7 @@ export default function ChapterBrand() {
           </FadeIn>
 
           <FadeIn delay={0.2}>
-            <h2 className="font-serif font-medium text-3xl md:text-4xl leading-[1.6] text-ink">
+            <h2 className="font-serif font-light text-3xl md:text-4xl leading-[1.6] text-ink">
               <span className="font-en italic">BrezNu</span>&nbsp;碧森妮
               <br />
               於是<span className="text-tea-deep">&nbsp;誕生</span>

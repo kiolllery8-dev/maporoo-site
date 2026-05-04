@@ -13,14 +13,14 @@ const config: Config = {
           300: "#E8DEC4"
         },
         ink: {
-          DEFAULT: "#1F1A14",
-          soft: "#4A4337",
-          mute: "#6E6557"
+          DEFAULT: "#2A241D",
+          soft: "#645C50",
+          mute: "#8A8275"
         },
         tea: {
-          DEFAULT: "#8A6840",
-          light: "#B88751",
-          deep: "#5C3F22"
+          DEFAULT: "#A4845A",
+          light: "#D4A574",
+          deep: "#76583B"
         }
       },
       fontFamily: {

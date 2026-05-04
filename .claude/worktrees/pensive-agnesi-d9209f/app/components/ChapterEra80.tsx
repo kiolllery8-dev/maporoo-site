@@ -32,7 +32,7 @@ export default function ChapterEra80() {
           </FadeIn>
 
           <FadeIn delay={0.2}>
-            <h2 className="font-serif font-medium text-3xl md:text-4xl leading-[1.6] text-ink">
+            <h2 className="font-serif font-light text-3xl md:text-4xl leading-[1.6] text-ink">
               為顧客<span className="text-tea-deep">&nbsp;品質把關</span>
             </h2>
           </FadeIn>

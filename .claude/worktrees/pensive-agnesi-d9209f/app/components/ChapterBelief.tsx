@@ -13,7 +13,7 @@ export default function ChapterBelief() {
         </FadeIn>
 
         <FadeIn delay={0.2}>
-          <h2 className="font-serif font-medium text-3xl md:text-5xl leading-[1.5] text-ink text-center">
+          <h2 className="font-serif font-light text-3xl md:text-5xl leading-[1.5] text-ink text-center">
             我們的信念&nbsp;<span className="text-tea-deep">很簡單</span>
           </h2>
         </FadeIn>

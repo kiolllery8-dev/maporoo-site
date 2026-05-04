@@ -1,0 +1,39 @@
+name: Deploy to home server
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-breznu
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, breznu]
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Build + restart container
+        run: |
+          set -e
+          echo "  workspace: $GITHUB_WORKSPACE"
+          docker compose up -d --build
+          docker compose ps
+
+      - name: Health check
+        run: |
+          set -e
+          for i in $(seq 1 12); do
+            STATUS=$(docker inspect breznu --format '{{.State.Health.Status}}' 2>/dev/null || echo none)
+            echo "  attempt $i: health=$STATUS"
+            [ "$STATUS" = "healthy" ] && break
+            sleep 5
+          done
+          [ "$STATUS" = "healthy" ] || { echo "FAILED: container never healthy"; docker logs breznu --tail 80; exit 1; }
+          curl -sk -o /dev/null -w "  internal HTTPS %{http_code}\n" -I https://localhost/ -H "Host: breznu.intelliverse.tw" | grep -q 200 || { echo "FAILED: nginx not 200"; exit 1; }
+          echo "✓ deploy verified — https://breznu.intelliverse.tw"

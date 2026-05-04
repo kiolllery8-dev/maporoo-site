@@ -44,7 +44,7 @@ export default function ChapterOrigin() {
           </FadeIn>
 
           <FadeIn delay={0.2}>
-            <h2 className="font-serif font-light text-3xl md:text-4xl leading-[1.6] text-ink">
+            <h2 className="font-serif font-medium text-3xl md:text-4xl leading-[1.6] text-ink">
               從一份對天然的<br />
               <span className="text-tea-deep">偏執之愛</span>&nbsp;開始
             </h2>
