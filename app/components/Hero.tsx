@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
@@ -10,10 +10,37 @@ export default function Hero() {
     offset: ["start start", "end start"]
   });
 
-  // LOGO follows the scroll across the full Hero range — starts overlaying
-  // the hand image (top: 25vh), and lands at the very top of the viewport
-  // (0vh) by the time the user has scrolled to the bottom of Hero.
-  const logoTop = useTransform(scrollYProgress, [0, 1], ["25vh", "0vh"]);
+  // LOGO follows scroll: sits over the upper part of the hand at the start
+  // (15vh) and lands at the very top of the viewport (0vh) by the time the
+  // user has scrolled to the bottom of Hero.
+  const logoTop = useTransform(scrollYProgress, [0, 1], ["15vh", "0vh"]);
+
+  // Fade LOGO out once Hero has scrolled fully out of viewport (so it's
+  // not lingering at the top of viewport over chapter 1).
+  const [heroPast, setHeroPast] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        // Hero is "past" when its bottom edge has crossed above viewport top.
+        const r = entry.boundingClientRect;
+        setHeroPast(!entry.isIntersecting && r.bottom <= 0);
+      },
+      { threshold: 0 }
+    );
+    obs.observe(el);
+    // Also fall back to scroll listener for fine-grained detection
+    const onScroll = () => {
+      const r = el.getBoundingClientRect();
+      setHeroPast(r.bottom <= 0);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      obs.disconnect();
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
 
   return (
     <>
@@ -22,7 +49,7 @@ export default function Hero() {
         ref={ref}
         className="relative min-h-screen overflow-hidden"
       >
-        {/* Layer 0: paper-waves bg — stays at viewport size, NOT scaled up */}
+        {/* Layer 0: paper-waves bg — viewport-sized, NOT scaled up */}
         <div
           className="absolute inset-0 z-0"
           style={{
@@ -33,8 +60,8 @@ export default function Hero() {
           }}
         />
 
-        {/* Layer 1: hand image — large, centered in viewport */}
-        <div className="relative z-10 min-h-screen flex items-center justify-center px-2">
+        {/* Layer 1: hand image — oversized + centered, edges crop into Hero bounds */}
+        <div className="relative z-10 min-h-screen flex items-center justify-center">
           <motion.img
             src="/images/hero-hand-mint.png"
             alt=""
@@ -43,11 +70,11 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
             draggable={false}
-            className="w-[min(100vw,1280px)] h-auto select-none"
+            className="w-[125vw] max-w-none h-auto select-none"
           />
         </div>
 
-        {/* slogan — moved further down toward viewport bottom */}
+        {/* slogan — close to viewport bottom */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -71,16 +98,14 @@ export default function Hero() {
 
       {/* === LOGO ===
           Fixed-positioned page-level overlay, horizontally centered via
-          full-width flex container (reliable centering regardless of
-          internal asymmetry of the LOGO PNG). Vertical position is
-          scroll-driven via Hero's scrollYProgress. */}
+          full-width flex container. Vertical position is scroll-driven and
+          settles at 0vh by the bottom of Hero. Hidden once Hero has fully
+          scrolled past the viewport. */}
       <motion.div
-        style={{
-          top: logoTop,
-          left: 0,
-          right: 0
-        }}
-        className="fixed z-[60] flex justify-center pointer-events-none"
+        style={{ top: logoTop, left: 0, right: 0 }}
+        className={`fixed z-[60] flex justify-center pointer-events-none transition-opacity duration-500 ${
+          heroPast ? "opacity-0" : "opacity-100"
+        }`}
       >
         <motion.img
           src="/images/bn-logo.png"
@@ -89,7 +114,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.4, delay: 1.0, ease: [0.22, 1, 0.36, 1] }}
           draggable={false}
-          className="w-[70vw] max-w-[700px] h-auto select-none"
+          className="w-[50vw] max-w-[500px] h-auto select-none"
         />
       </motion.div>
     </>
