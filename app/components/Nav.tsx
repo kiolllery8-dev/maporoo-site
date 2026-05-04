@@ -15,22 +15,15 @@ const ALL_LINKS = [...LINKS_LEFT, ...LINKS_RIGHT];
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  // Once user has scrolled into Hero, the morphing BN-LOGO is on its way
-  // to landing at nav center — fade out the text logo to make room.
-  const [textLogoFaded, setTextLogoFaded] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 80);
-      // Fade once user has scrolled past 30% of viewport height into Hero
-      setTextLogoFaded(window.scrollY > window.innerHeight * 0.3);
-    };
+    const onScroll = () => setScrolled(window.scrollY > 80);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close drawer on Esc or after navigating to anchor.
+  // Close drawer on Esc.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);
@@ -55,22 +48,15 @@ export default function Nav() {
           ))}
         </div>
 
-        {/* Logo placeholder — text shows at top of page, fades as morphing
-            BN-LOGO image migrates into this position (handled in Hero). */}
+        {/* Center: invisible click-to-top target sized to match the
+            BN-LOGO image overlay rendered by <Hero /> */}
         <a
           href="#top"
           onClick={() => setOpen(false)}
           aria-label="BrezNu 碧森妮"
-          className={`flex items-baseline gap-2 md:gap-3 justify-self-center col-start-2 md:col-start-2 col-span-1 transition-opacity duration-500 ${
-            textLogoFaded ? "opacity-0 pointer-events-none" : "opacity-100"
-          }`}
+          className="justify-self-center col-start-2 col-span-1 flex items-center justify-center h-10 md:h-12 w-[min(50vw,320px)]"
         >
-          <span className="font-serif-mix text-xl md:text-2xl tracking-wider2 text-ink">
-            BrezNu
-          </span>
-          <span className="font-serif text-[11px] md:text-sm tracking-widest2 text-tea-deep">
-            碧森妮
-          </span>
+          <span className="sr-only">BrezNu 碧森妮</span>
         </a>
 
         {/* Right links (desktop) */}

@@ -10,17 +10,10 @@ export default function Hero() {
     offset: ["start start", "end start"]
   });
 
-  // === LOGO morph: huge in Hero center → small at nav center ===
-  // top: viewport-50% → 22px (just below nav top edge)
-  const logoTop = useTransform(scrollYProgress, [0, 1], ["50%", "22px"]);
-  // y-translate: -50% (centers vertically) → 0 (top-aligned at nav)
-  const logoY = useTransform(scrollYProgress, [0, 1], ["-50%", "0%"]);
-  // scale: 1 → 0.18 (BN-LOGO ~400px wide → ~72px wide at nav)
-  const logoScale = useTransform(scrollYProgress, [0, 1], [1, 0.18]);
-
-  // === Hand image: scrolls with Hero, drifts up + fades as Hero exits ===
-  const handY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
-  const handOpacity = useTransform(scrollYProgress, [0.4, 0.95], [1, 0]);
+  // LOGO travels from upper Hero down to the nav center as the user
+  // scrolls the entire Hero. NO scaling — size stays constant.
+  // top: ~28vh (just above the hand image) → 14px (snapped at nav top)
+  const logoTop = useTransform(scrollYProgress, [0, 1], ["28vh", "14px"]);
 
   return (
     <>
@@ -29,7 +22,7 @@ export default function Hero() {
         ref={ref}
         className="relative min-h-screen overflow-hidden"
       >
-        {/* paper-waves bg (kept) */}
+        {/* Layer 0: paper-waves bg (kept) */}
         <div
           className="absolute inset-0 z-0"
           style={{
@@ -40,35 +33,26 @@ export default function Hero() {
           }}
         />
 
-        {/* hand image — sits behind LOGO in Hero center */}
-        <motion.div
-          style={{ y: handY, opacity: handOpacity }}
-          className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"
-        >
-          <img
+        {/* Layer 1: hand image — sits in the lower-middle area; scrolls naturally with Hero */}
+        <div className="relative z-10 min-h-screen flex flex-col items-center justify-center pt-[24vh] pb-24 px-6 pointer-events-none">
+          <motion.img
             src="/images/hero-hand-mint.png"
             alt=""
             aria-hidden
-            draggable={false}
-            className="w-[min(80vw,520px)] h-auto select-none"
-          />
-        </motion.div>
-
-        {/* slogan + scroll hint, anchored to bottom of Hero */}
-        <div className="relative z-20 min-h-screen flex flex-col items-center justify-end px-6 pb-24 text-center pointer-events-none">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.6, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="space-y-4 max-w-md"
+            transition={{ duration: 1.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            draggable={false}
+            className="w-[min(72vw,460px)] h-auto select-none"
+          />
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.6, delay: 1.4 }}
+            className="mt-10 font-serif text-ink text-base md:text-lg text-center"
           >
-            <p className="text-xs tracking-widest2 uppercase text-tea-deep">
-              since 1960s · A Sixty-Year Pursuit of Nature
-            </p>
-            <p className="font-serif font-medium text-ink leading-[1.6] text-base md:text-lg">
-              呼吸清新的空氣，<span className="text-tea-deep">是生命的泉源</span>
-            </p>
-          </motion.div>
+            呼吸清新的空氣，<span className="text-tea-deep">是生命的泉源</span>
+          </motion.p>
         </div>
 
         {/* scroll hint */}
@@ -83,23 +67,24 @@ export default function Hero() {
         </motion.div>
       </section>
 
-      {/* === Morphing BN-LOGO: fixed-positioned at page level so it can
-            seamlessly land in the nav center as the user scrolls Hero === */}
+      {/* === Fixed BN-LOGO ===
+          Sits directly above the hand image at scroll-start (top: 28vh).
+          As the user scrolls Hero, LOGO migrates linearly toward the nav
+          center (top: 14px). After Hero is past, top is clamped at 14px so
+          LOGO stays locked at the nav. NO scaling — size is constant. */}
       <motion.div
         style={{
           top: logoTop,
           left: "50%",
-          x: "-50%",
-          y: logoY,
-          scale: logoScale
+          x: "-50%"
         }}
-        className="fixed z-[60] pointer-events-none origin-center"
+        className="fixed z-[60] pointer-events-none"
       >
         <img
           src="/images/bn-logo.png"
           alt="BrezNu 碧森妮"
           draggable={false}
-          className="w-[min(72vw,400px)] h-auto select-none"
+          className="w-[min(50vw,320px)] h-auto select-none"
         />
       </motion.div>
     </>
