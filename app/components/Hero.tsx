@@ -65,19 +65,8 @@ export default function Hero() {
             "0 2px 8px rgba(31, 26, 20, 0.45), 0 0 24px rgba(250, 245, 234, 0.85), 0 1px 0 rgba(250, 245, 234, 0.95)"
         }}
       >
-        呼吸清新的空氣，<span className="text-tea-deep">是生命的泉源</span>
+        呼吸清新的空氣，<span className="text-white">是生命的泉源</span>
       </motion.p>
-
-      {/* scroll hint */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.2, duration: 1.2 }}
-        className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 text-ink-mute"
-      >
-        <span className="text-[10px] tracking-widest2 uppercase">Scroll</span>
-        <span className="block w-px h-8 bg-ink-mute/40 animate-scroll-hint" />
-      </motion.div>
     </section>
   );
 }
