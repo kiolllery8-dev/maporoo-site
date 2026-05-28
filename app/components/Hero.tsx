@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { motion } from "framer-motion";
 
 export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -33,38 +32,23 @@ export default function Hero() {
   };
 
   return (
-    <section id="top" className="relative min-h-screen -mt-[76px] md:-mt-[92px] bg-champagne-400">
-      {/* Layer 0: background video (muted autoplay, loops) */}
+    <section id="top" className="relative w-full aspect-[7/3] bg-champagne-500">
+      {/* Background video (muted autoplay, loops). Solid champagne-gold
+          section colour shows underneath while the video loads. */}
       <video
         ref={videoRef}
-        className="absolute inset-0 z-0 w-full h-full object-cover"
+        className="absolute inset-0 z-0 w-full h-full object-contain"
         autoPlay
         loop
         muted
         playsInline
         preload="auto"
-        poster="/images/bg-paper-waves.png"
       >
         <source src="/videos/hero.mp4" type="video/mp4" />
       </video>
 
-      {/* subtle scrim — keeps logo & slogan legible over any frame */}
-      <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/35 via-transparent to-black/10 pointer-events-none" />
-
-      {/* Layer 2: centred logo */}
-      <div className="relative z-20 min-h-screen">
-        <div className="sticky top-[180px] z-[40] flex justify-center w-full pointer-events-none">
-          <motion.img
-            src="/images/maporoo-logo.gif"
-            alt="MAPOROO"
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.4, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            draggable={false}
-            className="w-[50vw] max-w-[460px] h-auto select-none drop-shadow-[0_12px_40px_rgba(0,0,0,0.35)]"
-          />
-        </div>
-      </div>
+      {/* subtle scrim — keeps nav & controls legible over any frame */}
+      <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/30 via-transparent to-black/10 pointer-events-none" />
 
       {/* video controls — bottom-left, circular */}
       <div className="absolute bottom-7 left-5 md:left-8 z-30 flex items-center gap-3">

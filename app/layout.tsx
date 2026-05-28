@@ -45,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="font-sans text-ink bg-champagne-200">
         <Nav />
-        <main className="min-h-screen pt-[76px] md:pt-[92px]">{children}</main>
+        <main className="min-h-screen pt-[80px] md:pt-[100px]">{children}</main>
         <Footer />
       </body>
     </html>

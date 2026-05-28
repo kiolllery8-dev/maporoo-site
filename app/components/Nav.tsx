@@ -48,7 +48,7 @@ export default function Nav() {
       }`}
       onMouseLeave={() => setOpenMega(false)}
     >
-      <nav className="relative max-w-8xl mx-auto px-5 md:px-10 h-[76px] md:h-[92px] flex items-center">
+      <nav className="relative max-w-8xl mx-auto px-5 md:px-10 h-[80px] md:h-[100px] flex items-center">
         {/* Left links (desktop) */}
         <ul className="hidden md:flex items-center gap-8 flex-1 text-[0.8rem] tracking-widest2 uppercase text-ink-soft">
           {LEFT_LINKS.map((item) => (
@@ -71,7 +71,7 @@ export default function Nav() {
           <img
             src="/images/maporoo-logo.gif"
             alt="MAPOROO"
-            className="h-14 md:h-[72px] w-auto select-none drop-shadow-[0_3px_12px_rgba(140,109,47,0.22)]"
+            className="h-16 md:h-[88px] w-auto select-none drop-shadow-[0_3px_12px_rgba(140,109,47,0.22)]"
             draggable={false}
           />
         </Link>
