@@ -71,7 +71,7 @@ export default function Nav() {
           <img
             src="/images/maporoo-logo.gif"
             alt="MAPOROO"
-            className="h-16 md:h-[88px] w-auto select-none drop-shadow-[0_3px_12px_rgba(140,109,47,0.22)]"
+            className="h-20 md:h-[100px] w-auto select-none drop-shadow-[0_3px_12px_rgba(140,109,47,0.22)]"
             draggable={false}
           />
         </Link>
