@@ -35,5 +35,5 @@ jobs:
             sleep 5
           done
           [ "$STATUS" = "healthy" ] || { echo "FAILED: container never healthy"; docker logs maporoo --tail 80; exit 1; }
-          curl -sk -o /dev/null -w "  internal HTTPS %{http_code}\n" -I https://localhost/ -H "Host: maporoo.intelliverse.tw" | grep -q 200 || { echo "FAILED: nginx not 200"; exit 1; }
-          echo "✓ deploy verified — https://maporoo.intelliverse.tw"
+          curl -sk -o /dev/null -w "  internal HTTPS %{http_code}\n" -I https://localhost/ -H "Host: maporoo.com" | grep -q 200 || { echo "FAILED: nginx not 200"; exit 1; }
+          echo "✓ deploy verified — https://maporoo.com"
