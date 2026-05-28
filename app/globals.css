@@ -2,8 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Use only weights we actually use; preconnect-friendly Google Fonts call. */
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;500;600;700&display=swap");
 
 :root {
   color-scheme: light;
@@ -11,109 +10,93 @@
 
 html {
   scroll-behavior: smooth;
-  /* Account for fixed nav (~68px) when scrolling to anchors. */
-  scroll-padding-top: 80px;
-}
-
-html {
-  background-color: #DCE3D6;
+  scroll-padding-top: 96px;
+  background-color: #F5EEDC;
 }
 
 body {
-  color: #1F1A14;
+  color: #2B2722;
+  background-color: #F5EEDC;
   font-family: "Noto Sans TC", system-ui, sans-serif;
-  font-weight: 500;
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  letter-spacing: 0.015em;
-  /* Prevent horizontal scroll from full-bleed sections. */
+  letter-spacing: 0.01em;
   overflow-x: hidden;
-  background-color: transparent;
 }
-
-p { font-weight: 500; }
 
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
-
-/* Site-wide fixed photo background.
-   Rendered as a real DOM element via <SiteBackground /> so it's
-   reliable on iOS Safari (which is flaky with bg-attachment: fixed
-   and with body::before + negative z-index). */
-.site-bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  background-image: url("/images/bg-spa-green.png");
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  pointer-events: none;
-}
-
-@media (max-width: 767px) {
-  .site-bg {
-    background-position: 30% center;
-  }
-}
-
-/* Lift main content above the fixed bg. */
-main { position: relative; z-index: 1; }
 
 ::selection {
-  background: #D4A574;
-  color: #2A241D;
+  background: #C9A95C;
+  color: #2B2722;
 }
 
 .font-serif-mix {
-  font-family: "Cormorant Garamond", "Noto Serif TC", "Noto Serif JP", serif;
+  font-family: "Cormorant Garamond", "Noto Serif TC", serif;
 }
 
-.text-vertical {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-}
-
-.divider-line {
-  display: inline-block;
-  width: 1px;
-  height: 4rem;
-  background: linear-gradient(to bottom, transparent, #A4845A 50%, transparent);
-}
-
-.divider-line-h {
-  display: inline-block;
+/* Thin hairline dividers (Aesop-like restraint). */
+.rule-h {
   height: 1px;
-  width: 4rem;
-  background: linear-gradient(to right, transparent, #A4845A 50%, transparent);
+  width: 100%;
+  background: rgba(140, 109, 47, 0.22);
+}
+.rule-v {
+  width: 1px;
+  height: 100%;
+  background: rgba(140, 109, 47, 0.22);
 }
 
+/* Eyebrow label: uppercase, wide tracking, gold. */
+.eyebrow {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  color: #8C6D2F;
+  font-weight: 500;
+}
+
+/* Subtle paper texture for large gold panels. */
 .paper-grain {
   background-image:
-    radial-gradient(rgba(164, 132, 90, 0.04) 1px, transparent 1px),
-    radial-gradient(rgba(118, 88, 59, 0.03) 1px, transparent 1px);
-  background-size: 24px 24px, 36px 36px;
-  background-position: 0 0, 12px 12px;
+    radial-gradient(rgba(140, 109, 47, 0.045) 1px, transparent 1px),
+    radial-gradient(rgba(184, 146, 61, 0.035) 1px, transparent 1px);
+  background-size: 22px 22px, 34px 34px;
+  background-position: 0 0, 11px 11px;
 }
 
-/* Soft cream glow + drop shadow so dark text stays legible
-   when sliding across the spa photo's busy / dark areas.
-   Targets text-bearing elements only — avoids triggering
-   layout/paint glitches on background-image divs. */
-.text-shadow-soft :is(p, h1, h2, h3, h4, h5, h6, span, a, em, strong, blockquote, cite, li) {
-  text-shadow:
-    0 1px 0 rgba(250, 245, 234, 0.95),
-    0 0 6px rgba(250, 245, 234, 0.85),
-    0 0 14px rgba(250, 245, 234, 0.55),
-    0 2px 4px rgba(31, 26, 20, 0.18);
+/* Product / showcase tile placeholder — soft gold gradient field.
+   Used in lieu of real product photography. */
+.tile-gold {
+  background:
+    radial-gradient(120% 120% at 30% 20%, #FBF7EC 0%, #EFE4CC 45%, #E2D0A6 100%);
+}
+.tile-gold-deep {
+  background:
+    radial-gradient(120% 120% at 35% 25%, #EFE4CC 0%, #DCC8A0 50%, #C9A95C 100%);
 }
 
-/* Tap targets: ensure links/buttons in the nav meet 44px on mobile. */
-@media (max-width: 767px) {
-  nav a { padding-block: 0.25rem; }
+/* Link underline that grows on hover. */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 1px;
+  width: 0;
+  background: currentColor;
+  transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.link-underline:hover::after {
+  width: 100%;
 }
 
 /* Reduce-motion fallback */

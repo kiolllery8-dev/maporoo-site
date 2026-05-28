@@ -4,7 +4,7 @@ const nextConfig = {
   output: "standalone",
   images: {
     remotePatterns: [
-      { protocol: "https", hostname: "breznu.com" }
+      { protocol: "https", hostname: "maporoo.com" }
     ]
   }
 };

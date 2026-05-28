@@ -4,3 +4,9 @@ out/
 .env*.local
 *.log
 .DS_Store
+
+# analysis artifacts (not part of the site)
+.aesop-analysis/
+
+# large source video at repo root — canonical copy lives in public/videos/hero.mp4
+/MAPOROO*.mp4

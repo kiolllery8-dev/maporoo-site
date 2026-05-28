@@ -1,8 +1,8 @@
 {
-  "name": "breznu-brand-story",
+  "name": "maporoo-brand-story",
   "version": "1.0.0",
   "private": true,
-  "description": "BrezNu 碧森妮 品牌故事官網 — Next.js + Tailwind + Framer Motion",
+  "description": "MAPOROO 品牌故事官網 — Next.js + Tailwind + Framer Motion",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

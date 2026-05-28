@@ -1,6 +1,6 @@
 services:
-  breznu:
-    container_name: breznu
+  maporoo:
+    container_name: maporoo
     build:
       context: .
       dockerfile: Dockerfile
