@@ -4,15 +4,15 @@ import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 
 export const metadata: Metadata = {
-  title: "MAPOROO｜願你永遠記得，最初擁抱的溫度",
+  title: "MAPOROO｜肌膚的照顧，可以同時有效，且從容",
   description:
-    "MAPOROO 是一個關於擁抱、童心、與溫柔陪伴的生活風格品牌。玩偶、文具、居家、配件與禮盒——把擁抱的溫度，包成一份禮物。",
-  keywords: ["MAPOROO", "童心", "陪伴", "禮物", "玩偶", "文具", "生活風格"],
+    "MAPOROO 以醫學實證的成分——PDRN、外泌體、胜肽與玻尿酸——配製美白、保濕與修復的日常保養。有效、溫和，適合各種膚況。",
+  keywords: ["MAPOROO", "醫美保養", "PDRN", "外泌體", "胜肽", "玻尿酸", "保濕", "修復", "亮白"],
   metadataBase: new URL("https://maporoo.com"),
   alternates: { canonical: "/" },
   openGraph: {
-    title: "MAPOROO｜把擁抱的溫度，包成一份禮物",
-    description: "玩偶・文具・居家・配件・禮盒。願你永遠記得，最初擁抱的溫度。",
+    title: "MAPOROO｜有效與舒適，可以並存",
+    description: "以醫學實證的成分，配製有效而從容的日常保養。",
     type: "website",
     locale: "zh_TW",
     url: "https://maporoo.com",
@@ -20,8 +20,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "MAPOROO｜把擁抱的溫度，包成一份禮物",
-    description: "願你永遠記得，最初擁抱的溫度。"
+    title: "MAPOROO｜有效與舒適，可以並存",
+    description: "以醫學實證的成分，配製有效而從容的日常保養。"
   },
   icons: {
     icon: [{ url: "/images/maporoo-logo.webp", type: "image/webp" }],
@@ -33,7 +33,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: "#F5EEDC"
+  themeColor: "#F2EFE8"
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -43,9 +43,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
       </head>
-      <body className="font-sans text-ink bg-champagne-200">
+      <body>
         <Nav />
-        <main className="min-h-screen pt-[80px] md:pt-[100px]">{children}</main>
+        {/* Film hero bleeds under the fixed 64px header; sections flow below. */}
+        <main>{children}</main>
         <Footer />
       </body>
     </html>

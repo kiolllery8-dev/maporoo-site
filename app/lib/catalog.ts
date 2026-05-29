@@ -1,146 +1,110 @@
-// MAPOROO catalog — all content original to the MAPOROO brand.
-// Structure mirrors a wellness/lifestyle site's information architecture
-// (collections → products, plus journal & finder), filled with original copy.
-
-export type Product = {
-  slug: string;
-  name: string;
-  en: string;
-  blurb: string;
-  price: number;
-  tone: "light" | "deep"; // placeholder tile shade
-  tags: string[]; // for gift-finder (mood / recipient)
-};
+// MAPOROO catalog — medical-grade skincare brand (per approved preview).
+// All content is MAPOROO brand copy.
 
 export type Collection = {
-  slug: string;
-  name: string;
+  zh: string;
   en: string;
-  tagline: string;
-  description: string;
-  products: Product[];
+  d: string;
+  products: string[];
 };
 
 export const collections: Collection[] = [
   {
-    slug: "plush",
-    name: "玩偶",
-    en: "Plush & Companions",
-    tagline: "可以抱著入睡的那一種陪伴",
-    description:
-      "從一隻金色方塊裡探出頭的小袋鼠開始，MAPOROO 的玩偶系列被設計成「剛好一個懷抱」的大小——柔軟、安靜、願意聽你說話。",
-    products: [
-      { slug: "roo-classic", name: "經典袋鼠 ROO", en: "Roo the Original", blurb: "標誌性的炭灰小袋鼠，棉絨手感，肚子上有一個剛好放進掌心的育兒袋弧度。", price: 880, tone: "deep", tags: ["comfort", "kids", "self"] },
-      { slug: "roo-mini", name: "口袋袋鼠", en: "Pocket Roo", blurb: "可以塞進外套口袋、書包側袋的迷你版，陪你通勤、出差、考試。", price: 480, tone: "light", tags: ["travel", "self", "friend"] },
-      { slug: "moon-roo", name: "月亮抱枕袋鼠", en: "Moonlit Cushion Roo", blurb: "枕頭與玩偶之間的尺寸，午睡、追劇、發呆都剛好。", price: 1280, tone: "light", tags: ["comfort", "home", "self"] },
-      { slug: "duo-roo", name: "成對袋鼠", en: "A Pair of Roo", blurb: "兩隻一組，一隻給你、一隻給你想念的人。", price: 1520, tone: "deep", tags: ["couple", "friend", "gift"] }
-    ]
+    zh: "修復",
+    en: "RESTORE",
+    d: "以 PDRN、外泌體與胜肽配製，安撫並支持肌膚的自我修復。適合各種膚況，亦適合療程期間使用。",
+    products: ["PDRN 修復精華液", "賦活原生露", "玫瑰胜肽面膜"]
   },
   {
-    slug: "stationery",
-    name: "文具",
-    en: "Paper & Stationery",
-    tagline: "把今天的溫柔，寫下來",
-    description:
-      "適合慢慢寫字的紙、捨不得用掉的貼紙、可以一直撕的紙膠帶。MAPOROO 文具系列陪你把日常的小情緒，留成可以翻回去的痕跡。",
-    products: [
-      { slug: "warm-notebook", name: "擁抱手帳", en: "Warm Embrace Notebook", blurb: "米金色內頁、平攤不回彈的裝訂，寫日記或塗鴉都順手。", price: 420, tone: "light", tags: ["self", "writer", "kids"] },
-      { slug: "roo-stickers", name: "袋鼠貼紙組", en: "Roo Sticker Set", blurb: "一整頁的小袋鼠表情，貼在筆電、水壺、給朋友的信上。", price: 180, tone: "deep", tags: ["kids", "friend", "self"] },
-      { slug: "gold-tape", name: "金箔紙膠帶", en: "Gilded Washi Tape", blurb: "低調的香檳金，封信、拼貼、做手帳都好看。", price: 150, tone: "light", tags: ["writer", "self", "gift"] },
-      { slug: "letter-set", name: "想念信箋組", en: "A Letter to Someone", blurb: "信紙＋信封＋封蠟貼，給那些想說卻說不出口的話。", price: 360, tone: "deep", tags: ["friend", "couple", "gift"] }
-    ]
+    zh: "亮白",
+    en: "CLARITY",
+    d: "針對暗沉與不均勻膚色，溫和提亮，逐步回復清透。",
+    products: ["亮白精粹", "嫩白霜", "活顏澎潤霜"]
   },
   {
-    slug: "home",
-    name: "居家",
-    en: "Home & Living",
-    tagline: "讓家，更像一個被接住的地方",
-    description:
-      "馬克杯的握感、香氛的氣味、抱枕的重量——MAPOROO 居家系列在意的，是那些讓你一回家就鬆一口氣的細節。",
-    products: [
-      { slug: "roo-mug", name: "袋鼠馬克杯", en: "Roo Morning Mug", blurb: "厚實杯壁、保溫久一點，杯底藏著一隻偷看你的小袋鼠。", price: 580, tone: "light", tags: ["home", "self", "gift"] },
-      { slug: "warm-candle", name: "暖香蠟燭", en: "Warm Hours Candle", blurb: "前調是曬過太陽的棉被，尾韻一點點焦糖與木質。燃時約 40 小時。", price: 920, tone: "deep", tags: ["home", "self", "couple"] },
-      { slug: "hug-cushion", name: "擁抱抱枕", en: "The Hug Cushion", blurb: "比一般抱枕重一些，被它壓著的踏實感，像有人輕輕抱住你。", price: 1180, tone: "light", tags: ["comfort", "home", "self"] },
-      { slug: "room-mist", name: "房間噴霧", en: "Room Mist", blurb: "睡前在枕頭與窗簾噴兩下，把白天的紛擾換成一室柔軟。", price: 680, tone: "deep", tags: ["home", "self", "comfort"] }
-    ]
+    zh: "保濕",
+    en: "HYDRATION",
+    d: "從清潔到精華的補水配方，以多分子玻尿酸重建水潤屏障。",
+    products: ["玻尿酸保濕精華", "水光卸妝水", "深層卸妝液"]
   },
   {
-    slug: "accessories",
-    name: "配件",
-    en: "Everyday Carry",
-    tagline: "把童心，隨身帶著",
-    description:
-      "鑰匙圈、徽章、帆布袋——體積小、卻能在你低頭的瞬間，提醒你心裡那個小孩還在。",
-    products: [
-      { slug: "roo-keyring", name: "袋鼠鑰匙圈", en: "Roo Keyring", blurb: "金屬鑲嵌的炭灰小袋鼠，掛在鑰匙、包包、識別證上都剛好。", price: 320, tone: "deep", tags: ["self", "friend", "travel"] },
-      { slug: "gold-pin", name: "金色徽章", en: "Gilded Pin", blurb: "一枚低調的金色袋鼠別針，別在外套領口或帆布袋上。", price: 240, tone: "light", tags: ["self", "friend", "gift"] },
-      { slug: "canvas-tote", name: "日常帆布袋", en: "Everyday Tote", blurb: "厚磅胚布、可裝下一台筆電與一本書，側邊有隻小小的 ROO。", price: 560, tone: "light", tags: ["travel", "self", "writer"] },
-      { slug: "mirror", name: "口袋小鏡", en: "Pocket Mirror", blurb: "翻開的瞬間，先看到一隻對你笑的小袋鼠，再看到你自己。", price: 280, tone: "deep", tags: ["self", "friend", "gift"] }
-    ]
+    zh: "香氛",
+    en: "AROMATICS",
+    d: "以香氣陪伴日常——沐浴、護髮與隨身香氛。",
+    products: ["悅香水", "赤香水", "玫瑰沐浴露", "護髮油"]
   },
   {
-    slug: "gifts",
-    name: "禮盒",
-    en: "Gifts & Kits",
-    tagline: "把心意，包成剛剛好的樣子",
-    description:
-      "為不知道怎麼開口的時刻準備的禮盒。每一組都附一張可以手寫的卡片，因為最暖的，往往是你自己的那句話。",
-    products: [
-      { slug: "first-hug-kit", name: "初次擁抱禮盒", en: "First Hug Kit", blurb: "經典袋鼠 ROO ＋ 暖香蠟燭 ＋ 手寫卡，送給剛認識或想重新靠近的人。", price: 1680, tone: "deep", tags: ["gift", "friend", "couple"] },
-      { slug: "desk-comfort-kit", name: "桌上的安心組", en: "Desk Comfort Kit", blurb: "口袋袋鼠 ＋ 擁抱手帳 ＋ 金色徽章，給每天努力的自己或同事。", price: 1280, tone: "light", tags: ["self", "writer", "gift"] },
-      { slug: "goodnight-kit", name: "晚安儀式組", en: "Goodnight Ritual Kit", blurb: "房間噴霧 ＋ 月亮抱枕袋鼠 ＋ 暖香蠟燭，把睡前變成一段溫柔的儀式。", price: 2380, tone: "deep", tags: ["comfort", "home", "couple"] },
-      { slug: "little-one-kit", name: "給小小孩禮盒", en: "For the Little One", blurb: "經典袋鼠 ROO ＋ 袋鼠貼紙組 ＋ 袋鼠馬克杯，給家裡的小朋友。", price: 1480, tone: "light", tags: ["kids", "gift", "family"] }
-    ]
+    zh: "頭皮",
+    en: "SCALP",
+    d: "平衡並調理頭皮，照顧髮絲的源頭。",
+    products: ["頭皮調理精華", "頭皮洗髮乳"]
   }
 ];
 
-export function getCollection(slug: string): Collection | undefined {
-  return collections.find((c) => c.slug === slug);
-}
+export type Ingredient = { zh: string; en: string; d: string };
 
-export function allProducts(): { product: Product; collection: Collection }[] {
-  return collections.flatMap((c) => c.products.map((p) => ({ product: p, collection: c })));
-}
+export const ingredients: Ingredient[] = [
+  { zh: "PDRN", en: "REPAIR ─ 修復", d: "與人體 DNA 相似的修護分子，支持肌膚的自我修復。" },
+  { zh: "外泌體", en: "SIGNAL ─ 傳遞", d: "細胞間的訊息載體，將修護訊號精準傳遞。" },
+  { zh: "胜肽", en: "FIRM ─ 緊緻", d: "支持膠原環境，維持肌膚的彈性與飽滿。" },
+  { zh: "玻尿酸", en: "HYDRATE ─ 保濕", d: "多分子層層鎖水，回復水潤的屏障。" }
+];
 
-// Journal — original short editorial entries (MAPOROO 誌).
-export type JournalEntry = {
-  slug: string;
-  kicker: string;
-  title: string;
-  excerpt: string;
-  read: string;
-};
+export type Read = { cat: string; t: string; time: string };
 
-export const journal: JournalEntry[] = [
+export const reads: Read[] = [
+  { cat: "成分學", t: "PDRN 是什麼，它為肌膚做了什麼", time: "3 分鐘" },
+  { cat: "成分學", t: "外泌體與胜肽，差在哪裡", time: "4 分鐘" },
+  { cat: "保養指南", t: "進行醫美療程期間，如何照顧肌膚", time: "4 分鐘" },
+  { cat: "保養指南", t: "日常的三步驟：清潔・調理・修復", time: "3 分鐘" },
+  { cat: "生活文化", t: "關於從容──保養可以是一種日常儀式", time: "3 分鐘" },
+  { cat: "設計", t: "我們如何思考一支配方的質地與香氣", time: "5 分鐘" }
+];
+
+// "依需求" facets
+export const needs = [
+  { en: "BY CONCERN", zh: "依肌膚困擾", items: ["暗沉", "乾燥缺水", "膚色不均", "泛紅敏感", "細紋老化"] },
+  { en: "BY SKIN TYPE", zh: "依膚質", items: ["一般", "乾性", "油性", "混合性", "敏感性"] },
+  { en: "BY INGREDIENT", zh: "依成分", items: ["PDRN", "外泌體", "胜肽", "玻尿酸", "維他命 C"] }
+];
+
+// Five collections shown as the icon row (zh/en + simple SVG path set key)
+export const iconRow = [
+  { zh: "修復", en: "RESTORE", icon: "restore" },
+  { zh: "亮白", en: "CLARITY", icon: "clarity" },
+  { zh: "保濕", en: "HYDRATION", icon: "hydration" },
+  { zh: "香氛", en: "AROMATICS", icon: "aromatics" },
+  { zh: "頭皮", en: "SCALP", icon: "scalp" }
+] as const;
+
+// Brand pillars (Ma · Po · Roo)
+export const pillars = [
+  { k: "Ma", t: "醫學的嚴謹", d: "以實證為基礎，選擇真正有效的成分。" },
+  { k: "Po", t: "溫和的守護", d: "有效之餘，也對肌膚溫柔以待。" },
+  { k: "Roo", t: "從容的日常", d: "讓保養，回到一種安靜的日常儀式。" }
+];
+
+// Alliance / partnership offers
+export const alliance = [
   {
-    slug: "why-a-kangaroo",
-    kicker: "品牌的事",
-    title: "為什麼是一隻袋鼠",
-    excerpt: "袋鼠把最在乎的孩子，放進育兒袋、貼著心口帶著走；而且牠只能向前跳、不會後退。我們想，這正是陪伴與成長最溫柔的樣子。",
-    read: "4 分鐘"
+    no: "01 ─ LIVE",
+    zh: "直播分潤",
+    d: "為直播與團購設計的階梯式分潤，銷量越高、回饋越高。提供商品實拍、成分話術與直播素材，開播即用。",
+    items: ["階梯式分潤・即時對帳", "直播素材包・成分話術", "專屬窗口協助開播"],
+    cta: "申請直播合作"
   },
   {
-    slug: "the-weight-of-a-hug",
-    kicker: "設計的事",
-    title: "一個擁抱的重量",
-    excerpt: "我們花了很久，去調整抱枕裡的填充比例——因為被剛好的重量壓著時，人才會真正鬆下來。",
-    read: "5 分鐘"
-  },
-  {
-    slug: "keeping-childhood",
-    kicker: "生活的事",
-    title: "把童年留在身上的方法",
-    excerpt: "長大不必弄丟那個小孩。也許只是一枚別針、一隻口袋袋鼠，就能把他好好接住。",
-    read: "3 分鐘"
+    no: "02 ─ DISTRIBUTION",
+    zh: "經銷",
+    d: "提供經銷夥伴專屬批發價與限定組合，毛利空間清晰透明，並附上完整的產品與成分培訓。",
+    items: ["經銷批發價・限定組合", "成分與保養知識培訓", "行銷與通路支援"],
+    cta: "洽詢經銷合作"
   }
 ];
 
-// Gift-finder facets (original).
-export const giftMoods = [
-  { id: "comfort", label: "想給一點安心" },
-  { id: "self", label: "想犒賞自己" },
-  { id: "couple", label: "想對另一半說想念" },
-  { id: "friend", label: "想謝謝一位朋友" },
-  { id: "kids", label: "想逗笑小朋友" },
-  { id: "home", label: "想讓家更暖" }
+// Online services
+export const services = [
+  { t: "線上膚況諮詢", d: "回答幾個關於膚況的問題，由我們為你推薦合適的配方與順序。", cta: "開始諮詢" },
+  { t: "門市體驗", d: "親手感受質地與香氣，並由專人協助你挑選。台北・台中・高雄。", cta: "查看門市" },
+  { t: "會員禮遇", d: "首購禮、回購點數與會員專屬活動，讓每一次保養更值得。", cta: "加入會員" }
 ];
