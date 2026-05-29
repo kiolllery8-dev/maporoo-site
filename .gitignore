@@ -10,3 +10,6 @@ out/
 
 # large source video at repo root — canonical copy lives in public/videos/hero.mp4
 /MAPOROO*.mp4
+
+# firecrawl scrape cache
+.firecrawl/

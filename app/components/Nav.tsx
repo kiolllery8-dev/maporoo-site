@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 
 const LEFT = [
-  { href: "#collections", label: "系列" },
-  { href: "#needs", label: "依需求" },
-  { href: "#read", label: "閱讀" }
+  { href: "/products", label: "商品" },
+  { href: "/#collections", label: "系列" },
+  { href: "/#needs", label: "依需求" }
 ];
 const RIGHT = [
-  { href: "#ingredients", label: "成分" },
-  { href: "#story", label: "關於" },
-  { href: "#alliance", label: "合作聯盟" }
+  { href: "/#ingredients", label: "成分" },
+  { href: "/#story", label: "關於" },
+  { href: "/#alliance", label: "合作聯盟" }
 ];
 const ALL = [...LEFT, ...RIGHT];
 

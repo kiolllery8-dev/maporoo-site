@@ -1,8 +1,10 @@
+import Link from "next/link";
 import Hero from "./components/Hero";
 import Reveal from "./components/Reveal";
 import Newsletter from "./components/Newsletter";
 import {
   collections,
+  productsByCollection,
   ingredients,
   reads,
   needs,
@@ -76,6 +78,7 @@ export default function Home() {
                 <li>輕壓於臉部，由內而外輕拍至吸收。</li>
                 <li>後續可疊加保濕乳霜，鎖住水分。</li>
               </ol>
+              <div style={{ marginTop: 26 }}><Link className="lnk-dark" href="/products/pdrn-repair-serum">查看商品詳情</Link></div>
             </div>
           </div>
         </div>
@@ -97,8 +100,8 @@ export default function Home() {
               </div>
               <p style={{ color: "var(--soft)", fontSize: "1.05rem", maxWidth: 700, lineHeight: 1.95, marginTop: 10 }}>{c.d}</p>
               <div style={{ marginTop: 18 }}>
-                {c.products.map((p) => (
-                  <span key={p} style={{ display: "inline-block", margin: "0 20px 10px 0", fontSize: ".98rem", color: "var(--soft)", borderBottom: "1px solid var(--line)", paddingBottom: 3, fontWeight: 500 }}>{p}</span>
+                {productsByCollection(c.slug).map((p) => (
+                  <Link key={p.slug} href={`/products/${p.slug}`} style={{ display: "inline-block", margin: "0 20px 10px 0", fontSize: ".98rem", color: "var(--soft)", borderBottom: "1px solid var(--line)", paddingBottom: 3, fontWeight: 500 }} className="hover:text-[var(--ink)] transition-colors">{p.name}</Link>
                 ))}
               </div>
             </div>
