@@ -36,13 +36,20 @@ export default function Nav() {
           ))}
         </nav>
 
-        {/* Brand wordmark — centred */}
+        {/* Brand — logo gif + wordmark, centred on desktop */}
         <a
           href="#top"
           onClick={() => setOpen(false)}
-          className="font-black text-[1.5rem] tracking-[.3em] min-[980px]:absolute min-[980px]:left-1/2 min-[980px]:-translate-x-1/2"
+          className="flex items-center gap-2.5 min-[980px]:absolute min-[980px]:left-1/2 min-[980px]:-translate-x-1/2"
         >
-          MAPOROO
+          <img
+            src="/images/maporoo-logo.gif"
+            alt=""
+            aria-hidden
+            draggable={false}
+            className="h-11 w-auto select-none"
+          />
+          <span className="font-black text-[1.5rem] tracking-[.3em] leading-none">MAPOROO</span>
         </a>
 
         {/* Right nav (desktop) */}
