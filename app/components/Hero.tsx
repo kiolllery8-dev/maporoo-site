@@ -46,8 +46,6 @@ export default function Hero() {
         </div>
       </div>
 
-      <p className="film-cap">形象影片 ─ Brand Film</p>
-
       <div className="ctrls">
         <button type="button" className="ctrl" onClick={togglePlay} aria-label={playing ? "暫停影片" : "播放影片"}>
           {playing ? (
