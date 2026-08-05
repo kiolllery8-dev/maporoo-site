@@ -36,4 +36,22 @@ jobs:
           done
           [ "$STATUS" = "healthy" ] || { echo "FAILED: container never healthy"; docker logs maporoo --tail 80; exit 1; }
           curl -sk -o /dev/null -w "  internal HTTPS %{http_code}\n" -I https://localhost/ -H "Host: maporoo.com" | grep -q 200 || { echo "FAILED: nginx not 200"; exit 1; }
+          echo "✓ origin healthy"
+
+      - name: External check (through Cloudflare)
+        run: |
+          set -e
+          # The origin check above bypasses DNS entirely, so it stays green even
+          # when maporoo.com resolves to nothing. Verify the public URL too.
+          for i in $(seq 1 6); do
+            CODE=$(curl -sS -o /dev/null -L --max-time 20 -w '%{http_code}' https://maporoo.com/ 2>/dev/null || echo 000)
+            echo "  attempt $i: https://maporoo.com/ → $CODE"
+            [ "$CODE" = "200" ] && break
+            sleep 10
+          done
+          if [ "$CODE" != "200" ]; then
+            echo "FAILED: maporoo.com not reachable from outside (got $CODE)"
+            echo "  000 = DNS/connection failure — check the Cloudflare A record for maporoo.com"
+            exit 1
+          fi
           echo "✓ deploy verified — https://maporoo.com"
