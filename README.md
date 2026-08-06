@@ -47,11 +47,14 @@ npm run build && npm run start
 | 檔案 | 內容 |
 |------|------|
 | `app/lib/catalog.ts` | 14 件商品 ＋ 品類／需求／成分三組分類定義 |
-| `app/lib/product-images.ts` | 商品圖 URL（依 SKU 索引，112 張，機器產生勿手改）|
+| `app/lib/product-images.ts` | 商品圖路徑（依 SKU 索引，112 張，機器產生勿手改）|
 | `app/lib/site.ts` | 站台識別字串，供 metadata／JSON-LD／sitemap 共用 |
 | `app/lib/cart.tsx` | 購物袋狀態（React context ＋ localStorage）|
 
-商品圖託管於 `cdn.auslife.tw`，已列入 `next.config.mjs` 的 `remotePatterns`。
+商品圖由本站自行託管於 `public/images/products/`（112 張，約 17MB），
+檔名採商品 slug（例 `glow-cream-50ml-1.jpg`），讓路徑本身帶關鍵字權重。
+`next.config.mjs` 的 `remotePatterns` 刻意留空——沒有任何外部圖片來源，
+誤加外站 `<Image src>` 會直接讓 build 失敗，而不是悄悄新增第三方依賴。
 
 ---
 
@@ -97,4 +100,3 @@ origin 共用 `auslife.tw` 的 Let's Encrypt 憑證。
 - [ ] **線上結帳**——購物袋（加入、改數量、移除、小計、運費）已可用，但「前往結帳」是停用狀態。
       需要先決定金流商（綠界／藍新）並取得商店代號與金鑰，再接訂單、物流與發票。
 - [ ] 首頁 LIBRARY 六篇文章目前有標題無內容，點不進去
-- [ ] 商品圖改由 maporoo.com 自行託管（目前依賴 `cdn.auslife.tw`）

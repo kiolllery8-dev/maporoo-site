@@ -99,7 +99,8 @@ export function ProductLd({ product }: { product: Product }) {
         name: product.name,
         alternateName: product.en,
         sku: product.sku,
-        image: imagesFor(product),
+        // schema.org requires absolute URLs; catalogue paths are site-relative.
+        image: imagesFor(product).map((p) => (p.startsWith("http") ? p : `${SITE.url}${p}`)),
         description: product.about,
         brand: { "@type": "Brand", name: SITE.name, url: SITE.url },
         category: product.collection,
