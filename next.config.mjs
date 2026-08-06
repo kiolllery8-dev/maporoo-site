@@ -4,7 +4,9 @@ const nextConfig = {
   output: "standalone",
   images: {
     remotePatterns: [
-      { protocol: "https", hostname: "maporoo.com" }
+      { protocol: "https", hostname: "maporoo.com" },
+      // Product photography is served from the shared Auslife CDN.
+      { protocol: "https", hostname: "cdn.auslife.tw" }
     ]
   }
 };

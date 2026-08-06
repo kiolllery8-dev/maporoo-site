@@ -41,8 +41,8 @@ export default function Hero() {
         <div className="wrap">
           <p className="eyebrow" style={{ color: "rgba(245,241,232,.78)" }}>MAPOROO ─ Skin Care</p>
           <h1 style={{ marginTop: 22, maxWidth: 780 }}>肌膚的照顧，<br />可以同時有效，且從容。</h1>
-          <p className="lead" style={{ marginTop: 26 }}>以醫學實證的成分，配製美白、保濕與修復的日常保養。</p>
-          <div style={{ marginTop: 32 }}><a className="lnk" href="#collections">探索配方</a></div>
+          <p className="lead" style={{ marginTop: 26 }}>以實證成分，配製保濕、提亮與修護的日常保養。</p>
+          <div style={{ marginTop: 32 }}><a className="lnk" href="/products">探索全部商品</a></div>
         </div>
       </div>
 

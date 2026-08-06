@@ -1,75 +1,100 @@
-# MAPOROO｜品牌故事官網
+# MAPOROO 官網
 
-仿 [diaominasia.com](https://www.diaominasia.com/) 的滾輪敘事架構，重新打造的 MAPOROO 純品牌故事頁。
+Next.js 15 品牌官網 ＋ 商品目錄，部署於家用 server，網域 [maporoo.com](https://maporoo.com)。
 
 ---
-
-## 設計定調
-
-- **不賣商品**——首頁是品牌故事頁，未來再加 CTA 連結到購買頁
-- **滾輪敘事**——一頁一頁帶出「童心、陪伴、溫柔」的品牌靈魂
-- **奶油白＋金茶褐**——以米奶白為主，茶褐為點綴，明朝體 + 黑體混排
-
-## 故事章節順序
-
-1. **Hero** — 「願你永遠記得，最初擁抱的溫度」
-2. **Prologue 序** — 一個品牌的誕生絕非偶然
-3. **Ch.01 起源** — 從一份對童心的固執守候開始
-4. **Ch.02 走出小屋** — 為每一份心意精緻把關
-5. **Ch.03 品牌誕生** — MAPOROO 於是誕生
-6. **The Name 品牌名** — Ma · Po · Roo 三個音節
-7. **時代的回應** — 先伸手抱抱別人
-8. **Belief 信念** — 「只想做最有溫度的小事」
-9. **Epilogue 結語**
-10. **Footer**
 
 ## 技術棧
 
 | 項目 | 版本 | 用途 |
 |------|------|------|
-| Next.js | 15.0.3 | App Router |
+| Next.js | 15.0.3 | App Router、`output: standalone` |
 | React | 18.3.1 | UI |
 | TypeScript | 5.6.3 | 型別 |
-| Tailwind CSS | 3.4.14 | 樣式 |
-| Framer Motion | 11.11.17 | 滾輪 fade-in / parallax |
-
-## 啟動方式
+| Tailwind CSS | 3.4.14 | 樣式（搭配 `globals.css` 的 CSS 變數）|
+| Framer Motion | 11.11.17 | 滾輪動效 |
 
 ```bash
 npm install
-npm run dev
+npm run dev     # http://localhost:3000
+npm run build && npm run start
 ```
 
-開啟 http://localhost:3000
+---
 
-正式部署：
+## 網站結構
 
-```bash
-npm run build
-npm run start
-```
+| 路由 | 內容 | 數量 |
+|------|------|-----:|
+| `/` | 品牌首頁（影片 hero、品類、精選商品、成分、故事）| 1 |
+| `/products` | 全部商品，依品類分組 | 1 |
+| `/products/[slug]` | 商品頁（相簿、特色、使用方式、FAQ、加入購物袋）| 14 |
+| `/collections/[slug]` | 品類頁：`facial-care`／`hair-scalp`／`bath-fragrance` | 3 |
+| `/concerns/[slug]` | 肌膚需求頁：保濕補水、提亮勻淨、緊緻彈潤、清潔卸妝、溫和敏弱、頭皮養護、毛躁修護 | 7 |
+| `/ingredients/[slug]` | 成分知識頁：PDRN、玻尿酸、胜肽、泛醇 B5、咖啡因 | 5 |
+| `/cart` | 購物袋（`noindex`）| 1 |
 
-## 配色（在 `tailwind.config.ts` 調整）
+共 **32 個可索引頁面**。品類／需求／成分三軸交叉，同一件商品可從三個方向被找到。
 
-| Token | Hex | 用途 |
-|-------|-----|------|
-| `cream` | #FAF5EA | 主背景（奶油白）|
-| `cream-200` | #F2EBDA | 次背景（深一階奶油）|
-| `ink` | #1F1A14 | 主要文字（暖深棕）|
-| `ink-soft` | #4A4337 | 次要文字 |
-| `tea-deep` | #5C3F22 | 重點文字 / 標題強調 |
-| `tea` | #8A6840 | 線條 / 副標 |
-| `tea-light` | #B88751 | 反白章節點綴 |
+---
 
-## 圖片
+## 資料層
 
-- `public/images/maporoo-logo.webp`：MAPOROO 品牌 LOGO（金底＋黑色小兔子）
-- `public/images/hero-01.jpg` ~ `hero-03.jpg`：章節 banner（暫用原架構素材，未來可替換為品牌主視覺）
-- `public/images/bg-spa-green.png` / `bg-paper-waves.png` / `hero-hand-mint.png`：站底背景與 hero 圖（之後可換成 MAPOROO 風格素材）
+商品資料集中在 `app/lib/catalog.ts`，是**唯一的真實來源**——
+商品頁、分類頁、sitemap、JSON-LD、`llms.txt` 全部由它產生。新增一件商品只要改這個檔案，
+所有頁面、結構化資料與 sitemap 都會自動跟上。
 
-## 後續可加的功能
+| 檔案 | 內容 |
+|------|------|
+| `app/lib/catalog.ts` | 14 件商品 ＋ 品類／需求／成分三組分類定義 |
+| `app/lib/product-images.ts` | 商品圖 URL（依 SKU 索引，112 張，機器產生勿手改）|
+| `app/lib/site.ts` | 站台識別字串，供 metadata／JSON-LD／sitemap 共用 |
+| `app/lib/cart.tsx` | 購物袋狀態（React context ＋ localStorage）|
 
-- [ ] 「商品系列」連結頁
-- [ ] 「合作詢問」表單
-- [ ] 替換 hero / chapter 內頁圖為 MAPOROO 原創插畫
-- [ ] 配色細調至 LOGO 金色（#D9A933 系）
+商品圖託管於 `cdn.auslife.tw`，已列入 `next.config.mjs` 的 `remotePatterns`。
+
+---
+
+## SEO / AEO / GEO
+
+| 項目 | 位置 |
+|------|------|
+| `sitemap.xml` | `app/sitemap.ts`（由 catalog 產生）|
+| `robots.txt` | `app/robots.ts`（允許 AI 爬蟲，排除 `/cart`）|
+| `llms.txt` | `app/llms.txt/route.ts`（給語言模型讀的純文字站台索引）|
+| JSON-LD | `app/components/JsonLd.tsx` — Organization／WebSite／Product＋Offer／BreadcrumbList／FAQPage／ItemList |
+| canonical | 每個頁面的 `generateMetadata` 各自輸出 |
+| FAQ | 每個商品頁與成分頁的問答同時是畫面內容與 `FAQPage` 結構化資料 |
+
+FAQ 之所以同時出現在畫面與結構化資料，是因為 Google 要求兩者一致；也讓答案引擎能直接引用。
+
+---
+
+## 法遵
+
+商品文案依 `000_Agent/knowledge/compliance-redlines.md` 改寫，
+逐詞對照與未解決事項記錄於 **[`PRODUCT-COPY-COMPLIANCE.md`](PRODUCT-COPY-COMPLIANCE.md)**。
+
+> [!IMPORTANT]
+> 品名保留原文（含「凍齡」「美白」「逆齡」）是老闆 2026-08-05 的決定，
+> 為的是與其他通路一致。這是已知的殘留風險，細節見上述文件。
+> 新增或修改任何對外文案前，請先讀該文件。
+
+---
+
+## 部署
+
+推上 `main` 由 GitHub Actions 自架 runner 自動部署（`.github/workflows/deploy.yml`）：
+`docker compose up -d --build` → 容器健康檢查 → 外部 `https://maporoo.com` 檢查。
+
+DNS 在 Cloudflare（zone `maporoo.com`），A record 指向家用 server 固定 IP，橘雲 ON、SSL 模式 `full`，
+origin 共用 `auslife.tw` 的 Let's Encrypt 憑證。
+
+---
+
+## 尚未完成
+
+- [ ] **線上結帳**——購物袋（加入、改數量、移除、小計、運費）已可用，但「前往結帳」是停用狀態。
+      需要先決定金流商（綠界／藍新）並取得商店代號與金鑰，再接訂單、物流與發票。
+- [ ] 首頁 LIBRARY 六篇文章目前有標題無內容，點不進去
+- [ ] 商品圖改由 maporoo.com 自行託管（目前依賴 `cdn.auslife.tw`）

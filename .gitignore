@@ -13,3 +13,11 @@ out/
 
 # firecrawl scrape cache
 .firecrawl/
+
+# TypeScript incremental build cache
+tsconfig.tsbuildinfo
+
+# Claude Code local state
+.claude/settings.local.json
+.claude/settings.local.json.tmp.*
+.claude/worktrees/

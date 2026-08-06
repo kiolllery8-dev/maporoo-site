@@ -1,387 +1,890 @@
-// MAPOROO catalog — medical-grade skincare brand (per approved preview).
-// All content is original MAPOROO brand copy.
+// MAPOROO catalog — the 14 products actually sold under the MAPOROO brand.
+//
+// Product names are kept verbatim so they match every other channel
+// (auslife.tw / momo / 蝦皮) and stay findable by name search.
+// Body copy is REWRITTEN against 000_Agent/knowledge/compliance-redlines.md:
+// no 醫療效能, no 誇大保證, no 身分誤導, and 受限宣稱 (美白／抗皺) are
+// described as 提亮／勻淨／彈潤 instead. See PRODUCT-COPY-COMPLIANCE.md
+// for the term-by-term mapping.
 
-export type KeyIngredient = { name: string; desc: string };
+import { productImages } from "./product-images";
+
+export type Highlight = { t: string; d: string };
+export type Step = { t: string; d: string };
+export type Faq = { q: string; a: string };
 
 export type Product = {
   slug: string;
-  collection: string; // collection slug
+  sku: string;
   name: string;
   en: string;
   size: string;
   price: number;
+  listPrice: number | null;
+  collection: string;
+  concerns: string[];
+  ingredients: string[];
   tagline: string;
   about: string;
-  keyIngredients: KeyIngredient[];
-  howToUse: string[];
+  highlights: Highlight[];
+  howToUse: Step[];
+  note?: string;
+  caution?: string;
   suits: string;
-  fullIngredients: string;
-  tone: "light" | "deep";
+  origin?: string;
+  faq: Faq[];
 };
 
-export type Collection = {
+export type Collection = { slug: string; zh: string; en: string; d: string; intro: string };
+export type Concern = { slug: string; zh: string; en: string; d: string; intro: string };
+export type IngredientPage = {
   slug: string;
   zh: string;
   en: string;
   d: string;
+  what: string;
+  how: string;
+  faq: Faq[];
 };
 
+// ── 品類 COLLECTIONS ────────────────────────────────────────
 export const collections: Collection[] = [
-  { slug: "restore", zh: "修復", en: "RESTORE", d: "以 PDRN、外泌體與胜肽配製，安撫並支持肌膚的自我修復。適合各種膚況，亦適合療程期間使用。" },
-  { slug: "clarity", zh: "亮白", en: "CLARITY", d: "針對暗沉與不均勻膚色，溫和提亮，逐步回復清透。" },
-  { slug: "hydration", zh: "保濕", en: "HYDRATION", d: "從清潔到精華的補水配方，以多分子玻尿酸重建水潤屏障。" },
-  { slug: "aromatics", zh: "香氛", en: "AROMATICS", d: "以香氣陪伴日常——沐浴、護髮與隨身香氛。" },
-  { slug: "scalp", zh: "頭皮", en: "SCALP", d: "平衡並調理頭皮，照顧髮絲的源頭。" }
+  {
+    slug: "facial-care",
+    zh: "臉部保養",
+    en: "FACIAL CARE",
+    d: "從卸妝、精華到面霜與面膜的完整臉部保養。",
+    intro:
+      "臉部保養的順序，其實比單品的價格更重要。MAPOROO 的臉部系列依照「卸妝 → 化妝水 → 精華 → 面霜 → 面膜」的日常動線配製，每一支都能單獨使用，也能彼此接續。你不需要一次買齊，從最困擾你的那一步開始就好。",
+  },
+  {
+    slug: "hair-scalp",
+    zh: "頭皮髮絲",
+    en: "HAIR & SCALP",
+    d: "洗髮、頭皮精華與護髮油，照顧髮絲的源頭。",
+    intro:
+      "髮絲的狀態，多半是從頭皮開始決定的。MAPOROO 的頭皮髮絲系列分成兩件事：洗的時候把頭皮照顧好（洗髮乳、頭皮精華），以及洗完之後把髮絲照顧好（護髮油）。兩件事分開處理，比用一支產品解決全部來得實際。",
+  },
+  {
+    slug: "bath-fragrance",
+    zh: "沐浴香氛",
+    en: "BATH & FRAGRANCE",
+    d: "香水型沐浴露與精油香水，把香氣留在日常裡。",
+    intro:
+      "香氣是最不需要理由的保養。MAPOROO 的沐浴香氛系列從沐浴的那十分鐘開始，一路延伸到出門前的那一噴——兩款精油香水一清新、一沉穩，你可以依照當天的心情決定要當哪一個自己。",
+  },
 ];
 
+// ── 需求 CONCERNS ───────────────────────────────────────────
+export const concerns: Concern[] = [
+  {
+    slug: "hydration",
+    zh: "保濕補水",
+    en: "HYDRATION",
+    d: "乾燥、緊繃、上妝卡粉——先把水分補回來。",
+    intro:
+      "肌膚乾燥時最容易被誤解的一點是：擦得越油不等於補得越多。保濕分成「補水」與「鎖水」兩個動作，前者靠玻尿酸這類吸水成分，後者靠油脂與神經醯胺這類屏障成分。兩件事都做，緊繃感才會真的緩解。",
+  },
+  {
+    slug: "radiance",
+    zh: "提亮勻淨",
+    en: "RADIANCE",
+    d: "膚色暗沉、不均勻，希望看起來更透亮。",
+    intro:
+      "膚色看起來暗沉，常常不是「黑」，而是角質堆積讓光線散射變得雜亂。所以提亮的第一步通常是角質保養與保濕，而不是更強效的成分。給肌膚一段穩定的時間，變化會比急著加重來得可靠。",
+  },
+  {
+    slug: "firmness",
+    zh: "緊緻彈潤",
+    en: "FIRMNESS",
+    d: "在意鬆弛感與紋路，想要更飽滿的膚觸。",
+    intro:
+      "彈潤感來自兩件事：肌膚的含水量，以及支撐結構的狀態。含水量可以靠保養在短期內改善，支撐結構則需要長期而規律的照顧。胜肽類成分之所以常出現在這類配方裡，正是因為它照顧的是後者。",
+  },
+  {
+    slug: "cleansing",
+    zh: "清潔卸妝",
+    en: "CLEANSING",
+    d: "卸得乾淨，但不要把肌膚一起洗掉。",
+    intro:
+      "卸妝是整套保養裡最容易做壞的一步。過度摩擦、過度清潔造成的乾澀與泛紅，往往比彩妝殘留更傷。選擇的原則很簡單：能一次帶走彩妝、不需要反覆擦拭，而且卸完之後肌膚不緊繃。",
+  },
+  {
+    slug: "gentle",
+    zh: "溫和敏弱",
+    en: "GENTLE CARE",
+    d: "肌膚容易不安定時，配方要更單純。",
+    intro:
+      "肌膚處於不安定狀態時，最有效的做法通常是做得更少：減少步驟、減少刺激來源、選擇成分單純的配方。這一區的商品以溫和植萃與保濕修護成分為主。若肌膚出現持續泛紅、脫屑或搔癢且未改善，請諮詢皮膚科醫師。",
+  },
+  {
+    slug: "scalp",
+    zh: "頭皮養護",
+    en: "SCALP CARE",
+    d: "出油、扁塌、頭皮不清爽。",
+    intro:
+      "頭皮和臉部肌膚是同一張皮，只是上面多了頭髮。它一樣會出油、一樣會乾燥、一樣需要清潔與保養的平衡。從洗髮開始把頭皮照顧好，髮根的蓬鬆度通常是最先有感的變化。",
+  },
+  {
+    slug: "hair-repair",
+    zh: "毛躁修護",
+    en: "HAIR REPAIR",
+    d: "染燙、日曬之後的乾燥與毛躁。",
+    intro:
+      "髮絲沒有自我修復的能力，所以「修護」實際上做的是撫平毛鱗片、補上流失的油脂，讓髮絲摸起來與看起來回到柔順的狀態。重點在於持續，而不是單次的用量。",
+  },
+];
+
+// ── 成分 INGREDIENTS（知識頁）─────────────────────────────
+export const ingredientPages: IngredientPage[] = [
+  {
+    slug: "pdrn",
+    zh: "PDRN",
+    en: "POLYDEOXYRIBONUCLEOTIDE",
+    d: "近年最常被討論的修護型保養成分之一。",
+    what:
+      "PDRN 的全名是多去氧核苷酸（Polydeoxyribonucleotide），是一種由核苷酸片段組成的成分。保養品中使用的 PDRN 多半萃取自鮭魚或鱒魚的精巢，MAPOROO 使用的是鮭魚來源。它之所以在近幾年被大量討論，是因為結構上與人體本身的核苷酸相近，在保養配方中被歸類為修護訴求的成分。",
+    how:
+      "在化粧品中，PDRN 的作用範圍是肌膚的角質層。它通常搭配玻尿酸、積雪草這類保濕與舒緩成分一起配製，出現在精華液與安瓶類的產品裡。若你在診所聽過同名的療程，那是另一回事——療程與保養品是不同的東西，兩者不能互相推論效果。",
+    faq: [
+      {
+        q: "PDRN 是什麼？",
+        a: "PDRN（多去氧核苷酸）是一種核苷酸類保養成分，保養品中多萃取自鮭魚。在化粧品配方中作為修護訴求的成分使用，作用於肌膚角質層。",
+      },
+      {
+        q: "PDRN 保養品和診所的 PDRN 療程一樣嗎？",
+        a: "不一樣。保養品是塗抹於肌膚表面、作用於角質層的化粧品；診所療程屬於醫療行為，由專業醫師執行。兩者的作用方式與適用情況都不同，不能互相推論。",
+      },
+      {
+        q: "什麼膚況適合用含 PDRN 的保養品？",
+        a: "一般作為日常修護與保濕的選擇。若你的肌膚正處於明顯不安定的狀態，建議先於耳後或手臂內側試用，或先諮詢皮膚科醫師。",
+      },
+    ],
+  },
+  {
+    slug: "hyaluronic-acid",
+    zh: "玻尿酸",
+    en: "HYALURONIC ACID",
+    d: "保養品裡最基本、也最容易被誤會的保濕成分。",
+    what:
+      "玻尿酸（透明質酸）是一種能大量吸附水分的多醣體，人體本身就有。保養品中使用的玻尿酸依分子量分成大、中、小分子：大分子留在肌膚表面形成保水層，小分子則能被角質層吸收。所以配方裡寫「多分子」或「8 種玻尿酸」，指的是不同分子量的搭配，而不是八種不同的成分。",
+    how:
+      "玻尿酸做的是「吸水」，不是「鎖水」。在濕度低的環境下，單擦玻尿酸而不接續一層帶油脂的乳霜，水分反而容易散失。這也是為什麼保養的順序通常是：精華補水，乳霜鎖水。",
+    faq: [
+      {
+        q: "玻尿酸的大分子和小分子差在哪裡？",
+        a: "分子量決定它待在哪一層。大分子留在肌膚表面形成保水膜，小分子可被角質層吸收。多數配方會搭配不同分子量一起使用。",
+      },
+      {
+        q: "擦玻尿酸為什麼反而覺得更乾？",
+        a: "玻尿酸的作用是吸附水分。在乾燥環境中，如果沒有後續的乳霜或乳液鎖住水分，被吸附的水分容易散失。建議擦完精華後接續一層保濕產品。",
+      },
+    ],
+  },
+  {
+    slug: "peptide",
+    zh: "胜肽",
+    en: "PEPTIDE",
+    d: "由胺基酸組成的小分子，常見於彈潤訴求的配方。",
+    what:
+      "胜肽是由數個胺基酸串成的短鏈分子。蛋白質是長鏈，胜肽是短鏈——短到能被配製進保養品裡。保養品中有數十種不同的胜肽，各自的訴求不同，常見於強調彈潤與緊緻膚觸的乳霜與精華。",
+    how:
+      "胜肽類成分講究的是持續使用。它不是擦一次就會看到差別的成分，通常建議以數週為單位觀察膚觸的變化。搭配保濕成分一起使用，感受會比單獨使用明顯。",
+    faq: [
+      {
+        q: "胜肽和膠原蛋白是同一件事嗎？",
+        a: "不是。膠原蛋白是大分子蛋白質，胜肽是由少數胺基酸組成的短鏈分子。兩者在保養品中的角色與配製方式都不同。",
+      },
+      {
+        q: "胜肽保養品要用多久才有感覺？",
+        a: "胜肽類配方一般建議以數週為單位持續使用並觀察膚觸變化，不是單次使用就能感受到差異的成分。",
+      },
+    ],
+  },
+  {
+    slug: "panthenol",
+    zh: "泛醇 B5",
+    en: "PANTHENOL",
+    d: "維他命 B5 的前驅物，舒緩與保濕的基本款。",
+    what:
+      "泛醇是維他命 B5 的前驅物，在保養品中屬於使用歷史很長、耐受度普遍良好的成分。它同時具有保濕與舒緩的特性，因此常出現在敏弱膚況適用的配方，以及卸妝、洗護類產品裡。",
+    how:
+      "泛醇很少單獨作為主角，它多半是配方裡的緩衝角色——讓清潔類產品不那麼乾澀、讓精華液更溫和。看到成分表前段有 Panthenol，通常代表這支配方在意使用時的舒適度。",
+    faq: [
+      {
+        q: "泛醇 B5 在保養品裡的作用是什麼？",
+        a: "泛醇是維他命 B5 的前驅物，在化粧品中同時提供保濕與舒緩的特性，常見於敏弱膚況適用的配方與清潔類產品。",
+      },
+      {
+        q: "B5 和 B12 一起用有什麼意義？",
+        a: "兩者在配方中的角色不同：B5（泛醇）偏向保濕與舒緩，B12（氰鈷胺）在配方中作為調理成分使用。搭配的目的是讓清潔步驟同時具備照顧的作用。",
+      },
+    ],
+  },
+  {
+    slug: "caffeine",
+    zh: "咖啡因",
+    en: "CAFFEINE",
+    d: "頭皮與身體保養配方裡的常見成分。",
+    what:
+      "咖啡因除了喝，也常被配製進頭皮與身體保養品中。在洗髮類產品裡，它通常搭配清潔成分一起使用，是頭皮養護型洗髮乳的常見配方之一。",
+    how:
+      "洗髮時讓泡沫在頭皮停留一到兩分鐘、以指腹輕柔按摩再沖洗，是這類配方建議的使用方式——重點在於接觸的時間與按摩的動作，而不是用量。指甲抓洗容易造成頭皮的傷口，要避免。",
+    faq: [
+      {
+        q: "含咖啡因的洗髮乳要停留多久？",
+        a: "一般建議搓出泡沫後於頭皮按摩一到兩分鐘再沖洗，讓成分有接觸的時間。以指腹按摩即可，避免用指甲抓洗。",
+      },
+      {
+        q: "天天使用含咖啡因的洗髮乳可以嗎？",
+        a: "這類配方一般設計為日常使用。若頭皮出現持續乾澀、泛紅或搔癢，請減少使用頻率並諮詢皮膚科醫師。",
+      },
+    ],
+  },
+];
+
+// ── 商品 PRODUCTS ───────────────────────────────────────────
 export const products: Product[] = [
-  // ── 修復 RESTORE ──────────────────────────────────────────
+  // ══ 臉部保養 FACIAL CARE ══════════════════════════════════
   {
-    slug: "pdrn-repair-serum",
-    collection: "restore",
-    name: "PDRN 修復精華液",
-    en: "PDRN Repair Serum",
-    size: "30ml",
+    slug: "pdrn-hyaluronic-serum-200ml",
+    sku: "M8016",
+    name: "PDRN超導玻尿酸精華液 200ml",
+    en: "PDRN Hyaluronic Serum",
+    size: "200ml",
+    price: 1860,
+    listPrice: 1980,
+    collection: "facial-care",
+    concerns: ["hydration", "gentle"],
+    ingredients: ["pdrn", "hyaluronic-acid", "panthenol"],
+    tagline: "8 種玻尿酸分層配製，可以大方使用的日常補水精華。",
+    about:
+      "以 8 種不同分子量的玻尿酸為核心，搭配鮭魚來源的 PDRN、積雪草、馬齒莧、泛醇、神經醯胺、白柳樹皮、黃芩與紅藻等植萃成分配製。質地輕盈不黏膩，200ml 的容量讓它不只能當精華液——妝前打底、局部濕敷都用得起。澳洲製造。",
+    highlights: [
+      { t: "8 種玻尿酸複合體", d: "大、中、小分子搭配使用，在肌膚表面與角質層各自留住水分。" },
+      { t: "PDRN 多去氧核苷酸", d: "鮭魚來源的核苷酸類成分，是這支配方的修護主軸。" },
+      { t: "積雪草與馬齒莧萃取", d: "植萃成分，照顧容易泛紅、不安定的膚況。" },
+      { t: "泛醇 B5 與神經醯胺", d: "補強肌膚原有的保濕屏障，維持水潤與彈力。" },
+    ],
+    howToUse: [
+      { t: "日常保養", d: "潔顏後取適量均勻塗抹全臉，待吸收後接續後續保養步驟。" },
+      { t: "妝前打底", d: "上妝前薄擦一層，讓底妝更服貼、不易卡粉。" },
+      { t: "局部濕敷", d: "特別乾燥的部位以化妝棉濕敷 10–15 分鐘，集中補水。" },
+    ],
+    note: "200ml 的大容量就是為了讓你捨得用。日常保養以外，妝前與濕敷才是它真正發揮的地方。",
+    suits: "乾燥缺水・敏弱不安定・各種膚況",
+    origin: "澳洲",
+    faq: [
+      {
+        q: "PDRN 超導玻尿酸精華液的 8 種玻尿酸是什麼意思？",
+        a: "指的是 8 種不同分子量的玻尿酸，而不是 8 種不同成分。大分子留在肌膚表面形成保水層，小分子能被角質層吸收，搭配使用讓保濕的層次更完整。",
+      },
+      {
+        q: "200ml 這麼大瓶，要怎麼在保養步驟裡使用？",
+        a: "三種用法：潔顏後當日常精華全臉塗抹、上妝前薄擦一層當保濕打底、乾燥部位以化妝棉濕敷 10–15 分鐘。容量大是為了讓濕敷這種用法變得可行。",
+      },
+      {
+        q: "敏弱肌可以使用嗎？",
+        a: "配方以積雪草、馬齒莧、泛醇等溫和植萃與保濕成分為主。若肌膚正處於不安定狀態，建議先於耳後或手臂內側試用。若出現持續不適，請停止使用並諮詢皮膚科醫師。",
+      },
+    ],
+  },
+  {
+    slug: "revival-essence-mist-100ml",
+    sku: "M8002",
+    name: "皮秒超導賦活原生露 100ml",
+    en: "Revival Essence Mist",
+    size: "100ml",
     price: 1680,
-    tagline: "以 PDRN 與多分子玻尿酸，安撫並支持肌膚的自我修復。",
+    listPrice: null,
+    collection: "facial-care",
+    concerns: ["hydration"],
+    ingredients: ["hyaluronic-acid"],
+    tagline: "微分子玻尿酸噴霧，保養流程裡最輕的那一步。",
     about:
-      "質地清盈、迅速被肌膚吸收的修護精華。以 PDRN 搭配多分子玻尿酸，層層滲透、安撫泛紅與緊繃，支持肌膚自我修復的節奏。適合各種膚況每日使用，亦適合醫美療程後的居家照顧。",
-    keyIngredients: [
-      { name: "PDRN", desc: "與人體 DNA 相似的修護分子，安撫並支持肌膚的自我修復。" },
-      { name: "多分子玻尿酸", desc: "不同分子量層層鎖水，回復水潤屏障。" },
-      { name: "泛醇 B5", desc: "舒緩、強化屏障，減少水分散失。" }
+      "噴霧型的原生露，以微分子玻尿酸配製。潔顏後一噴，質地輕盈好吸收，為肌膚補進第一層水分，也適合作為底妝前的保濕打底。一瓶同時解決滋潤打底與清爽補水兩種需求。",
+    highlights: [
+      { t: "微分子玻尿酸", d: "分子細緻，質地清爽好吸收，不留黏膩感。" },
+      { t: "噴霧設計", d: "均勻分布於全臉，不需化妝棉、不需摩擦肌膚。" },
+      { t: "妝前保濕", d: "上妝前使用，讓後續底妝更服貼。" },
     ],
-    howToUse: ["潔膚與調理後，取 2–3 滴於掌心。", "輕壓於臉部，由內而外輕拍至吸收。", "後續可疊加保濕乳霜，鎖住水分。"],
-    suits: "各種膚況・療程期間・泛紅敏感",
-    fullIngredients: "Water, Glycerin, Sodium DNA (PDRN), Sodium Hyaluronate, Panthenol, Butylene Glycol, Niacinamide, Allantoin, Carbomer, Phenoxyethanol.",
-    tone: "deep"
+    howToUse: [
+      { t: "潔顏後使用", d: "距離臉部約 20 公分，均勻噴灑全臉。" },
+      { t: "輕壓吸收", d: "以掌心輕輕按壓幫助吸收，不需擦拭。" },
+      { t: "接續保養", d: "待吸收後接續精華液與乳霜。" },
+    ],
+    note: "隨身放一瓶，長時間待在冷氣房時可以隨時補一次。",
+    suits: "乾燥缺水・上妝前保濕・各種膚況",
+    faq: [
+      {
+        q: "賦活原生露和化妝水有什麼不同？",
+        a: "使用時機相同——都是潔顏後的第一道保養。差別在於噴霧型不需要化妝棉，可以直接均勻噴灑並輕壓吸收，減少擦拭時對肌膚的摩擦。",
+      },
+      {
+        q: "可以在上妝後補噴嗎？",
+        a: "可以，但建議距離拉遠、少量噴灑，並以掌心輕壓而非擦拭，避免影響底妝。",
+      },
+    ],
   },
   {
-    slug: "revival-essence",
-    collection: "restore",
-    name: "賦活原生露",
-    en: "Revival Essence",
-    size: "150ml",
-    price: 1280,
-    tagline: "化妝水與精華之間的第一道修護。",
+    slug: "radiance-essence-60ml",
+    sku: "M8001",
+    name: "皮秒美白奇蹟精粹 60ml",
+    en: "Radiance Essence",
+    size: "60ml",
+    price: 3980,
+    listPrice: null,
+    collection: "facial-care",
+    concerns: ["radiance", "firmness"],
+    // 來源文案只載明「複合酸」，未指名個別成分——不掛任何成分頁，避免不實。
+    ingredients: [],
+    tagline: "複合酸配方的角質保養精華，一次做少一點，才走得久。",
     about:
-      "潔膚後的第一道步驟。水潤質地為肌膚補進水分，同時以外泌體與胜肽鋪墊後續保養的吸收，讓疲憊的肌膚回到安定的起點。",
-    keyIngredients: [
-      { name: "外泌體", desc: "細胞間的訊息載體，將修護訊號精準傳遞。" },
-      { name: "寡胜肽", desc: "支持膠原環境，維持肌膚的彈性。" }
+      "以多種酸類成分複合配製的精華，質地細緻。相較於單一高濃度的酸類產品，複合配方讓每一種成分的濃度都能降下來，日常使用的耐受度較好。持續使用幫助帶走老廢角質，讓膚觸更細緻、膚色看起來更勻淨透亮。",
+    highlights: [
+      { t: "複合酸配方", d: "多種酸類搭配使用，取代單一高濃度所帶來的刺激。" },
+      { t: "低刺激性設計", d: "濃度與配方經過調整，適合納入日常保養。" },
+      { t: "提亮與勻淨", d: "幫助角質更新，讓膚色看起來更均勻、更有透亮感。" },
     ],
-    howToUse: ["潔膚後，取適量於掌心或化妝棉。", "輕拍或輕抹於全臉，至完全吸收。", "後續接續精華與乳霜。"],
-    suits: "各種膚況・暗沉疲憊",
-    fullIngredients: "Water, Butylene Glycol, Glycerin, sh-Oligopeptide-1, Exosomes, Sodium Hyaluronate, Panthenol, Betaine, 1,2-Hexanediol.",
-    tone: "light"
+    howToUse: [
+      { t: "潔顏後使用", d: "取適量於掌心，避開眼周輕壓於全臉。" },
+      { t: "從低頻率開始", d: "初次使用建議每週 2–3 次，肌膚適應後再視情況調整。" },
+      { t: "接續保濕", d: "待吸收後接續乳霜，鎖住水分。" },
+    ],
+    caution: "使用含酸類成分的產品期間，日間請確實做好防曬。若出現持續刺痛、泛紅或脫屑，請停止使用並諮詢皮膚科醫師。",
+    suits: "膚色暗沉・膚觸粗糙・角質保養",
+    faq: [
+      {
+        q: "複合酸和單一高濃度的酸，哪一種比較好？",
+        a: "方向不同。複合配方讓每種成分的濃度降低、彼此搭配，日常使用的耐受度通常較好；單一高濃度則作用集中但刺激感也較明顯。日常保養一般從複合、低濃度開始比較穩妥。",
+      },
+      {
+        q: "使用含酸類的精華，白天要注意什麼？",
+        a: "請確實做好防曬並避免長時間曝曬。使用酸類保養期間肌膚對紫外線較為敏感，防曬是這類保養不可省略的一步。",
+      },
+      {
+        q: "可以每天使用嗎？",
+        a: "建議從每週 2–3 次開始，觀察肌膚的反應後再決定是否增加頻率。保養的節奏比強度重要。",
+      },
+    ],
   },
   {
-    slug: "rose-peptide-mask",
-    collection: "restore",
-    name: "玫瑰胜肽面膜",
-    en: "Rose Peptide Mask",
-    size: "5 片",
-    price: 880,
-    tagline: "一場 15 分鐘的安靜修護儀式。",
+    slug: "glow-cream-50ml",
+    sku: "M366",
+    name: "超激光凍齡嫩白霜 50ml",
+    en: "Glow Cream",
+    size: "50ml",
+    price: 2980,
+    listPrice: 3500,
+    collection: "facial-care",
+    concerns: ["hydration", "radiance", "firmness"],
+    // 來源文案以「六效合一」描述，未載明個別成分——不掛成分頁。
+    ingredients: [],
+    tagline: "一瓶六效，把保養桌上的瓶罐數量降下來。",
     about:
-      "服貼的精華面膜，飽含胜肽與玫瑰萃取。在忙碌的一天之後，給肌膚 15 分鐘的密集修護與安撫，喚回飽滿與光澤。",
-    keyIngredients: [
-      { name: "胜肽複合物", desc: "支持膠原環境，維持彈性與飽滿。" },
-      { name: "玫瑰萃取", desc: "安撫並柔軟肌膚，留下淡雅餘香。" }
+      "一瓶整合多種保養步驟的乳霜。質地綿潤好推，日常使用同時照顧保濕、膚色的勻亮感與肌膚的彈潤度。適合保養時間有限、又不想在效果上妥協的人——它的價值不在於單項最強，而在於一步到位。",
+    highlights: [
+      { t: "乳液", d: "輕盈保濕，作為日常的滋潤打底。" },
+      { t: "化妝水", d: "為肌膚補進水分，強化後續保養的吸收。" },
+      { t: "精華", d: "濃度較高的保養成分，集中照顧。" },
+      { t: "乳霜", d: "鎖住水分，整夜維持滋潤。" },
+      { t: "勻亮修飾", d: "均勻膚色的呈現，讓氣色看起來更透亮。" },
+      { t: "彈潤保養", d: "以保濕成分照顧肌膚的彈潤度與飽滿感。" },
     ],
-    howToUse: ["潔膚與調理後，取出面膜服貼於臉部。", "靜敷 15 分鐘。", "取下後輕拍剩餘精華至吸收，無須沖洗。"],
-    suits: "各種膚況・乾燥緊繃・需要密集修護時",
-    fullIngredients: "Water, Glycerin, Butylene Glycol, Rosa Damascena Flower Extract, Palmitoyl Tripeptide-1, Sodium Hyaluronate, Allantoin, Panthenol, 1,2-Hexanediol.",
-    tone: "deep"
+    howToUse: [
+      { t: "潔顏後使用", d: "清潔臉部後，取適量於指尖。" },
+      { t: "均勻推開", d: "由內而外、由下而上輕柔推開，確保全臉均勻吸收。" },
+      { t: "加強紋路處", d: "眼角、法令紋與額頭等紋路明顯的部位可稍加強。" },
+    ],
+    note: "早晚皆可使用。早晨作為妝前的保濕打底，夜間則讓它安靜地陪肌膚過一夜。",
+    suits: "乾燥・膚色暗沉・想簡化保養步驟",
+    faq: [
+      {
+        q: "一瓶六效是哪六效？",
+        a: "乳液、化妝水、精華、乳霜四種質地的功能，加上勻亮修飾與彈潤保養。設計目的是讓保養步驟能夠簡化，不需要在保養桌上排滿瓶罐。",
+      },
+      {
+        q: "早上和晚上都可以用嗎？",
+        a: "可以。早晨使用作為妝前的保濕打底，夜間使用則讓保養成分有整夜的時間發揮。",
+      },
+      {
+        q: "已經有精華液了，還需要這一瓶嗎？",
+        a: "如果你的保養流程已經穩定且滿意，不一定需要。這款比較適合想把步驟精簡下來、或是出差旅行時想少帶幾瓶的情況。",
+      },
+    ],
+  },
+  {
+    slug: "night-recovery-cream-50g",
+    sku: "M8003",
+    name: "全能逆齡活顏澎潤霜 50g",
+    en: "Night Recovery Cream",
+    size: "50g",
+    price: 4980,
+    listPrice: 5800,
+    collection: "facial-care",
+    concerns: ["firmness", "hydration"],
+    // 來源文案以「W 彈潤肌質複方」描述，未指名個別成分——不掛成分頁。
+    ingredients: [],
+    tagline: "夜間密集保養，質地濃郁的高濃度面霜。",
+    about:
+      "專為夜間設計的濃縮面霜。以 W 雙重調理配方搭配濃郁的油分與獨家乳化技術，質地看起來厚實，推開之後卻意外好吸收。這是 MAPOROO 保養線裡最奢華的一支，適合在肌膚特別需要被好好對待的那一段日子使用。",
+    highlights: [
+      { t: "W 雙重調理配方", d: "兩種調理方向並行，讓一次的保養涵蓋更完整。" },
+      { t: "W 彈潤肌質複方", d: "複合成分協同作用，照顧肌膚的彈潤度。" },
+      { t: "濃郁油分", d: "鎖住水分，整夜維持滋潤不乾燥。" },
+      { t: "獨家乳化技術", d: "質地奢華卻好推開，吸收後不留厚重的油膩感。" },
+    ],
+    howToUse: [
+      { t: "夜間保養最後一步", d: "完成精華液的步驟後，最後使用澎潤霜。" },
+      { t: "取豌豆大小", d: "以點狀分佈於全臉各區域。" },
+      { t: "輕柔按壓推開", d: "以指腹推開並輕壓，乾燥處與紋路明顯處可加強。" },
+    ],
+    note: "夜間是肌膚保養吸收條件較好的時段。睡前完成保養、給它一整夜的時間，比白天匆忙擦上更值得。",
+    suits: "乾燥・在意紋路與彈潤度・夜間密集保養",
+    faq: [
+      {
+        q: "澎潤霜可以早上使用嗎？",
+        a: "配方是為夜間密集保養設計的，質地較濃郁。早晨若要使用建議減量，並確認底妝的服貼度。日常白天的保濕，玻尿酸精華或六效乳霜會更適合。",
+      },
+      {
+        q: "50g 大約可以用多久？",
+        a: "以夜間每次豌豆大小的用量計算，一般可使用約 2–3 個月。",
+      },
+    ],
+  },
+  {
+    slug: "rose-peptide-cream-mask-80ml",
+    sku: "M3011",
+    name: "玫瑰胜肽修護乳霜面膜 80ml",
+    en: "Rose Peptide Cream Mask",
+    size: "80ml",
+    price: 3980,
+    listPrice: 5800,
+    collection: "facial-care",
+    concerns: ["firmness", "cleansing"],
+    ingredients: ["peptide"],
+    tagline: "塗抹式的乳霜面膜，每週兩次的密集保養。",
+    about:
+      "柔滑的乳霜質地面膜，敷上臉的觸感接近一支好推的乳霜而不是黏膩的面膜。靜待 15–20 分鐘，以胜肽與玫瑰萃取為肌膚做一次密集保養，沖洗後留下緊緻而彈潤的膚觸。",
+    highlights: [
+      { t: "寶石晶微分子", d: "細緻的分子設計，讓保養成分均勻分佈於肌膚表面。" },
+      { t: "胜肽複方", d: "照顧肌膚的彈性與飽滿度。" },
+      { t: "玫瑰萃取", d: "安撫並柔軟肌膚，留下淡雅的餘香。" },
+      { t: "潔淨與保養並行", d: "沖洗的同時帶走多餘油脂與髒污。" },
+    ],
+    howToUse: [
+      { t: "清潔肌膚", d: "使用前確實清潔臉部，去除污垢與彩妝殘留。" },
+      { t: "均勻塗抹", d: "取適量均勻塗抹全臉，厚度約 2–3mm。" },
+      { t: "靜待 15–20 分鐘", d: "讓保養成分有足夠的時間停留在肌膚表面。" },
+      { t: "以清水沖洗", d: "沖洗乾淨，感受洗後緊緻彈潤的膚觸。" },
+    ],
+    note: "建議每週使用 2–3 次。密集保養的重點在規律，不在單次敷得更久。",
+    suits: "乾燥緊繃・在意彈潤度・需要密集保養時",
+    faq: [
+      {
+        q: "乳霜面膜和一般片狀面膜有什麼不同？",
+        a: "乳霜面膜是塗抹式的，可以依照臉部的乾燥狀況調整厚度與範圍，也不會有片狀面膜服貼不完全的問題。使用後需要沖洗。",
+      },
+      {
+        q: "一週可以敷幾次？",
+        a: "建議每週 2–3 次。這類密集保養講求規律，比單次延長停留時間更有意義。",
+      },
+      {
+        q: "敷完之後還需要擦保養品嗎？",
+        a: "需要。沖洗之後請接續平常的化妝水、精華與乳霜，把面膜帶來的水分鎖住。",
+      },
+    ],
+  },
+  {
+    slug: "b5-b12-cleansing-water-200ml",
+    sku: "M8023",
+    name: "B5+B12奇蹟水光卸妝水 200ml",
+    en: "B5+B12 Cleansing Water",
+    size: "200ml",
+    price: 1860,
+    listPrice: 1980,
+    collection: "facial-care",
+    concerns: ["cleansing", "gentle"],
+    ingredients: ["panthenol"],
+    tagline: "免沖洗卸妝水，讓卸妝成為保養的開始而不是結束。",
+    about:
+      "為忙碌的日常與容易不安定的膚況設計的免沖洗卸妝水。B5（泛醇）與 B12（氰鈷胺）搭配蘆薈葉萃取、洋甘菊花萃取與甜沒藥醇配製，一抹即淨、不需要反覆摩擦，卸完之後輕盈保濕、不留油膩感。澳洲製造。",
+    highlights: [
+      { t: "泛醇 Panthenol（B5）", d: "保濕並舒緩，照顧清潔後容易乾澀的肌膚。" },
+      { t: "氰鈷胺 Cyanocobalamin（B12）", d: "配方中的調理成分，讓卸妝步驟同時具備照顧的作用。" },
+      { t: "蘆薈葉萃取", d: "植萃保濕成分，帶來清爽的舒緩感。" },
+      { t: "洋甘菊花萃取與甜沒藥醇", d: "溫和的舒緩成分，減少清潔過程的負擔。" },
+    ],
+    howToUse: [
+      { t: "倒於化妝棉", d: "將卸妝水倒於化妝棉上，份量以完全浸濕為準。" },
+      { t: "輕柔擦拭", d: "輕柔擦拭臉部、眼周與唇部，避免用力來回摩擦。" },
+      { t: "重複至潔淨", d: "重複至化妝棉乾淨為止，無需再以清水沖洗。" },
+    ],
+    caution:
+      "自然植物萃取因素，每批產品顏色可能略有差異。使用後若有任何不適或過敏現象請立即停止使用。2 歲以下嬰幼兒、高血壓、癲癇患者或孕婦使用前請諮詢專業人士。",
+    suits: "日常淡妝・容易不安定的膚況・希望減少摩擦",
+    origin: "澳洲",
+    faq: [
+      {
+        q: "免沖洗的卸妝水真的不用再洗臉嗎？",
+        a: "這款配方設計為免沖洗，卸完不需要以清水沖洗。若你當天上的是較厚的底妝或防水彩妝，仍建議接續一次溫和的水洗潔顏。",
+      },
+      {
+        q: "B5 和 B12 在卸妝水裡的作用是什麼？",
+        a: "B5（泛醇）提供保濕與舒緩，B12（氰鈷胺）在配方中作為調理成分。搭配的目的是讓清潔這一步不只是帶走彩妝，同時照顧到清潔後的肌膚狀態。",
+      },
+      {
+        q: "可以卸眼妝嗎？",
+        a: "可以。使用時將化妝棉輕敷於眼周稍作停留，待彩妝溶解後再輕柔擦拭，避免用力拉扯眼周肌膚。",
+      },
+    ],
+  },
+  {
+    slug: "deep-cleansing-liquid-250ml",
+    sku: "M8013",
+    name: "活氧深層卸妝液 250ml",
+    en: "Deep Cleansing Liquid",
+    size: "250ml",
+    price: 1390,
+    listPrice: 1980,
+    collection: "facial-care",
+    concerns: ["cleansing", "gentle"],
+    ingredients: [],
+    tagline: "親油親水雙效，卸得掉，也不把水分一起帶走。",
+    about:
+      "以親油與親水雙效配方配製的卸妝液。親油成分負責溶解並帶走油性污垢與彩妝，親水成分則在同一時間為肌膚保濕。植物萃取配方溫和，250ml 的容量讓每天卸妝這件事不必省。",
+    highlights: [
+      { t: "親油配方", d: "溶解並帶走油性污垢與彩妝，不留殘留感。" },
+      { t: "親水配方", d: "在卸除的同時保濕，卸完不緊繃。" },
+      { t: "植物萃取", d: "配方溫和，適合納入每日的清潔流程。" },
+      { t: "250ml 大容量", d: "每日使用也不需要斟酌用量。" },
+    ],
+    howToUse: [
+      { t: "取適量", d: "取適量於化妝棉或手掌，無需加水即可使用。" },
+      { t: "輕柔溶解", d: "以化妝棉輕輕按壓彩妝處，待溶解後輕柔擦拭。" },
+      { t: "全臉清潔", d: "均勻擦拭全臉，確保各部位的彩妝與污垢都被帶走。" },
+      { t: "以清水沖洗", d: "最後以溫水沖洗乾淨。" },
+    ],
+    note: "卸妝最傷肌膚的往往不是產品，而是反覆的摩擦。讓卸妝液先溶解，再輕輕帶走。",
+    suits: "日常彩妝・各種膚況・每日清潔",
+    faq: [
+      {
+        q: "親油親水雙效是什麼意思？",
+        a: "配方同時含有親油與親水兩類成分：親油的部分負責溶解彩妝與油性污垢，親水的部分則在清潔的同時保濕，讓卸完之後不會乾澀緊繃。",
+      },
+      {
+        q: "卸完需要再洗一次臉嗎？",
+        a: "這款使用後以溫水沖洗即可。若當天上的是濃妝或防水彩妝，建議接續一次溫和的水洗潔顏做雙重清潔。",
+      },
+    ],
   },
 
-  // ── 亮白 CLARITY ──────────────────────────────────────────
+  // ══ 頭皮髮絲 HAIR & SCALP ═════════════════════════════════
   {
-    slug: "clarity-concentrate",
-    collection: "clarity",
-    name: "亮白精粹",
-    en: "Clarity Concentrate",
+    slug: "scalp-vitality-serum-30ml",
+    sku: "M3030",
+    name: "豐盈養髮頭皮護理精華 30ml",
+    en: "Scalp Vitality Serum",
     size: "30ml",
     price: 1580,
-    tagline: "針對暗沉與不均，溫和而穩定地提亮。",
+    listPrice: 1980,
+    collection: "hair-scalp",
+    concerns: ["scalp"],
+    ingredients: [],
+    tagline: "頭皮的日常保養精華，從源頭開始照顧髮絲。",
     about:
-      "以維他命 C 衍生物與菸鹼醯胺配製的提亮精華。溫和對待肌膚，逐步改善暗沉與膚色不均，回復清透均亮的光澤。",
-    keyIngredients: [
-      { name: "維他命 C 衍生物", desc: "穩定的抗氧化形式，幫助提亮、對抗暗沉。" },
-      { name: "菸鹼醯胺", desc: "維他命 B₃ 的一種形式，強化屏障、改善不均。" }
+      "頭皮和臉部肌膚是同一張皮，一樣需要保養。這支高濃縮配方的頭皮精華為頭皮補給養分、照顧髮根所處的環境，同時撫平髮絲的毛躁，讓頭髮柔順好整理。洗髮後使用，無需沖洗。",
+    highlights: [
+      { t: "深度補給養分", d: "為頭皮提供保養成分，照顧髮根所處的環境。" },
+      { t: "高濃縮配方", d: "30ml 的容量，每次只需數滴。" },
+      { t: "撫平毛躁", d: "柔順髮絲，改善難整理的困擾。" },
+      { t: "免沖洗設計", d: "洗髮後直接使用，不增加額外的步驟。" },
     ],
-    howToUse: ["潔膚與調理後，取 2–3 滴。", "輕壓於全臉，重點加強暗沉部位。", "日間使用後請接續防曬。"],
-    suits: "暗沉・膚色不均・各種膚況",
-    fullIngredients: "Water, Glycerin, Ascorbyl Glucoside, Niacinamide, Butylene Glycol, Sodium Hyaluronate, Ferulic Acid, Tocopherol, 1,2-Hexanediol.",
-    tone: "light"
+    howToUse: [
+      { t: "洗髮後使用", d: "洗髮後以毛巾輕拍吸乾多餘水分，保持頭皮微濕的狀態。" },
+      { t: "分區點塗", d: "取數滴於指腹，均勻點塗於頭皮各區域。" },
+      { t: "按摩吸收", d: "以指腹輕柔按摩頭皮 2–3 分鐘，無需沖洗。" },
+    ],
+    note: "搭配「頭皮護理澎彈洗髮乳」一起使用，洗與護兩件事分開處理，效果比單用一支明確。",
+    suits: "頭皮日常保養・細軟髮・毛躁難整理",
+    faq: [
+      {
+        q: "頭皮精華要每天使用嗎？",
+        a: "一般建議每次洗髮後使用。頭皮保養跟臉部保養一樣，規律比單次的用量重要。",
+      },
+      {
+        q: "用完需要沖洗嗎？",
+        a: "不需要。這是免沖洗的配方，以指腹按摩至吸收即可。",
+      },
+      {
+        q: "頭皮容易出油也可以用嗎？",
+        a: "可以，但建議減量並集中於出油較少的區域。若頭皮出現持續泛紅、搔癢或脫屑，請停止使用並諮詢皮膚科醫師。",
+      },
+    ],
   },
   {
-    slug: "brightening-cream",
-    collection: "clarity",
-    name: "嫩白霜",
-    en: "Brightening Cream",
-    size: "50ml",
-    price: 1380,
-    tagline: "提亮與保濕兼具的日常乳霜。",
+    slug: "scalp-care-shampoo-550ml",
+    sku: "M3035",
+    name: "頭皮護理澎彈洗髮乳 550ml",
+    en: "Scalp Care Shampoo",
+    size: "550ml",
+    price: 1080,
+    listPrice: 1380,
+    collection: "hair-scalp",
+    concerns: ["scalp", "hair-repair"],
+    ingredients: ["caffeine"],
+    tagline: "咖啡因配製的洗髮乳，把髮根洗得蓬鬆起來。",
     about:
-      "綿潤好推的乳霜質地，在鎖水保濕的同時持續提亮，讓膚色看起來更勻淨清透。早晚皆宜，作為保養的最後封存步驟。",
-    keyIngredients: [
-      { name: "菸鹼醯胺", desc: "改善暗沉與不均，強化屏障。" },
-      { name: "角鯊烷", desc: "親膚的保濕油脂，柔軟不黏膩。" }
+      "以咖啡因搭配清潔配方製成的頭皮養護洗髮乳。徹底洗淨頭皮的多餘油脂與髒污，照顧油膩、扁塌與不清爽的困擾。高質感的香調讓洗髮這件事多了一點享受，洗後髮絲柔順、髮根蓬鬆。",
+    highlights: [
+      { t: "咖啡因配方", d: "頭皮養護型洗髮乳的常見成分，搭配按摩使用。" },
+      { t: "調理油脂", d: "洗淨頭皮多餘油脂，改善黏膩不清爽的感受。" },
+      { t: "髮根澎彈", d: "洗後髮根蓬鬆，改善扁塌的視覺感。" },
+      { t: "高質感香調", d: "讓每日洗髮成為一段值得期待的時間。" },
     ],
-    howToUse: ["精華吸收後，取適量於指尖。", "由內而外均勻推開於全臉。", "輕壓幫助吸收。"],
-    suits: "暗沉・乾燥・一般至混合性肌膚",
-    fullIngredients: "Water, Squalane, Glycerin, Niacinamide, Cetearyl Alcohol, Caprylic/Capric Triglyceride, Sodium Hyaluronate, Tocopherol, Phenoxyethanol.",
-    tone: "deep"
+    howToUse: [
+      { t: "濕潤頭髮", d: "以溫水充分濕潤頭皮與髮絲，幫助泡沫均勻分佈。" },
+      { t: "搓揉起泡", d: "取適量於掌心搓揉起泡後，均勻塗抹於頭皮。" },
+      { t: "按摩 1–2 分鐘", d: "以指腹輕柔按摩，讓成分有停留的時間。避免以指甲抓洗。" },
+      { t: "徹底沖洗", d: "以清水完全沖洗乾淨。" },
+    ],
+    note: "重點在按摩的時間，不是用量。搓出泡沫後讓它在頭皮停留一到兩分鐘再沖，差別會比你以為的明顯。",
+    suits: "頭皮出油・髮根扁塌・日常清潔",
+    faq: [
+      {
+        q: "洗髮乳的泡沫要停留多久？",
+        a: "建議搓出泡沫後於頭皮按摩一到兩分鐘再沖洗，讓成分有接觸的時間。以指腹按摩即可，避免用指甲抓洗造成頭皮受傷。",
+      },
+      {
+        q: "550ml 可以用多久？",
+        a: "以中長髮每日洗髮的用量估算，一般可使用約 3–4 個月。",
+      },
+      {
+        q: "頭皮容易出油，可以每天洗嗎？",
+        a: "可以，這款配方設計為日常使用。若頭皮出現持續乾澀、泛紅或搔癢，請減少頻率並諮詢皮膚科醫師。",
+      },
+    ],
   },
   {
-    slug: "plumping-cream",
-    collection: "clarity",
-    name: "活顏澎潤霜",
-    en: "Plumping Cream",
-    size: "50ml",
-    price: 1480,
-    tagline: "為疲態肌膚注入飽滿與光澤。",
+    slug: "moroccan-hair-oil-100ml",
+    sku: "M3031",
+    name: "摩洛哥香水護髮油 100ml",
+    en: "Moroccan Hair Oil",
+    size: "100ml",
+    price: 1250,
+    listPrice: 1580,
+    collection: "hair-scalp",
+    concerns: ["hair-repair"],
+    ingredients: [],
+    tagline: "六種天然油脂複方，柔順亮澤而不油膩。",
     about:
-      "豐潤的乳霜，以胜肽與玻尿酸支持肌膚的彈性與含水量，改善細紋與疲態，讓肌膚看起來更澎潤有生氣。",
-    keyIngredients: [
-      { name: "胜肽複合物", desc: "支持膠原環境，維持彈性與飽滿。" },
-      { name: "多分子玻尿酸", desc: "層層鎖水，回復澎潤觸感。" }
+      "融合 6 種珍貴天然油脂的護髮油，以獨家調配的比例讓質地保持輕盈。一抹之間撫平毛鱗片，改善染燙、日曬造成的乾燥與毛躁感，讓髮絲重新有光澤。上油之後自然亮澤，不會有沉重感。",
+    highlights: [
+      { t: "6 種天然油脂複方", d: "多種植物油脂搭配，照顧每一根髮絲。" },
+      { t: "撫平毛躁", d: "撫平毛鱗片，讓秀髮柔順好梳理。" },
+      { t: "照顧受損感", d: "針對染燙、日曬造成的乾燥與粗糙感。" },
+      { t: "輕盈不油膩", d: "輕盈的油質配方，自然亮澤不沉重。" },
     ],
-    howToUse: ["於精華之後取適量。", "均勻推開於全臉與頸部。", "以指腹輕壓提拉至吸收。"],
-    suits: "細紋老化・乾燥・各種膚況",
-    fullIngredients: "Water, Glycerin, Caprylic/Capric Triglyceride, Cetearyl Alcohol, Palmitoyl Tripeptide-1, Sodium Hyaluronate, Squalane, Shea Butter, Tocopherol, Phenoxyethanol.",
-    tone: "light"
+    howToUse: [
+      { t: "取 1–2 滴", d: "取 1–2 滴於掌心，搓熱使油脂均勻分佈。" },
+      { t: "由髮中至髮尾", d: "從髮中段開始塗抹至髮尾，避免直接塗抹於髮根。" },
+      { t: "梳順", d: "以手指或梳子輕輕梳順，感受柔滑亮澤的觸感。" },
+    ],
+    note: "特別推薦毛躁髮、乾燥髮與化學染燙後的髮質。細軟髮建議減量使用，避免髮根過重。",
+    suits: "毛躁髮・乾燥髮・染燙後髮質",
+    faq: [
+      {
+        q: "護髮油要用在乾髮還是濕髮？",
+        a: "兩者皆可。濕髮使用（毛巾吸乾多餘水分後）有助於吹整時的柔順度；乾髮使用則適合在出門前整理毛躁。",
+      },
+      {
+        q: "細軟髮會不會太重？",
+        a: "細軟髮建議從半滴至 1 滴開始，並集中於髮尾。避免塗抹到髮根，就不容易有沉重感。",
+      },
+    ],
   },
 
-  // ── 保濕 HYDRATION ────────────────────────────────────────
+  // ══ 沐浴香氛 BATH & FRAGRANCE ═════════════════════════════
   {
-    slug: "hyaluronic-hydra-serum",
-    collection: "hydration",
-    name: "玻尿酸保濕精華",
-    en: "Hyaluronic Hydra Serum",
-    size: "30ml",
-    price: 1280,
-    tagline: "以多分子玻尿酸重建水潤屏障。",
-    about:
-      "清透不黏膩的補水精華，以不同分子量的玻尿酸由內而外層層補水，重建肌膚的水潤屏障，作為各種膚況的日常保濕基底。",
-    keyIngredients: [
-      { name: "多分子玻尿酸", desc: "不同分子量層層鎖水，回復水潤。" },
-      { name: "海藻糖", desc: "幫助維持肌膚含水量，安定屏障。" }
-    ],
-    howToUse: ["潔膚與調理後，取 2–3 滴。", "輕壓於全臉至吸收。", "後續接續乳霜鎖水。"],
-    suits: "乾燥缺水・各種膚況・療程期間",
-    fullIngredients: "Water, Glycerin, Sodium Hyaluronate, Hydrolyzed Hyaluronic Acid, Trehalose, Butylene Glycol, Panthenol, Betaine, 1,2-Hexanediol.",
-    tone: "light"
-  },
-  {
-    slug: "glow-cleansing-water",
-    collection: "hydration",
-    name: "水光卸妝水",
-    en: "Glow Cleansing Water",
-    size: "250ml",
-    price: 780,
-    tagline: "溫和卸除，同時補水。",
-    about:
-      "免沖洗的卸妝水，溫和帶走彩妝與髒污，同時留下水潤不緊繃的觸感。質地清爽，適合作為一天的第一道清潔。",
-    keyIngredients: [
-      { name: "溫和界面活性劑", desc: "親膚配方，帶走髒污不帶走水分。" },
-      { name: "甘油", desc: "清潔後留住水分，避免緊繃。" }
-    ],
-    howToUse: ["以化妝棉沾濕。", "輕敷並擦拭臉部與眼唇。", "可接續水洗潔顏加強清潔。"],
-    suits: "各種膚況・日常淡妝",
-    fullIngredients: "Water, Glycerin, Poloxamer 184, PEG-6 Caprylic/Capric Glycerides, Panthenol, Sodium Hyaluronate, Disodium EDTA, 1,2-Hexanediol.",
-    tone: "deep"
-  },
-  {
-    slug: "deep-cleansing-oil",
-    collection: "hydration",
-    name: "深層卸妝液",
-    en: "Deep Cleansing Oil",
-    size: "150ml",
-    price: 880,
-    tagline: "溶解濃妝與防曬，沖洗後不緊繃。",
-    about:
-      "親膚的潔顏油，遇水乳化、徹底溶解濃妝、防曬與毛孔髒污。沖洗後留下柔軟潔淨、不緊繃的肌膚。",
-    keyIngredients: [
-      { name: "植物潔顏油", desc: "溫和溶解彩妝與防曬。" },
-      { name: "維他命 E", desc: "抗氧化，柔軟肌膚。" }
-    ],
-    howToUse: ["以乾手取適量按摩於乾臉。", "加少量水乳化後沖淨。", "接續水洗潔顏完成雙重清潔。"],
-    suits: "濃妝・防曬・各種膚況",
-    fullIngredients: "Caprylic/Capric Triglyceride, Ethylhexyl Palmitate, Sorbeth-30 Tetraoleate, Helianthus Annuus Seed Oil, Tocopherol, Parfum.",
-    tone: "light"
-  },
-
-  // ── 香氛 AROMATICS ────────────────────────────────────────
-  {
-    slug: "joy-eau-de-parfum",
-    collection: "aromatics",
-    name: "悅香水",
+    slug: "joy-eau-de-parfum-30ml",
+    sku: "M33",
+    name: "精油香水-悅香水 30ml",
     en: "Joy Eau de Parfum",
-    size: "50ml",
-    price: 2980,
-    tagline: "清新明亮的柑橘草本，像清晨的第一道光。",
+    size: "30ml",
+    price: 1080,
+    listPrice: 1380,
+    collection: "bath-fragrance",
+    concerns: [],
+    ingredients: [],
+    tagline: "清脆果香綠色調，層次豐富的送禮首選。",
     about:
-      "以佛手柑與橙花開場，中段是綠意草本，尾韻落在溫潤的白木質。明亮而從容，適合日常隨身。",
-    keyIngredients: [
-      { name: "佛手柑", desc: "明亮清新的柑橘前調。" },
-      { name: "橙花", desc: "柔和的花香中調。" },
-      { name: "白木質", desc: "溫潤悠長的尾韻。" }
+      "以精選天然精油為基底調配的香水。前調是清新的香根草，中調轉為甜蜜的柑橘，後調落在綠色羅勒的草本餘韻。清脆、果香、綠意盎然——是一款讓人心情變好的香氣，也是送禮時很少出錯的選擇。",
+    highlights: [
+      { t: "前調 — 清新香根草", d: "開場清爽，如晨露般清新怡人。" },
+      { t: "中調 — 甜蜜柑橘", d: "香氣的核心，果香甜蜜令人愉悅。" },
+      { t: "後調 — 綠色羅勒", d: "持久留香，草本綠意回甘耐聞。" },
     ],
-    howToUse: ["噴灑於耳後、手腕等脈搏處。", "避免直接接觸首飾與淺色衣物。"],
-    suits: "日常・各種場合",
-    fullIngredients: "Alcohol, Parfum (Fragrance), Aqua (Water), Limonene, Linalool, Citral, Geraniol.",
-    tone: "light"
+    howToUse: [
+      { t: "噴灑於脈搏處", d: "噴灑於耳後、手腕內側等脈搏處。" },
+      { t: "避免搓揉", d: "噴上後不要搓揉手腕，那會破壞香氣的層次。" },
+      { t: "避開飾品", d: "避免直接接觸首飾與淺色衣物。" },
+    ],
+    note: "精緻小巧的 30ml 瓶身，是生日、節慶或紀念日送給朋友與家人的好選擇。",
+    suits: "日常・送禮・喜歡清新果香調",
+    faq: [
+      {
+        q: "悅香水和赤香水要怎麼選？",
+        a: "悅香水是清新的果香綠色調，明亮、日常、接受度高，適合白天與送禮；赤香水是煙燻木質的中性調，沉穩有個性，適合夜晚與想留下記憶點的場合。",
+      },
+      {
+        q: "香氣可以持續多久？",
+        a: "以脈搏處噴灑計算，一般可維持數小時。實際的留香時間會因膚質、氣候與活動量而不同。",
+      },
+    ],
   },
   {
-    slug: "ember-eau-de-parfum",
-    collection: "aromatics",
-    name: "赤香水",
+    slug: "ember-eau-de-parfum-30ml",
+    sku: "M68",
+    name: "精油香水-赤香水 30ml",
     en: "Ember Eau de Parfum",
-    size: "50ml",
-    price: 2980,
-    tagline: "溫暖深沉的木質辛香，適合夜晚。",
+    size: "30ml",
+    price: 1080,
+    listPrice: 1380,
+    collection: "bath-fragrance",
+    concerns: [],
+    ingredients: [],
+    tagline: "煙燻木香中性調，簡約而留下深刻印記。",
     about:
-      "以胡椒與琥珀的辛香開場，中段為煙燻木質，尾韻是溫暖的香草與麝香。沉穩而有記憶點，適合夜晚與特別的場合。",
-    keyIngredients: [
-      { name: "粉紅胡椒", desc: "微辛而立體的前調。" },
-      { name: "煙燻木質", desc: "深沉的中段氣息。" },
-      { name: "琥珀香草", desc: "溫暖綿長的尾韻。" }
+      "以「簡單卻難忘」為調香哲學的一款香水。前調是溫暖的木質，中調轉入神秘的東方乳香，後調收在辛香的香根草。捨棄繁複的堆疊，讓煙燻木質成為最有力量的個性符號。無性別框架，男女皆宜。",
+    highlights: [
+      { t: "前調 — 木質", d: "沉穩開場，溫暖的木質氣息奠定基調。" },
+      { t: "中調 — 東方乳香", d: "神秘的東方韻味，豐厚而有個性。" },
+      { t: "後調 — 辛香香根草", d: "留下深刻印記，辛香餘韻持久耐聞。" },
     ],
-    howToUse: ["噴灑於耳後、手腕等脈搏處。", "避免直接接觸首飾與淺色衣物。"],
-    suits: "夜晚・特別場合",
-    fullIngredients: "Alcohol, Parfum (Fragrance), Aqua (Water), Coumarin, Linalool, Eugenol, Benzyl Benzoate.",
-    tone: "deep"
+    howToUse: [
+      { t: "噴灑於脈搏處", d: "噴灑於耳後、手腕內側等脈搏處。" },
+      { t: "避免搓揉", d: "噴上後不要搓揉手腕，那會破壞香氣的層次。" },
+      { t: "避開飾品", d: "避免直接接觸首飾與淺色衣物。" },
+    ],
+    note: "中性香水，突破性別界限。無論男性或女性，都能在這款煙燻木香中找到自己的詮釋。",
+    suits: "夜晚・特別場合・喜歡沉穩木質調",
+    faq: [
+      {
+        q: "赤香水男生可以用嗎？",
+        a: "可以。這是一款中性香調，煙燻木質的結構本身沒有性別的預設，男女皆適用。",
+      },
+      {
+        q: "適合什麼場合使用？",
+        a: "沉穩的木質調在夜晚與正式場合的表現特別好，也適合想在日常中留下記憶點的時候。",
+      },
+    ],
   },
   {
-    slug: "rose-body-wash",
-    collection: "aromatics",
-    name: "玫瑰沐浴露",
+    slug: "rose-body-wash-500ml",
+    sku: "M5160",
+    name: "經典玫瑰奢華香水沐浴露 500ml",
     en: "Rose Body Wash",
     size: "500ml",
-    price: 980,
-    tagline: "綿密泡沫，留下淡雅玫瑰餘香。",
+    price: 750,
+    listPrice: 1250,
+    collection: "bath-fragrance",
+    concerns: [],
+    ingredients: [],
+    tagline: "精緻玫瑰花香，把沐浴的十分鐘變成一件值得期待的事。",
     about:
-      "溫和的沐浴凝露，搓揉出綿密泡沫，溫柔潔淨身體肌膚，沖洗後不緊繃，留下若有似無的玫瑰餘香。",
-    keyIngredients: [
-      { name: "玫瑰萃取", desc: "安撫肌膚並留下淡雅香氣。" },
-      { name: "甘油", desc: "清潔同時保濕，避免乾澀。" }
+      "以精緻的玫瑰花瓣香氛為靈感打造的香水型沐浴露。打開瓶蓋的瞬間玫瑰芬芳散開，洗後肌膚絲般滑嫩，香氣留在身上伴隨一整日。500ml 的容量，讓這種奢華可以是日常。",
+    highlights: [
+      { t: "精緻玫瑰花瓣香調", d: "細膩的花香，為沐浴增添奢華的氛圍。" },
+      { t: "香水型留香配方", d: "洗後香氣持久縈繞，整日優雅。" },
+      { t: "絲般滑嫩觸感", d: "洗後肌膚柔嫩光滑，舒適不乾澀。" },
+      { t: "500ml 大容量", d: "一瓶用量充足，日常使用不需要省。" },
     ],
-    howToUse: ["沐浴時取適量。", "於濕潤肌膚搓出泡沫並按摩。", "以清水沖淨。"],
-    suits: "各種膚況・日常沐浴",
-    fullIngredients: "Water, Sodium Laureth Sulfate, Cocamidopropyl Betaine, Glycerin, Rosa Damascena Flower Extract, Parfum, Sodium Chloride, Citric Acid.",
-    tone: "deep"
+    howToUse: [
+      { t: "取適量搓出泡沫", d: "沐浴時取適量於手掌或沐浴球上，搓揉起泡。" },
+      { t: "全身按摩清潔", d: "以泡沫均勻塗抹全身，輕柔按摩。" },
+      { t: "沖洗乾淨", d: "以清水徹底沖洗，感受洗後的絲滑觸感與花香。" },
+    ],
+    note: "搭配一支香氛蠟燭或一段輕音樂，沐浴時光就成了屬於自己的安靜時刻。",
+    suits: "日常沐浴・喜歡玫瑰花香・各種膚況",
+    faq: [
+      {
+        q: "香水型沐浴露的香氣可以留多久？",
+        a: "洗後香氣一般可在身上停留數小時。若希望香氣更持久，可搭配同調性的身體保養或香水一起使用。",
+      },
+      {
+        q: "乾燥肌膚適合使用嗎？",
+        a: "適合日常清潔使用。若肌膚特別乾燥，建議沐浴後及時擦上身體乳液鎖住水分。",
+      },
+    ],
   },
-  {
-    slug: "nourishing-hair-oil",
-    collection: "aromatics",
-    name: "護髮油",
-    en: "Nourishing Hair Oil",
-    size: "100ml",
-    price: 880,
-    tagline: "撫平毛躁，留下光澤與香氣。",
-    about:
-      "輕盈不油膩的護髮油，撫平毛躁與分岔，為髮絲注入光澤，同時留下溫潤的草本木質香。乾濕髮皆可使用。",
-    keyIngredients: [
-      { name: "摩洛哥堅果油", desc: "滋養髮絲、撫平毛躁。" },
-      { name: "荷荷芭油", desc: "親膚輕盈，賦予光澤。" }
-    ],
-    howToUse: ["取 1–2 滴於掌心溫熱。", "由髮中塗抹至髮尾。", "避開頭皮。"],
-    suits: "毛躁・乾燥髮質",
-    fullIngredients: "Caprylic/Capric Triglyceride, Argania Spinosa Kernel Oil, Simmondsia Chinensis Seed Oil, Cyclopentasiloxane, Tocopherol, Parfum.",
-    tone: "light"
-  },
-
-  // ── 頭皮 SCALP ────────────────────────────────────────────
-  {
-    slug: "scalp-balancing-serum",
-    collection: "scalp",
-    name: "頭皮調理精華",
-    en: "Scalp Balancing Serum",
-    size: "100ml",
-    price: 1180,
-    tagline: "平衡並調理頭皮，照顧髮絲的源頭。",
-    about:
-      "清爽的頭皮精華，幫助平衡油脂、舒緩頭皮的緊繃與不適，為健康的髮絲打好基礎。可於洗髮後或日常使用。",
-    keyIngredients: [
-      { name: "菸鹼醯胺", desc: "舒緩並調理頭皮環境。" },
-      { name: "茶樹萃取", desc: "幫助平衡頭皮的清爽感。" }
-    ],
-    howToUse: ["分區滴於頭皮。", "以指腹輕輕按摩。", "無須沖洗。"],
-    suits: "頭皮出油・緊繃不適",
-    fullIngredients: "Water, Alcohol Denat., Niacinamide, Melaleuca Alternifolia Leaf Extract, Panthenol, Menthol, Sodium Hyaluronate, 1,2-Hexanediol.",
-    tone: "light"
-  },
-  {
-    slug: "scalp-care-shampoo",
-    collection: "scalp",
-    name: "頭皮洗髮乳",
-    en: "Scalp Care Shampoo",
-    size: "300ml",
-    price: 880,
-    tagline: "溫和潔淨，同時照顧頭皮。",
-    about:
-      "溫和的洗髮乳，徹底潔淨頭皮與髮絲的多餘油脂與髒污，同時舒緩調理頭皮，沖洗後清爽不緊繃。",
-    keyIngredients: [
-      { name: "胺基酸潔淨成分", desc: "溫和帶走油脂與髒污。" },
-      { name: "泛醇 B5", desc: "舒緩頭皮、柔順髮絲。" }
-    ],
-    howToUse: ["濕髮後取適量。", "於頭皮搓出泡沫並按摩。", "以清水徹底沖淨。"],
-    suits: "各種頭皮・日常清潔",
-    fullIngredients: "Water, Sodium Cocoyl Glutamate, Cocamidopropyl Betaine, Glycerin, Panthenol, Menthol, Citric Acid, Sodium Chloride, Parfum.",
-    tone: "deep"
-  }
 ];
 
+// ── 查詢工具 ────────────────────────────────────────────────
 export function getProduct(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);
-}
-export function productsByCollection(slug: string): Product[] {
-  return products.filter((p) => p.collection === slug);
 }
 export function getCollection(slug: string): Collection | undefined {
   return collections.find((c) => c.slug === slug);
 }
+export function getConcern(slug: string): Concern | undefined {
+  return concerns.find((c) => c.slug === slug);
+}
+export function getIngredientPage(slug: string): IngredientPage | undefined {
+  return ingredientPages.find((i) => i.slug === slug);
+}
+export function productsByCollection(slug: string): Product[] {
+  return products.filter((p) => p.collection === slug);
+}
+export function productsByConcern(slug: string): Product[] {
+  return products.filter((p) => p.concerns.includes(slug));
+}
+export function productsByIngredient(slug: string): Product[] {
+  return products.filter((p) => p.ingredients.includes(slug));
+}
+export function imagesFor(p: Product): string[] {
+  return productImages[p.sku] ?? [];
+}
+export function heroImage(p: Product): string | undefined {
+  return imagesFor(p)[0];
+}
 
+// ── 首頁用的既有資料（保留）──────────────────────────────
 export type Ingredient = { zh: string; en: string; d: string };
 
 export const ingredients: Ingredient[] = [
-  { zh: "PDRN", en: "REPAIR ─ 修復", d: "與人體 DNA 相似的修護分子，支持肌膚的自我修復。" },
-  { zh: "外泌體", en: "SIGNAL ─ 傳遞", d: "細胞間的訊息載體，將修護訊號精準傳遞。" },
-  { zh: "胜肽", en: "FIRM ─ 緊緻", d: "支持膠原環境，維持肌膚的彈性與飽滿。" },
-  { zh: "玻尿酸", en: "HYDRATE ─ 保濕", d: "多分子層層鎖水，回復水潤的屏障。" }
+  { zh: "PDRN", en: "REPAIR ─ 修護", d: "鮭魚來源的核苷酸類成分，近年最常被討論的修護型保養成分。" },
+  { zh: "玻尿酸", en: "HYDRATE ─ 保濕", d: "不同分子量層層留住水分，回復水潤的屏障。" },
+  { zh: "胜肽", en: "FIRM ─ 彈潤", d: "由胺基酸組成的短鏈分子，照顧肌膚的彈性與飽滿。" },
+  { zh: "泛醇 B5", en: "SOOTHE ─ 舒緩", d: "維他命 B5 的前驅物，同時保濕與舒緩的基本款成分。" },
+];
+
+export const iconRow = [
+  { zh: "臉部保養", en: "FACIAL CARE", icon: "restore", slug: "facial-care" },
+  { zh: "頭皮髮絲", en: "HAIR & SCALP", icon: "scalp", slug: "hair-scalp" },
+  { zh: "沐浴香氛", en: "BATH & FRAGRANCE", icon: "aromatics", slug: "bath-fragrance" },
+] as const;
+
+export const needs = [
+  { en: "BY CONCERN", zh: "依肌膚需求", items: concerns.map((c) => c.zh) },
+  { en: "BY CATEGORY", zh: "依商品品類", items: collections.map((c) => c.zh) },
+  { en: "BY INGREDIENT", zh: "依成分", items: ingredientPages.map((i) => i.zh) },
+];
+
+export const pillars = [
+  { k: "Ma", t: "嚴謹的選擇", d: "以實證為基礎，選擇真正有效的成分。" },
+  { k: "Po", t: "溫和的守護", d: "有效之餘，也對肌膚溫柔以待。" },
+  { k: "Roo", t: "從容的日常", d: "讓保養，回到一種安靜的日常儀式。" },
 ];
 
 export type Read = { cat: string; t: string; time: string };
 
 export const reads: Read[] = [
   { cat: "成分學", t: "PDRN 是什麼，它為肌膚做了什麼", time: "3 分鐘" },
-  { cat: "成分學", t: "外泌體與胜肽，差在哪裡", time: "4 分鐘" },
-  { cat: "保養指南", t: "進行醫美療程期間，如何照顧肌膚", time: "4 分鐘" },
-  { cat: "保養指南", t: "日常的三步驟：清潔・調理・修復", time: "3 分鐘" },
+  { cat: "成分學", t: "玻尿酸的大分子與小分子，差在哪裡", time: "4 分鐘" },
+  { cat: "保養指南", t: "卸妝的三個常見錯誤", time: "4 分鐘" },
+  { cat: "保養指南", t: "日常的三步驟：清潔・保濕・鎖水", time: "3 分鐘" },
   { cat: "生活文化", t: "關於從容──保養可以是一種日常儀式", time: "3 分鐘" },
-  { cat: "設計", t: "我們如何思考一支配方的質地與香氣", time: "5 分鐘" }
-];
-
-export const needs = [
-  { en: "BY CONCERN", zh: "依肌膚困擾", items: ["暗沉", "乾燥缺水", "膚色不均", "泛紅敏感", "細紋老化"] },
-  { en: "BY SKIN TYPE", zh: "依膚質", items: ["一般", "乾性", "油性", "混合性", "敏感性"] },
-  { en: "BY INGREDIENT", zh: "依成分", items: ["PDRN", "外泌體", "胜肽", "玻尿酸", "維他命 C"] }
-];
-
-export const iconRow = [
-  { zh: "修復", en: "RESTORE", icon: "restore", slug: "restore" },
-  { zh: "亮白", en: "CLARITY", icon: "clarity", slug: "clarity" },
-  { zh: "保濕", en: "HYDRATION", icon: "hydration", slug: "hydration" },
-  { zh: "香氛", en: "AROMATICS", icon: "aromatics", slug: "aromatics" },
-  { zh: "頭皮", en: "SCALP", icon: "scalp", slug: "scalp" }
-] as const;
-
-export const pillars = [
-  { k: "Ma", t: "醫學的嚴謹", d: "以實證為基礎，選擇真正有效的成分。" },
-  { k: "Po", t: "溫和的守護", d: "有效之餘，也對肌膚溫柔以待。" },
-  { k: "Roo", t: "從容的日常", d: "讓保養，回到一種安靜的日常儀式。" }
+  { cat: "設計", t: "我們如何思考一支配方的質地與香氣", time: "5 分鐘" },
 ];
 
 export const alliance = [
@@ -390,19 +893,19 @@ export const alliance = [
     zh: "直播分潤",
     d: "為直播與團購設計的階梯式分潤，銷量越高、回饋越高。提供商品實拍、成分話術與直播素材，開播即用。",
     items: ["階梯式分潤・即時對帳", "直播素材包・成分話術", "專屬窗口協助開播"],
-    cta: "申請直播合作"
+    cta: "申請直播合作",
   },
   {
     no: "02 ─ DISTRIBUTION",
     zh: "經銷",
     d: "提供經銷夥伴專屬批發價與限定組合，毛利空間清晰透明，並附上完整的產品與成分培訓。",
     items: ["經銷批發價・限定組合", "成分與保養知識培訓", "行銷與通路支援"],
-    cta: "洽詢經銷合作"
-  }
+    cta: "洽詢經銷合作",
+  },
 ];
 
+// 門市體驗已於 2026-08-05 移除：台北／台中／高雄門市尚未成立，寫在官網屬廣告不實。
 export const services = [
-  { t: "線上膚況諮詢", d: "回答幾個關於膚況的問題，由我們為你推薦合適的配方與順序。", cta: "開始諮詢" },
-  { t: "門市體驗", d: "親手感受質地與香氣，並由專人協助你挑選。台北・台中・高雄。", cta: "查看門市" },
-  { t: "會員禮遇", d: "首購禮、回購點數與會員專屬活動，讓每一次保養更值得。", cta: "加入會員" }
+  { t: "線上膚況諮詢", d: "回答幾個關於膚況的問題，MAPOROO 為你推薦合適的配方與順序。", cta: "開始諮詢" },
+  { t: "會員禮遇", d: "首購禮、回購點數與會員專屬活動。", cta: "加入會員" },
 ];

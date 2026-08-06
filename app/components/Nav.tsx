@@ -1,16 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import CartLink from "./CartLink";
 
 const LEFT = [
   { href: "/products", label: "商品" },
-  { href: "/#collections", label: "系列" },
-  { href: "/#needs", label: "依需求" }
+  { href: "/collections/facial-care", label: "臉部保養" },
+  { href: "/collections/hair-scalp", label: "頭皮髮絲" }
 ];
 const RIGHT = [
-  { href: "/#ingredients", label: "成分" },
-  { href: "/#story", label: "關於" },
-  { href: "/#alliance", label: "合作聯盟" }
+  { href: "/collections/bath-fragrance", label: "沐浴香氛" },
+  { href: "/ingredients/pdrn", label: "成分" },
+  { href: "/#story", label: "關於" }
 ];
 const ALL = [...LEFT, ...RIGHT];
 
@@ -37,8 +38,10 @@ export default function Nav() {
         </nav>
 
         {/* Brand — logo gif + wordmark, centred on desktop */}
+        {/* Home, not "#top" — the site has 30+ subpages now, and an anchor
+            would leave the visitor stranded on whatever page they're on. */}
         <a
-          href="#top"
+          href="/"
           onClick={() => setOpen(false)}
           className="flex items-center gap-2.5 min-[980px]:absolute min-[980px]:left-1/2 min-[980px]:-translate-x-1/2"
         >
@@ -53,11 +56,17 @@ export default function Nav() {
         </a>
 
         {/* Right nav (desktop) */}
-        <nav className="hidden min-[980px]:flex gap-[30px] text-[.95rem] font-bold tracking-[.08em] text-[var(--soft)] flex-1 justify-end">
+        <nav className="hidden min-[980px]:flex gap-[30px] text-[.95rem] font-bold tracking-[.08em] text-[var(--soft)] flex-1 justify-end items-center">
           {RIGHT.map((l) => (
             <a key={l.href} href={l.href} className="hover:text-[var(--ink)] transition-colors">{l.label}</a>
           ))}
+          <span className="text-[var(--ink)]"><CartLink /></span>
         </nav>
+
+        {/* Mobile: bag stays reachable without opening the drawer */}
+        <span className="min-[980px]:hidden ml-auto mr-3 text-[.9rem] font-bold text-[var(--soft)]">
+          <CartLink />
+        </span>
 
         {/* Mobile hamburger */}
         <button

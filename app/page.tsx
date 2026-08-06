@@ -1,10 +1,13 @@
 import Link from "next/link";
+import Image from "next/image";
 import Hero from "./components/Hero";
 import Reveal from "./components/Reveal";
-import Newsletter from "./components/Newsletter";
 import {
   collections,
   productsByCollection,
+  getProduct,
+  heroImage,
+  products,
   ingredients,
   reads,
   needs,
@@ -13,6 +16,11 @@ import {
   alliance,
   services
 } from "./lib/catalog";
+
+// The hero product on the homepage. Falls back to the first item in the
+// catalogue so a slug change can never blank out this section.
+const featured = getProduct("pdrn-hyaluronic-serum-200ml") ?? products[0];
+const featuredImg = heroImage(featured);
 
 const icons: Record<string, React.ReactNode> = {
   restore: (<><path d="M21 12a9 9 0 1 1-2.6-6.3" /><path d="M21 4v4h-4" /></>),
@@ -30,14 +38,14 @@ export default function Home() {
       {/* ICON ROW */}
       <section style={{ padding: "62px 0", borderBottom: "1px solid var(--line)" }}>
         <div className="wrap">
-          <p className="eyebrow rv" style={{ textAlign: "center", display: "block" }}>五個系列</p>
-          <div className="icons rv" style={{ marginTop: 34 }}>
+          <p className="eyebrow rv" style={{ textAlign: "center", display: "block" }}>三個品類</p>
+          <div className="icons rv" style={{ marginTop: 34, gridTemplateColumns: `repeat(${iconRow.length}, 1fr)` }}>
             {iconRow.map((it) => (
-              <a key={it.zh} className="icon-item" href="#collections">
+              <Link key={it.zh} className="icon-item" href={`/collections/${it.slug}`}>
                 <svg viewBox="0 0 24 24">{icons[it.icon]}</svg>
                 <span className="zh">{it.zh}</span>
                 <span className="en">{it.en}</span>
-              </a>
+              </Link>
             ))}
           </div>
         </div>
@@ -46,12 +54,12 @@ export default function Home() {
       {/* BRAND STATEMENT */}
       <section className="pad-lg">
         <div className="wrap-narrow">
-          <p className="eyebrow rv">我們相信</p>
+          <p className="eyebrow rv">MAPOROO 相信</p>
           <h2 className="rv" style={{ marginTop: 22 }}>有效與舒適，可以並存。</h2>
           <p className="lead rv" style={{ marginTop: 26, maxWidth: 700 }}>
-            MAPOROO 在科學實證的基礎上，選擇可信的成分——PDRN、外泌體、胜肽與玻尿酸——配製兼具功效與感官的保養。我們相信，有效的成分，值得被溫和地對待。
+            MAPOROO 在實證的基礎上，選擇可信的成分——PDRN、玻尿酸、胜肽與泛醇 B5——於澳洲配製兼具功效與感官的保養。有效的成分，值得溫和的對待。
           </p>
-          <div className="rv" style={{ marginTop: 30 }}><a className="lnk-dark" href="#story">我們的故事</a></div>
+          <div className="rv" style={{ marginTop: 30 }}><a className="lnk-dark" href="#story">MAPOROO 的故事</a></div>
         </div>
       </section>
 
@@ -59,26 +67,34 @@ export default function Home() {
       <section className="pad" style={{ background: "var(--paper2)" }}>
         <div className="wrap">
           <div className="grid g2" style={{ alignItems: "center", gap: 52 }}>
-            <div className="rv ph" style={{ aspectRatio: "4/5" }}><span>PDRN SERUM</span></div>
+            <Link href={`/products/${featured.slug}`} className="rv ph" style={{ aspectRatio: "4/5", position: "relative", overflow: "hidden" }}>
+              {featuredImg ? (
+                <Image src={featuredImg} alt={featured.name} fill sizes="(max-width: 680px) 100vw, 50vw" style={{ objectFit: "cover" }} />
+              ) : (
+                <span>{featured.en.toUpperCase()}</span>
+              )}
+            </Link>
             <div className="rv">
               <p className="eyebrow">精選配方</p>
-              <h2 style={{ marginTop: 16 }}>PDRN 修復精華液</h2>
-              <p className="en" style={{ marginTop: 8 }}>PDRN SERUM ─ 30ml</p>
+              <h2 style={{ marginTop: 16, fontSize: "clamp(26px,3.6vw,40px)" }}>{featured.name}</h2>
+              <p className="en" style={{ marginTop: 8 }}>{featured.en} ─ {featured.size}</p>
               <p style={{ marginTop: 22, color: "var(--soft)", fontSize: "1.08rem", lineHeight: 2, maxWidth: 460 }}>
-                以 PDRN 與多分子玻尿酸配製，層層滲透、安撫並支持肌膚的自我修復。質地清盈，適合各種膚況每日使用，亦適合療程期間。
+                {featured.about}
               </p>
               <div style={{ marginTop: 26, fontSize: "1rem", color: "var(--soft)", fontWeight: 500 }}>
-                <p style={{ padding: "9px 0", borderTop: "1px solid var(--line)" }}><span className="en" style={{ display: "inline-block", width: 92 }}>成分</span>PDRN・多分子玻尿酸</p>
-                <p style={{ padding: "9px 0", borderTop: "1px solid var(--line)" }}><span className="en" style={{ display: "inline-block", width: 92 }}>適合</span>各種膚況・療程期間</p>
-                <p style={{ padding: "9px 0", borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)" }}><span className="en" style={{ display: "inline-block", width: 92 }}>容量</span>30ml　NT$ 1,680</p>
+                <p style={{ padding: "9px 0", borderTop: "1px solid var(--line)" }}><span className="en" style={{ display: "inline-block", width: 92 }}>適合</span>{featured.suits}</p>
+                {featured.origin && (
+                  <p style={{ padding: "9px 0", borderTop: "1px solid var(--line)" }}><span className="en" style={{ display: "inline-block", width: 92 }}>產地</span>{featured.origin}</p>
+                )}
+                <p style={{ padding: "9px 0", borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)" }}><span className="en" style={{ display: "inline-block", width: 92 }}>容量</span>{featured.size}　NT$ {featured.price.toLocaleString()}</p>
               </div>
               <p className="en" style={{ marginTop: 26 }}>如何使用 ─ HOW TO USE</p>
               <ol className="steps" style={{ marginTop: 14 }}>
-                <li>潔膚與調理後，取 2–3 滴於掌心。</li>
-                <li>輕壓於臉部，由內而外輕拍至吸收。</li>
-                <li>後續可疊加保濕乳霜，鎖住水分。</li>
+                {featured.howToUse.map((s) => (
+                  <li key={s.t}><strong style={{ color: "var(--ink)", fontWeight: 700 }}>{s.t}</strong><br />{s.d}</li>
+                ))}
               </ol>
-              <div style={{ marginTop: 26 }}><Link className="lnk-dark" href="/products/pdrn-repair-serum">查看商品詳情</Link></div>
+              <div style={{ marginTop: 26 }}><Link className="lnk-dark" href={`/products/${featured.slug}`}>查看商品詳情</Link></div>
             </div>
           </div>
         </div>
@@ -88,9 +104,9 @@ export default function Home() {
       <section id="collections" className="pad-lg">
         <div className="wrap">
           <p className="eyebrow rv">COLLECTIONS</p>
-          <h2 className="rv" style={{ marginTop: 16, marginBottom: 10 }}>五個系列</h2>
+          <h2 className="rv" style={{ marginTop: 16, marginBottom: 10 }}>三個品類</h2>
           <p className="lead rv" style={{ marginBottom: 32 }}>
-            醫美，是我們對功效的標準——美白、保濕、修復。適合各種膚況，也適合正在進行療程的你。
+            從臉、到頭皮、到身體與香氣——MAPOROO 以 PDRN、玻尿酸、胜肽與泛醇 B5 等成分於澳洲配製，適合各種膚況的日常使用。
           </p>
           {collections.map((c) => (
             <div key={c.zh} className="rv" style={{ padding: "32px 0", borderTop: "1px solid var(--line)" }}>
@@ -131,9 +147,9 @@ export default function Home() {
       <section id="ingredients" className="pad-lg">
         <div className="wrap">
           <p className="eyebrow rv">配方哲學</p>
-          <h2 className="rv" style={{ marginTop: 16, marginBottom: 10 }}>我們選擇的成分</h2>
+          <h2 className="rv" style={{ marginTop: 16, marginBottom: 10 }}>MAPOROO 選擇的成分</h2>
           <p className="lead rv" style={{ marginBottom: 22 }}>
-            每一支配方，都建立在科學實證之上。我們相信，成分的可信，是照顧的前提。
+            每一支配方，都建立在科學實證之上。成分的可信，是照顧的前提。
           </p>
           <div className="grid g4">
             {ingredients.map((g) => (
@@ -169,10 +185,10 @@ export default function Home() {
       {/* STORY */}
       <section id="story" className="pad-lg">
         <div className="wrap-narrow">
-          <p className="eyebrow rv">我們的故事</p>
+          <p className="eyebrow rv">MAPOROO 的故事</p>
           <h2 className="rv" style={{ marginTop: 18 }}>關於 MAPOROO</h2>
           <p className="lead rv" style={{ marginTop: 24 }}>
-            MAPOROO 相信，肌膚的照顧不必在功效與舒適之間二選一。我們在科學實證的基礎上選擇可信的成分，配製出有效、溫和、且令人安心的日常保養——適合每一種膚況，也陪伴每一次想對自己更好一點的時刻。
+            MAPOROO 相信，有效與舒適可以並存。在科學實證的基礎上選擇可信的成分，配製出有效、溫和、令人安心的日常保養。適合每一種膚況，陪你每一次想照顧自己的時刻。
           </p>
           <div className="rv" style={{ marginTop: 38, display: "grid", gap: 28 }}>
             {pillars.map((p) => (
@@ -192,7 +208,7 @@ export default function Home() {
           <p className="eyebrow rv" style={{ color: "#B9B3A4" }}>合作聯盟 ─ PARTNERSHIP</p>
           <h2 className="rv" style={{ marginTop: 18, color: "#F5F1E8" }}>一起把好的配方，分享出去</h2>
           <p className="lead rv" style={{ marginTop: 24, color: "rgba(237,232,221,.78)", maxWidth: 640 }}>
-            MAPOROO 歡迎直播主、團購主與通路夥伴加入。我們提供清楚的分潤機制與完整的品牌素材，讓合作簡單、透明。
+            MAPOROO 歡迎直播主、團購主與通路夥伴加入。分潤機制清楚、品牌素材完整，合作簡單透明。
           </p>
           <div className="grid g2 rv" style={{ marginTop: 48, gap: 24 }}>
             {alliance.map((a) => (
@@ -214,8 +230,8 @@ export default function Home() {
       <section id="service" className="pad" style={{ background: "var(--paper2)" }}>
         <div className="wrap">
           <p className="eyebrow rv">官網服務</p>
-          <h2 className="rv" style={{ marginTop: 16, marginBottom: 46 }}>我們在你身邊</h2>
-          <div className="grid g3">
+          <h2 className="rv" style={{ marginTop: 16, marginBottom: 46 }}>MAPOROO 在你身邊</h2>
+          <div className="grid g2">
             {services.map((s) => (
               <div key={s.t} className="rv">
                 <h3 style={{ fontSize: "1.5rem" }}>{s.t}</h3>
@@ -237,7 +253,6 @@ export default function Home() {
         </div>
       </section>
 
-      <Newsletter />
       <Reveal />
     </>
   );
