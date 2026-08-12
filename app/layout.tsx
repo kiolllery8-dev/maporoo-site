@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Nav from "./components/Nav";
+import StorefrontChrome from "./components/StorefrontChrome";
 import Footer from "./components/Footer";
 import { CartProvider } from "./lib/cart";
 import { OrganizationLd, WebSiteLd } from "./components/JsonLd";
@@ -55,10 +56,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <OrganizationLd />
         <WebSiteLd />
         <CartProvider>
-          <Nav />
+          <StorefrontChrome>
+            <Nav />
+          </StorefrontChrome>
           {/* Film hero bleeds under the fixed 64px header; sections flow below. */}
           <main>{children}</main>
-          <Footer />
+          <StorefrontChrome>
+            <Footer />
+          </StorefrontChrome>
         </CartProvider>
       </body>
     </html>

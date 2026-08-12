@@ -11,9 +11,13 @@ const LEFT = [
 const RIGHT = [
   { href: "/collections/bath-fragrance", label: "沐浴香氛" },
   { href: "/ingredients/pdrn", label: "成分" },
+  { href: "/read", label: "閱讀" },
   { href: "/#story", label: "關於" }
 ];
-const ALL = [...LEFT, ...RIGHT];
+// 會員入口。登入與否的判斷在 /account 裡做（未登入會導去登入頁），
+// 所以 Nav 不需要知道登入狀態，也就不必為了這顆連結變成動態渲染。
+const ACCOUNT = { href: "/account", label: "會員" };
+const ALL = [...LEFT, ...RIGHT, ACCOUNT];
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
@@ -60,6 +64,7 @@ export default function Nav() {
           {RIGHT.map((l) => (
             <a key={l.href} href={l.href} className="hover:text-[var(--ink)] transition-colors">{l.label}</a>
           ))}
+          <a href={ACCOUNT.href} className="hover:text-[var(--ink)] transition-colors">{ACCOUNT.label}</a>
           <span className="text-[var(--ink)]"><CartLink /></span>
         </nav>
 

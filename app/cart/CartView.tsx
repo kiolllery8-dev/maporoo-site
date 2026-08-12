@@ -4,14 +4,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "../lib/cart";
 import { getProduct, heroImage } from "../lib/catalog";
-
-const FREE_SHIPPING_OVER = 1500;
-const SHIPPING_FEE = 80;
+import { FREE_SHIPPING_OVER, shippingFor } from "../lib/shipping";
 
 export default function CartView() {
   const { lines, subtotal, count, ready, setQty, remove } = useCart();
 
-  const shipping = subtotal === 0 || subtotal >= FREE_SHIPPING_OVER ? 0 : SHIPPING_FEE;
+  // 運費規則跟伺服器端共用同一份，避免畫面與實際收費對不起來。
+  const shipping = shippingFor(subtotal);
   const total = subtotal + shipping;
 
   const qtyBtn: React.CSSProperties = {
@@ -120,31 +119,29 @@ export default function CartView() {
               </p>
             )}
 
-            {/* Checkout is intentionally disabled: no payment gateway is
-                connected yet. Wiring 綠界／藍新 here needs merchant credentials
-                and an order backend — see README. */}
-            <button
-              type="button"
-              disabled
-              title="結帳功能尚未開通"
+            {/* 結帳會產生真實訂單。線上刷卡尚未接上——付款方式目前是匯款與
+                貨到付款，由後台人工對帳；金流接口見 app/lib/payment.ts。 */}
+            <Link
+              href="/checkout"
               style={{
                 marginTop: 24,
+                display: "block",
                 width: "100%",
-                background: "var(--mute)",
-                color: "#fff",
+                background: "var(--ink)",
+                color: "var(--paper)",
                 border: "none",
                 padding: "16px 20px",
                 fontSize: ".95rem",
                 fontWeight: 700,
                 letterSpacing: ".12em",
-                cursor: "not-allowed",
                 fontFamily: "inherit",
+                textAlign: "center",
               }}
             >
               前往結帳
-            </button>
+            </Link>
             <p style={{ marginTop: 12, fontSize: ".85rem", color: "var(--mute)", lineHeight: 1.85 }}>
-              線上結帳尚未開通。目前可先將商品加入購物袋確認品項與金額，我們正在串接金流。
+              目前提供匯款與貨到付款，線上刷卡還在準備中。
             </p>
 
             <div style={{ marginTop: 22, paddingTop: 18, borderTop: "1px solid var(--line)" }}>

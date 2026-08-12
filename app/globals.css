@@ -108,3 +108,40 @@ ul.clean li { padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 
   .rv { opacity: 1; transform: none; transition: none; }
   .film-bg, .icon-item svg { animation: none !important; }
 }
+
+/* ── 文章內文（/read 與後台預覽共用）─────────────────────── */
+.article-body { color: var(--soft); line-height: 2; font-size: 1.05rem; }
+.article-body h2 {
+  font-size: clamp(21px, 2.6vw, 28px);
+  font-weight: 900;
+  color: var(--ink);
+  line-height: 1.45;
+  margin: 44px 0 14px;
+}
+.article-body h3 {
+  font-size: clamp(17px, 2vw, 20px);
+  font-weight: 700;
+  color: var(--ink);
+  margin: 30px 0 10px;
+}
+.article-body p { margin: 0 0 18px; }
+.article-body ul, .article-body ol { margin: 0 0 20px; padding-left: 1.35em; }
+.article-body li { margin-bottom: 9px; }
+.article-body ul li { list-style: disc; }
+.article-body ol li { list-style: decimal; }
+.article-body strong { color: var(--ink); font-weight: 700; }
+.article-body a { color: var(--ink); border-bottom: 1px solid var(--line); }
+.article-body a:hover { border-color: var(--ink); }
+.article-body code {
+  background: var(--paper2);
+  padding: 2px 6px;
+  font-size: .93em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.article-body blockquote {
+  margin: 24px 0;
+  padding: 4px 0 4px 20px;
+  border-left: 2px solid var(--line);
+  color: var(--mute);
+}
+.article-body blockquote p { margin: 0; }

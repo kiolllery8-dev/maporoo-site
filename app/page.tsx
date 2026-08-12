@@ -236,7 +236,7 @@ export default function Home() {
               <div key={s.t} className="rv">
                 <h3 style={{ fontSize: "1.5rem" }}>{s.t}</h3>
                 <p style={{ color: "var(--soft)", fontSize: "1.02rem", marginTop: 12, lineHeight: 1.95 }}>{s.d}</p>
-                <div style={{ marginTop: 16 }}><a className="lnk-dark" href="#service">{s.cta}</a></div>
+                <div style={{ marginTop: 16 }}><Link className="lnk-dark" href={s.href}>{s.cta}</Link></div>
               </div>
             ))}
           </div>

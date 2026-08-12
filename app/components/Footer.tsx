@@ -10,6 +10,9 @@ export default function Footer() {
           以實證成分於澳洲配製，有效而從容的日常保養。適合各種膚況。
         </p>
 
+        {/* 五欄：品類、需求、成分、會員與訂單、合作。
+            會員那一欄是 2026-08-13 補的——改版時把會員入口整個弄丟了，
+            頁面都在但客人點不到。 */}
         <div className="grid g4" style={{ marginTop: 42, gap: 34 }}>
           <div className="ftcol">
             <p className="t">品類</p>
@@ -29,21 +32,27 @@ export default function Footer() {
             {ingredientPages.map((i) => (
               <Link key={i.slug} href={`/ingredients/${i.slug}`}>{i.zh}</Link>
             ))}
+            <Link href="/read">閱讀</Link>
           </div>
           <div className="ftcol">
-            <p className="t">合作與服務</p>
+            <p className="t">會員與訂單</p>
+            <Link href="/account">會員中心</Link>
+            <Link href="/account/register">加入會員</Link>
+            <Link href="/account">訂單查詢</Link>
+            <Link href="/cart">購物袋</Link>
+          </div>
+          <div className="ftcol">
+            <p className="t">合作</p>
             <a href="/#alliance">直播分潤</a>
             <a href="/#alliance">經銷合作</a>
-            <a href="/#service">膚況諮詢</a>
-            <Link href="/cart">購物袋</Link>
+            <a href="/#needs">依肌膚需求</a>
           </div>
         </div>
 
         <div className="rule" style={{ margin: "42px 0 24px" }} />
-        <p style={{ fontSize: ".78rem", letterSpacing: ".08em", color: "var(--mute)", fontWeight: 500, lineHeight: 1.9, maxWidth: 760 }}>
-          MAPOROO 商品為化粧品，作用於肌膚角質層，非藥品亦非醫療器材，不具療效。個別膚況問題請諮詢皮膚科醫師。
-        </p>
-        <p style={{ marginTop: 12, fontSize: ".78rem", letterSpacing: ".14em", color: "var(--mute)", fontWeight: 500 }}>
+        {/* 化粧品免責聲明已於 2026-08-13 依老闆指示移除。
+            風險評估與後續建議記錄在 000_Agent/knowledge/compliance-redlines.md 第五節第 9 項。 */}
+        <p style={{ fontSize: ".78rem", letterSpacing: ".14em", color: "var(--mute)", fontWeight: 500 }}>
           © 2026 MAPOROO
         </p>
       </div>
