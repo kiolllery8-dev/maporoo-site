@@ -15,7 +15,9 @@ import {
   hashPassword,
   isValidEmail,
   normalizeEmail,
+  normalizeUsername,
   passwordProblem,
+  usernameProblem,
 } from "../../../lib/auth";
 import { isRole } from "../../../lib/permissions";
 
@@ -37,32 +39,93 @@ function otherActiveOwners(excludeId: number): number {
 export async function createAdminAction(form: FormData) {
   await requireAdmin("staff.manage");
 
+  const username = normalizeUsername(field(form, "username"));
   const email = normalizeEmail(field(form, "email"));
   const name = field(form, "name");
   const role = field(form, "role");
   const password = String(form.get("password") ?? "");
 
-  if (!email || !password) redirect("/admin/staff?e=missing");
-  if (!isValidEmail(email)) redirect("/admin/staff?e=email");
+  if (!username || !password) redirect("/admin/staff?e=missing");
   if (!isRole(role)) redirect("/admin/staff?e=role");
+
+  const nameProblem = usernameProblem(username);
+  if (nameProblem) redirect(`/admin/staff?m=${encodeURIComponent(nameProblem)}`);
+
+  // Email 是選填的聯絡方式，填了才檢查格式。
+  if (email && !isValidEmail(email)) redirect("/admin/staff?e=email");
 
   const problem = passwordProblem(password);
   if (problem) redirect(`/admin/staff?m=${encodeURIComponent(problem)}`);
 
-  if (get<{ id: number }>(`SELECT id FROM admins WHERE email = ?`, email)) {
+  if (get<{ id: number }>(`SELECT id FROM admins WHERE username = ?`, username)) {
+    redirect("/admin/staff?e=taken");
+  }
+
+  // email 欄位有 UNIQUE 限制而且 NOT NULL，沒填的話塞一個不會相撞的佔位值。
+  const contactEmail = email || `${username}@no-email.local`;
+  if (get<{ id: number }>(`SELECT id FROM admins WHERE email = ?`, contactEmail)) {
     redirect("/admin/staff?e=taken");
   }
 
   run(
-    `INSERT INTO admins (email, password_hash, name, role, must_change_password)
-     VALUES (?, ?, ?, ?, 1)`,
-    email,
+    `INSERT INTO admins (username, email, password_hash, name, role, must_change_password)
+     VALUES (?, ?, ?, ?, ?, 1)`,
+    username,
+    contactEmail,
     hashPassword(password),
     name,
     role
   );
 
   redirect("/admin/staff?ok=created");
+}
+
+/**
+ * 修改既有管理者的帳號、顯示名稱與聯絡信箱。
+ * 開站自動建立的帳號叫 admin，沒有這個動作的話就永遠改不掉。
+ */
+export async function editAdminAction(form: FormData) {
+  await requireAdmin("staff.manage");
+
+  const id = Number(form.get("id"));
+  if (!Number.isInteger(id) || id <= 0) redirect("/admin/staff?e=notfound");
+  if (!get<{ id: number }>(`SELECT id FROM admins WHERE id = ?`, id)) {
+    redirect("/admin/staff?e=notfound");
+  }
+
+  const username = normalizeUsername(field(form, "username"));
+  const name = field(form, "name");
+  const email = normalizeEmail(field(form, "email"));
+
+  const nameProblem = usernameProblem(username);
+  if (nameProblem) redirect(`/admin/staff?m=${encodeURIComponent(nameProblem)}`);
+  if (email && !isValidEmail(email)) redirect("/admin/staff?e=email");
+
+  // 帳號與信箱都不能撞到別人。
+  const clash = get<{ id: number }>(
+    `SELECT id FROM admins WHERE username = ? AND id <> ?`,
+    username,
+    id
+  );
+  if (clash) redirect("/admin/staff?e=taken");
+
+  const contactEmail = email || `${username}@no-email.local`;
+  const emailClash = get<{ id: number }>(
+    `SELECT id FROM admins WHERE email = ? AND id <> ?`,
+    contactEmail,
+    id
+  );
+  if (emailClash) redirect("/admin/staff?e=taken");
+
+  run(
+    `UPDATE admins SET username = ?, name = ?, email = ? WHERE id = ?`,
+    username,
+    name,
+    contactEmail,
+    id
+  );
+
+  redirect("/admin/staff?ok=edited");
 }
 
 export async function changeRoleAction(form: FormData) {

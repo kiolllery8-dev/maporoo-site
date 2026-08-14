@@ -5,6 +5,7 @@ import { AdminField, AdminNotice, AdminSelect, AdminSubmit, Panel, Table, Td } f
 import {
   changeRoleAction,
   createAdminAction,
+  editAdminAction,
   resetAdminPasswordAction,
   toggleAdminAction,
 } from "./actions";
@@ -13,6 +14,7 @@ export const dynamic = "force-dynamic";
 
 type Row = {
   id: number;
+  username: string;
   email: string;
   name: string;
   role: string;
@@ -32,10 +34,12 @@ const OK: Record<string, string> = {
   role: "角色已更新。",
   toggled: "帳號狀態已更新。",
   reset: "密碼已重設。對方所有裝置都已登出，需要用新密碼重新登入並立刻更換。",
+  edited: "帳號資料已更新。",
 };
 
 const ERR: Record<string, string> = {
-  taken: "這個 Email 已經有管理者帳號了。",
+  taken: "這個帳號（或 Email）已經有人用了。",
+  email: "Email 格式不正確。留空也可以，那一格不是必填。",
   role: "角色不正確。",
   self: "不能停用自己的帳號。請由另一位負責人操作。",
   lastowner: "系統至少要保留一位能登入的負責人，這個動作會讓後台沒有人管得了帳號。",
@@ -50,7 +54,7 @@ export default async function StaffPage({
   const sp = await searchParams;
 
   const rows = all<Row>(
-    `SELECT id, email, name, role, must_change_password, disabled, last_login_at, created_at
+    `SELECT id, username, email, name, role, must_change_password, disabled, last_login_at, created_at
        FROM admins ORDER BY id`
   );
 
@@ -63,11 +67,11 @@ export default async function StaffPage({
       />
 
       <Panel title={`管理者（${rows.length}）`}>
-        <Table head={["EMAIL", "姓名", "角色", "最後登入", "建立", "狀態", "操作"]}>
+        <Table head={["帳號", "顯示名稱", "角色", "最後登入", "建立", "狀態", "操作"]}>
           {rows.map((a) => (
             <tr key={a.id} style={a.disabled ? { opacity: 0.5 } : undefined}>
               <Td nowrap>
-                {a.email}
+                <code style={{ color: "var(--ink)", fontWeight: 700 }}>{a.username}</code>
                 {a.id === me.id && (
                   <span style={{ marginLeft: 8, fontSize: ".78rem", color: "var(--mute)" }}>（你）</span>
                 )}
@@ -138,8 +142,15 @@ export default async function StaffPage({
           對方第一次登入會被要求立刻更換。
         </p>
         <form action={createAdminAction} style={{ maxWidth: 460 }}>
-          <AdminField label="EMAIL" name="email" type="email" required autoComplete="off" />
-          <AdminField label="姓名" name="name" autoComplete="off" />
+          <AdminField
+            label="帳號"
+            name="username"
+            required
+            autoComplete="off"
+            hint="登入用。小寫英文、數字，以及 - _ . 三種符號，例如 yankaiboss。"
+          />
+          <AdminField label="顯示名稱" name="name" autoComplete="off" hint="後台顯示用，例如 晏愷老闆。" />
+          <AdminField label="EMAIL（可留空）" name="email" type="email" autoComplete="off" hint="只是聯絡方式，不用來登入。" />
           <AdminSelect label="角色" name="role" options={ROLE_OPTIONS} defaultValue="shipping" />
           <AdminField
             label="初始密碼"
@@ -153,12 +164,46 @@ export default async function StaffPage({
         </form>
       </Panel>
 
+      <Panel title="修改帳號與名稱">
+        <p style={{ marginBottom: 22, color: "var(--soft)", fontSize: ".95rem", lineHeight: 1.95, maxWidth: 620 }}>
+          開站時自動建立的帳號叫 <code>admin</code>，在這裡改成你自己的。
+          改帳號不影響已登入的裝置，也不會動到密碼。
+        </p>
+        {rows.map((a) => (
+          <form
+            key={a.id}
+            action={editAdminAction}
+            style={{ display: "flex", gap: 12, alignItems: "flex-end", flexWrap: "wrap", marginBottom: 16, paddingBottom: 16, borderBottom: "1px solid var(--line)" }}
+          >
+            <input type="hidden" name="id" value={a.id} />
+            <span style={{ width: 150 }}>
+              <AdminField label="帳號" name="username" defaultValue={a.username} required />
+            </span>
+            <span style={{ width: 150 }}>
+              <AdminField label="顯示名稱" name="name" defaultValue={a.name} />
+            </span>
+            <span style={{ width: 210 }}>
+              <AdminField
+                label="EMAIL"
+                name="email"
+                defaultValue={a.email.endsWith("@no-email.local") ? "" : a.email}
+              />
+            </span>
+            <span style={{ paddingBottom: 20 }}>
+              <AdminSubmit>儲存</AdminSubmit>
+            </span>
+          </form>
+        ))}
+      </Panel>
+
       <Panel title="重設某人的密碼">
         <form action={resetAdminPasswordAction} style={{ maxWidth: 460 }}>
           <AdminSelect
             label="對象"
             name="id"
-            options={rows.filter((r) => r.id !== me.id).map((r) => ({ value: String(r.id), label: r.email }))}
+            options={rows
+              .filter((r) => r.id !== me.id)
+              .map((r) => ({ value: String(r.id), label: r.name ? `${r.username}（${r.name}）` : r.username }))}
           />
           <AdminField
             label="新密碼"

@@ -66,6 +66,12 @@ function open(): DatabaseSync {
     "must_change_password INTEGER NOT NULL DEFAULT 0"
   );
 
+  // 後台從「用 Email 登入」改成「用帳號登入」。
+  // 舊資料的帳號直接沿用原本的 email 字串，這樣既有管理者不會被鎖在門外。
+  ensureColumn(db, "admins", "username", "username TEXT");
+  db.exec(`UPDATE admins SET username = email WHERE username IS NULL OR username = ''`);
+  db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_admins_username ON admins(username)`);
+
   return db;
 }
 

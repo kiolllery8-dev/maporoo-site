@@ -50,7 +50,7 @@ export default async function DashLayout({ children }: { children: React.ReactNo
             ))}
           </nav>
           <span style={{ fontSize: ".85rem", color: "var(--mute)", fontWeight: 500 }}>
-            {admin.email}
+            {admin.name || admin.username}
             <span
               style={{
                 marginLeft: 8,

@@ -24,7 +24,7 @@ export default async function AdminLoginPage({
 
       <form action={adminLoginAction}>
         <input type="hidden" name="next" value={sp.next ?? ""} />
-        <AdminField label="EMAIL" name="email" type="email" required autoComplete="username" />
+        <AdminField label="帳號" name="username" required autoComplete="username" />
         <AdminField label="密碼" name="password" type="password" required autoComplete="current-password" />
         <AdminSubmit>登入</AdminSubmit>
       </form>

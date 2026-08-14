@@ -11,7 +11,7 @@ import {
   destroyAllSessions,
   destroySession,
   hashPassword,
-  normalizeEmail,
+  normalizeUsername,
   passwordProblem,
   verifyPassword,
 } from "../lib/auth";
@@ -31,15 +31,15 @@ function field(form: FormData, name: string) {
 }
 
 export async function adminLoginAction(form: FormData) {
-  const email = normalizeEmail(field(form, "email"));
+  const username = normalizeUsername(field(form, "username"));
   const password = String(form.get("password") ?? "");
   const next = field(form, "next");
 
-  if (!email || !password) redirect("/admin/login?e=missing");
+  if (!username || !password) redirect("/admin/login?e=missing");
 
   const admin = get<{ id: number; password_hash: string; disabled: number }>(
-    `SELECT id, password_hash, disabled FROM admins WHERE email = ?`,
-    email
+    `SELECT id, password_hash, disabled FROM admins WHERE username = ?`,
+    username
   );
 
   // 帳號不存在時同樣跑一次雜湊，避免用回應時間反推帳號是否存在。

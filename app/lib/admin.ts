@@ -12,7 +12,13 @@ import "server-only";
 import crypto from "node:crypto";
 import { redirect } from "next/navigation";
 import { get, run } from "./db";
-import { currentAdmin, hashPassword, normalizeEmail, type Admin } from "./auth";
+import {
+  currentAdmin,
+  hashPassword,
+  normalizeEmail,
+  normalizeUsername,
+  type Admin,
+} from "./auth";
 import { can, type Capability } from "./permissions";
 
 const DEFAULT_ADMIN_EMAIL = "admin@maporoo.com";
@@ -53,12 +59,14 @@ export function ensureAdminExists() {
   }
 
   const email = normalizeEmail(process.env.ADMIN_BOOTSTRAP_EMAIL || DEFAULT_ADMIN_EMAIL);
+  const username = normalizeUsername(process.env.ADMIN_BOOTSTRAP_USERNAME || "admin");
   const fromEnv = process.env.ADMIN_BOOTSTRAP_PASSWORD || "";
   const password = fromEnv || generatePassword();
 
   run(
-    `INSERT INTO admins (email, password_hash, name, role, must_change_password)
-     VALUES (?, ?, ?, 'owner', 1)`,
+    `INSERT INTO admins (username, email, password_hash, name, role, must_change_password)
+     VALUES (?, ?, ?, ?, 'owner', 1)`,
+    username,
     email,
     hashPassword(password),
     "負責人"
@@ -72,7 +80,7 @@ export function ensureAdminExists() {
       banner,
       "  MAPOROO 後台 — 已建立初始管理者帳號",
       "",
-      `  帳號：${email}`,
+      `  帳號：${username}`,
       fromEnv
         ? "  密碼：（來自 .env 的 ADMIN_BOOTSTRAP_PASSWORD）"
         : `  密碼：${password}`,

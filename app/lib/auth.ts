@@ -153,6 +153,7 @@ export type Member = {
 
 export type Admin = {
   id: number;
+  username: string;
   email: string;
   name: string;
   role: string;
@@ -175,7 +176,7 @@ export async function currentAdmin(): Promise<Admin | null> {
   const id = await currentSubjectId("admin");
   if (!id) return null;
   const a = get<Admin>(
-    `SELECT id, email, name, role, disabled FROM admins WHERE id = ?`,
+    `SELECT id, username, email, name, role, disabled FROM admins WHERE id = ?`,
     id
   );
   if (!a || a.disabled) return null;
@@ -204,6 +205,24 @@ export function normalizeEmail(raw: string) {
 export function isValidEmail(email: string) {
   // 刻意寬鬆：真正的驗證靠寄信，不靠正規表達式。
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) && email.length <= 254;
+}
+
+// ── 後台帳號 ────────────────────────────────────────────────
+// 管理者用帳號登入，不用 Email。帳號由負責人指派，例如 yankai-boss。
+
+export function normalizeUsername(raw: string) {
+  return raw.trim().toLowerCase();
+}
+
+/** 回傳 null 代表通過，否則回傳要顯示給使用者的中文訊息。 */
+export function usernameProblem(u: string): string | null {
+  if (u.length < 3) return "帳號至少 3 個字元。";
+  if (u.length > 40) return "帳號請控制在 40 個字元以內。";
+  // 只收小寫英數與 - _ .：中文或空白在網址、log 與匯出檔裡都會製造麻煩。
+  if (!/^[a-z0-9][a-z0-9._-]*$/.test(u)) {
+    return "帳號只能用小寫英文、數字，以及 - _ . 三種符號，且開頭必須是英文或數字。";
+  }
+  return null;
 }
 
 /** 回傳 null 代表通過，否則回傳要顯示給使用者的中文訊息。 */

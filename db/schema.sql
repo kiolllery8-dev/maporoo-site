@@ -15,9 +15,14 @@ CREATE TABLE IF NOT EXISTS settings (
 
 -- ── 管理者 ─────────────────────────────────────────────────
 -- 後台帳號與前台會員完全分離：admins 進不了會員區，members 也進不了後台。
+-- 後台用「帳號」登入，不是 Email。
+-- 理由：管理者是內部人員，帳號由負責人指派（例如 yankai-boss），
+-- 不需要每個人都有一個信箱，也不需要驗證信箱。
+-- email 欄位保留為選填的聯絡方式，不參與登入。
 CREATE TABLE IF NOT EXISTS admins (
   id            INTEGER PRIMARY KEY AUTOINCREMENT,
-  email         TEXT NOT NULL UNIQUE,
+  username      TEXT UNIQUE,                     -- 登入帳號
+  email         TEXT NOT NULL UNIQUE,            -- 舊欄位，現為選填聯絡信箱
   password_hash TEXT NOT NULL,
   name          TEXT DEFAULT '',
   role          TEXT NOT NULL DEFAULT 'admin',   -- admin | editor
