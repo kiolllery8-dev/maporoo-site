@@ -9,7 +9,6 @@ import "server-only";
 // 想指定初始帳密的話，在 .env 設 ADMIN_BOOTSTRAP_EMAIL / ADMIN_BOOTSTRAP_PASSWORD，
 // 建立完成後請把那兩行刪掉。
 
-import crypto from "node:crypto";
 import { redirect } from "next/navigation";
 import { get, run } from "./db";
 import {
@@ -22,16 +21,6 @@ import {
 import { can, type Capability } from "./permissions";
 
 const DEFAULT_ADMIN_EMAIL = "admin@maporoo.com";
-
-/** 產生一組好唸、夠強的隨機密碼（約 103 bits 熵）。 */
-function generatePassword() {
-  // 去掉容易看錯的 0/O/1/l/I。
-  const alphabet = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  const bytes = crypto.randomBytes(18);
-  let out = "";
-  for (let i = 0; i < bytes.length; i++) out += alphabet[bytes[i] % alphabet.length];
-  return out.replace(/(.{6})(?=.)/g, "$1-"); // 分段比較好抄
-}
 
 let bootstrapped = false;
 
@@ -58,37 +47,56 @@ export function ensureAdminExists() {
     return;
   }
 
+  const password = process.env.ADMIN_BOOTSTRAP_PASSWORD || "";
+  const banner = "═".repeat(58);
+
+  // 沒有指定密碼就**不建立任何帳號**。
+  //
+  // 舊版會在這裡隨機產生一組密碼、印進容器 log。那個設計害人：
+  // 密碼由系統決定、只出現一次、而且每次重新部署容器一換就消失，
+  // 負責人因此被鎖在門外，唯一的出路是 SSH 進伺服器改資料庫。
+  //
+  // 現在改成：密碼一律由人指定。沒指定就沒有帳號，也就沒有預設密碼
+  // 可以被猜到或外流。要開通請跑 GitHub Actions 的
+  // 「Reset admin password」流程，在那裡輸入自己要的帳號密碼。
+  if (!password) {
+    console.warn(
+      [
+        "",
+        banner,
+        "  MAPOROO 後台 — 尚未有任何管理者帳號",
+        "",
+        "  系統不會自動產生密碼。要開通後台，請到 GitHub 的 Actions 頁面",
+        "  執行「Reset admin password」，在表單裡填入你要的帳號與密碼。",
+        banner,
+        "",
+      ].join("\n")
+    );
+    return;
+  }
+
   const email = normalizeEmail(process.env.ADMIN_BOOTSTRAP_EMAIL || DEFAULT_ADMIN_EMAIL);
   const username = normalizeUsername(process.env.ADMIN_BOOTSTRAP_USERNAME || "admin");
-  const fromEnv = process.env.ADMIN_BOOTSTRAP_PASSWORD || "";
-  const password = fromEnv || generatePassword();
 
   run(
     `INSERT INTO admins (username, email, password_hash, name, role, must_change_password)
-     VALUES (?, ?, ?, ?, 'owner', 1)`,
+     VALUES (?, ?, ?, ?, 'owner', 0)`,
     username,
     email,
     hashPassword(password),
     "負責人"
   );
 
-  // 這是唯一一次密碼會出現的地方。用 console.warn 讓它不會被 log level 濾掉。
-  const banner = "═".repeat(58);
   console.warn(
     [
       "",
       banner,
-      "  MAPOROO 後台 — 已建立初始管理者帳號",
+      "  MAPOROO 後台 — 已依 .env 的設定建立管理者帳號",
       "",
       `  帳號：${username}`,
-      fromEnv
-        ? "  密碼：（來自 .env 的 ADMIN_BOOTSTRAP_PASSWORD）"
-        : `  密碼：${password}`,
+      "  密碼：你在 ADMIN_BOOTSTRAP_PASSWORD 設定的那一組",
       "",
-      "  這組密碼只會出現這一次。第一次登入會強制要求你改掉。",
-      fromEnv
-        ? "  建立完成了，請把 .env 裡的 ADMIN_BOOTSTRAP_* 兩行刪除。"
-        : "  請立刻抄下來，然後登入 /admin 更換。",
+      "  帳號建好了，請把 .env 裡的 ADMIN_BOOTSTRAP_* 三行刪除。",
       banner,
       "",
     ].join("\n")
