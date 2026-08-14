@@ -4,6 +4,213 @@
 import Link from "next/link";
 import { ADMIN_ERRORS } from "./errors";
 
+/** 每一頁最上方的標題區：麵包屑、大標、統計、右側動作。 */
+export function PageHeader({
+  eyebrow,
+  title,
+  stats,
+  actions,
+}: {
+  eyebrow: string;
+  title: string;
+  stats?: string;
+  actions?: React.ReactNode;
+}) {
+  return (
+    <header
+      style={{
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "space-between",
+        gap: 24,
+        flexWrap: "wrap",
+        marginBottom: 30,
+      }}
+    >
+      <div>
+        <p style={{ fontSize: ".7rem", letterSpacing: ".24em", color: "var(--accent)", fontWeight: 700 }}>
+          {eyebrow}
+        </p>
+        <h1 style={{ marginTop: 9, fontSize: "1.9rem", fontWeight: 900, letterSpacing: ".02em" }}>
+          {title}
+        </h1>
+        {stats && (
+          <p style={{ marginTop: 8, fontSize: ".9rem", color: "var(--mute)", fontWeight: 500 }}>{stats}</p>
+        )}
+      </div>
+      {actions && <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>{actions}</div>}
+    </header>
+  );
+}
+
+/** 上架／下架這類狀態小標籤。 */
+export function Pill({ tone, children }: { tone: "on" | "off" | "warn"; children: React.ReactNode }) {
+  const colours = {
+    on: { dot: "#2E7D52", fg: "var(--ink)" },
+    off: { dot: "#9B4A2F", fg: "#9B4A2F" },
+    warn: { dot: "#B8860B", fg: "var(--soft)" },
+  }[tone];
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        padding: "3px 10px",
+        border: "1px solid var(--line)",
+        background: "var(--paper2)",
+        fontSize: ".82rem",
+        fontWeight: 700,
+        color: colours.fg,
+        whiteSpace: "nowrap",
+      }}
+    >
+      <span style={{ width: 6, height: 6, borderRadius: 3, background: colours.dot }} />
+      {children}
+    </span>
+  );
+}
+
+/** 分類標籤。 */
+export function Tag({ children }: { children: React.ReactNode }) {
+  return (
+    <span
+      style={{
+        display: "inline-block",
+        padding: "2px 8px",
+        background: "var(--paper2)",
+        border: "1px solid var(--line)",
+        fontSize: ".76rem",
+        color: "var(--soft)",
+        fontWeight: 600,
+        marginRight: 5,
+        whiteSpace: "nowrap",
+      }}
+    >
+      {children}
+    </span>
+  );
+}
+
+/** 列表上方的篩選頁籤。 */
+export function FilterTabs({
+  tabs,
+  current,
+}: {
+  tabs: Array<{ href: string; label: string; count?: number; key: string }>;
+  current: string;
+}) {
+  return (
+    <p style={{ display: "flex", gap: 10, flexWrap: "wrap", margin: "0 0 20px" }}>
+      {tabs.map((t) => {
+        const active = t.key === current;
+        return (
+          <Link
+            key={t.key || "all"}
+            href={t.href}
+            style={{
+              padding: "6px 14px",
+              border: "1px solid var(--line)",
+              background: active ? "var(--ink)" : "transparent",
+              color: active ? "var(--paper)" : "var(--soft)",
+              fontSize: ".9rem",
+              fontWeight: 700,
+            }}
+          >
+            {t.label}
+            {typeof t.count === "number" && `（${t.count}）`}
+          </Link>
+        );
+      })}
+    </p>
+  );
+}
+
+/** 搜尋框。用原生 GET 表單，不需要 client JS。 */
+export function SearchBox({
+  name = "q",
+  defaultValue,
+  placeholder,
+  hidden,
+}: {
+  name?: string;
+  defaultValue?: string;
+  placeholder: string;
+  hidden?: Record<string, string>;
+}) {
+  return (
+    <form style={{ display: "flex", gap: 0, marginBottom: 18, maxWidth: 640 }}>
+      {hidden &&
+        Object.entries(hidden).map(([k, v]) => <input key={k} type="hidden" name={k} value={v} />)}
+      <input
+        name={name}
+        defaultValue={defaultValue}
+        placeholder={placeholder}
+        style={{
+          flex: 1,
+          background: "var(--paper2)",
+          border: "1px solid var(--line)",
+          borderRight: "none",
+          padding: "10px 13px",
+          fontSize: ".95rem",
+          fontFamily: "inherit",
+          color: "var(--ink)",
+        }}
+      />
+      <button
+        type="submit"
+        style={{
+          cursor: "pointer",
+          background: "var(--ink)",
+          color: "var(--paper)",
+          border: "none",
+          padding: "10px 22px",
+          fontSize: ".92rem",
+          fontWeight: 700,
+          fontFamily: "inherit",
+        }}
+      >
+        搜尋
+      </button>
+    </form>
+  );
+}
+
+/** 次要動作按鈕（外框式）。 */
+export function GhostLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <Link
+      href={href}
+      style={{
+        border: "1px solid var(--line)",
+        padding: "9px 16px",
+        fontSize: ".9rem",
+        fontWeight: 700,
+        color: "var(--ink)",
+      }}
+    >
+      {children}
+    </Link>
+  );
+}
+
+export function PrimaryLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <Link
+      href={href}
+      style={{
+        background: "var(--ink)",
+        color: "var(--paper)",
+        padding: "9px 18px",
+        fontSize: ".9rem",
+        fontWeight: 700,
+      }}
+    >
+      {children}
+    </Link>
+  );
+}
+
 export function Panel({
   title,
   action,

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import Hero from "./components/Hero";
+import { loadContent, text } from "./lib/content";
 import Reveal from "./components/Reveal";
 import {
   collections,
@@ -30,7 +31,15 @@ const icons: Record<string, React.ReactNode> = {
   scalp: (<><path d="M12 21V10" /><path d="M12 13c0-3-2.6-4.5-4.8-3.8C7 12 9 13.5 12 13.5" /><path d="M12 11c0-3 2.6-4.8 4.8-4C16.8 10.5 15 11.5 12 11.5" /><path d="M8 21h8" /></>)
 };
 
+// 首頁的文字可以在後台「前台文案」修改，所以要讀資料庫。
+// 用 ISR 而不是完全動態：每 5 分鐘重新產生一次就夠了，
+// 不需要每一次請求都查一次資料庫。
+export const revalidate = 300;
+
 export default function Home() {
+  const c = loadContent();
+  const t = (k: string) => text(c, k);
+
   return (
     <>
       <Hero />
@@ -54,10 +63,10 @@ export default function Home() {
       {/* BRAND STATEMENT */}
       <section className="pad-lg">
         <div className="wrap-narrow">
-          <p className="eyebrow rv">MAPOROO 相信</p>
-          <h2 className="rv" style={{ marginTop: 22 }}>有效與舒適，可以並存。</h2>
+          <p className="eyebrow rv">{t("home.brand.eyebrow")}</p>
+          <h2 className="rv" style={{ marginTop: 22 }}>{t("home.brand.heading")}</h2>
           <p className="lead rv" style={{ marginTop: 26, maxWidth: 700 }}>
-            MAPOROO 在實證的基礎上，選擇可信的成分——PDRN、玻尿酸、胜肽與泛醇 B5——於澳洲配製兼具功效與感官的保養。有效的成分，值得溫和的對待。
+            {t("home.brand.body")}
           </p>
           <div className="rv" style={{ marginTop: 30 }}><a className="lnk-dark" href="#story">MAPOROO 的故事</a></div>
         </div>
@@ -104,9 +113,9 @@ export default function Home() {
       <section id="collections" className="pad-lg">
         <div className="wrap">
           <p className="eyebrow rv">COLLECTIONS</p>
-          <h2 className="rv" style={{ marginTop: 16, marginBottom: 10 }}>三個品類</h2>
+          <h2 className="rv" style={{ marginTop: 16, marginBottom: 10 }}>{t("home.collections.heading")}</h2>
           <p className="lead rv" style={{ marginBottom: 32 }}>
-            從臉、到頭皮、到身體與香氣——MAPOROO 以 PDRN、玻尿酸、胜肽與泛醇 B5 等成分於澳洲配製，適合各種膚況的日常使用。
+            {t("home.collections.lead")}
           </p>
           {collections.map((c) => (
             <div key={c.zh} className="rv" style={{ padding: "32px 0", borderTop: "1px solid var(--line)" }}>
@@ -128,8 +137,8 @@ export default function Home() {
       {/* NEEDS */}
       <section id="needs" className="pad" style={{ background: "var(--paper2)" }}>
         <div className="wrap">
-          <p className="eyebrow rv">依需求選擇</p>
-          <h2 className="rv" style={{ marginTop: 16, marginBottom: 46 }}>從你的肌膚出發</h2>
+          <p className="eyebrow rv">{t("home.needs.eyebrow")}</p>
+          <h2 className="rv" style={{ marginTop: 16, marginBottom: 46 }}>{t("home.needs.heading")}</h2>
           <div className="grid g3">
             {needs.map((n) => (
               <div key={n.en} className="rv">
@@ -146,10 +155,10 @@ export default function Home() {
       {/* INGREDIENTS */}
       <section id="ingredients" className="pad-lg">
         <div className="wrap">
-          <p className="eyebrow rv">配方哲學</p>
-          <h2 className="rv" style={{ marginTop: 16, marginBottom: 10 }}>MAPOROO 選擇的成分</h2>
+          <p className="eyebrow rv">{t("home.ingredients.eyebrow")}</p>
+          <h2 className="rv" style={{ marginTop: 16, marginBottom: 10 }}>{t("home.ingredients.heading")}</h2>
           <p className="lead rv" style={{ marginBottom: 22 }}>
-            每一支配方，都建立在科學實證之上。成分的可信，是照顧的前提。
+            {t("home.ingredients.lead")}
           </p>
           <div className="grid g4">
             {ingredients.map((g) => (
@@ -185,10 +194,10 @@ export default function Home() {
       {/* STORY */}
       <section id="story" className="pad-lg">
         <div className="wrap-narrow">
-          <p className="eyebrow rv">MAPOROO 的故事</p>
-          <h2 className="rv" style={{ marginTop: 18 }}>關於 MAPOROO</h2>
+          <p className="eyebrow rv">{t("home.story.eyebrow")}</p>
+          <h2 className="rv" style={{ marginTop: 18 }}>{t("home.story.heading")}</h2>
           <p className="lead rv" style={{ marginTop: 24 }}>
-            MAPOROO 相信，有效與舒適可以並存。在科學實證的基礎上選擇可信的成分，配製出有效、溫和、令人安心的日常保養。適合每一種膚況，陪你每一次想照顧自己的時刻。
+            {t("home.story.body")}
           </p>
           <div className="rv" style={{ marginTop: 38, display: "grid", gap: 28 }}>
             {pillars.map((p) => (
@@ -205,10 +214,10 @@ export default function Home() {
       {/* ALLIANCE */}
       <section id="alliance" className="pad-lg" style={{ background: "var(--ink)", color: "#EDE8DD" }}>
         <div className="wrap">
-          <p className="eyebrow rv" style={{ color: "#B9B3A4" }}>合作聯盟 ─ PARTNERSHIP</p>
-          <h2 className="rv" style={{ marginTop: 18, color: "#F5F1E8" }}>一起把好的配方，分享出去</h2>
+          <p className="eyebrow rv" style={{ color: "#B9B3A4" }}>{t("home.alliance.eyebrow")}</p>
+          <h2 className="rv" style={{ marginTop: 18, color: "#F5F1E8" }}>{t("home.alliance.heading")}</h2>
           <p className="lead rv" style={{ marginTop: 24, color: "rgba(237,232,221,.78)", maxWidth: 640 }}>
-            MAPOROO 歡迎直播主、團購主與通路夥伴加入。分潤機制清楚、品牌素材完整，合作簡單透明。
+            {t("home.alliance.lead")}
           </p>
           <div className="grid g2 rv" style={{ marginTop: 48, gap: 24 }}>
             {alliance.map((a) => (
@@ -229,8 +238,8 @@ export default function Home() {
       {/* SERVICE */}
       <section id="service" className="pad" style={{ background: "var(--paper2)" }}>
         <div className="wrap">
-          <p className="eyebrow rv">官網服務</p>
-          <h2 className="rv" style={{ marginTop: 16, marginBottom: 46 }}>MAPOROO 在你身邊</h2>
+          <p className="eyebrow rv">{t("home.service.eyebrow")}</p>
+          <h2 className="rv" style={{ marginTop: 16, marginBottom: 46 }}>{t("home.service.heading")}</h2>
           <div className="grid g2">
             {services.map((s) => (
               <div key={s.t} className="rv">

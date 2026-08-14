@@ -1,0 +1,135 @@
+import "server-only";
+
+// 前台文案。
+//
+// 首頁的每一段文字都在這裡登記一個 key。後台可以改，前台讀資料庫；
+// 資料庫沒有值就用 fallback，也就是目前寫在程式碼裡的那句話。
+//
+// 這樣設計的好處：文案改動不需要重新部署，而且就算資料庫是空的
+// （例如全新環境、或還沒進後台改過），前台顯示的仍然是完整的內容，
+// 不會出現空白區塊。
+//
+// 新增一段可編輯文案的方式：在 BLOCKS 加一筆，然後在頁面上用 text(key) 取值。
+
+import { all } from "./db";
+
+export type Block = {
+  key: string;
+  group: string;
+  label: string;
+  fallback: string;
+  multiline?: boolean;
+  hint?: string;
+};
+
+export const BLOCKS: Block[] = [
+  // ── 首頁影片區 ────────────────────────────────────────
+  { key: "home.hero.eyebrow", group: "首頁 · 影片區", label: "上方小標", fallback: "MAPOROO ─ Skin Care" },
+  {
+    key: "home.hero.heading",
+    group: "首頁 · 影片區",
+    label: "主標題",
+    fallback: "肌膚的照顧，\n可以同時有效，且從容。",
+    multiline: true,
+    hint: "換行會照著顯示。",
+  },
+  {
+    key: "home.hero.lead",
+    group: "首頁 · 影片區",
+    label: "副標",
+    fallback: "以實證成分，配製保濕、提亮與修護的日常保養。",
+  },
+  { key: "home.hero.cta", group: "首頁 · 影片區", label: "按鈕文字", fallback: "探索全部商品" },
+
+  // ── 品牌主張 ──────────────────────────────────────────
+  { key: "home.brand.eyebrow", group: "首頁 · 品牌主張", label: "上方小標", fallback: "MAPOROO 相信" },
+  { key: "home.brand.heading", group: "首頁 · 品牌主張", label: "標題", fallback: "有效與舒適，可以並存。" },
+  {
+    key: "home.brand.body",
+    group: "首頁 · 品牌主張",
+    label: "內文",
+    multiline: true,
+    fallback:
+      "MAPOROO 在實證的基礎上，選擇可信的成分——PDRN、玻尿酸、胜肽與泛醇 B5——於澳洲配製兼具功效與感官的保養。有效的成分，值得溫和的對待。",
+  },
+
+  // ── 品類 ──────────────────────────────────────────────
+  { key: "home.collections.heading", group: "首頁 · 品類", label: "標題", fallback: "三個品類" },
+  {
+    key: "home.collections.lead",
+    group: "首頁 · 品類",
+    label: "說明",
+    multiline: true,
+    fallback:
+      "從臉、到頭皮、到身體與香氣——MAPOROO 以 PDRN、玻尿酸、胜肽與泛醇 B5 等成分於澳洲配製，適合各種膚況的日常使用。",
+  },
+
+  // ── 依需求選擇 ────────────────────────────────────────
+  { key: "home.needs.eyebrow", group: "首頁 · 依需求", label: "上方小標", fallback: "依需求選擇" },
+  { key: "home.needs.heading", group: "首頁 · 依需求", label: "標題", fallback: "從你的肌膚出發" },
+
+  // ── 成分 ──────────────────────────────────────────────
+  { key: "home.ingredients.eyebrow", group: "首頁 · 成分", label: "上方小標", fallback: "配方哲學" },
+  { key: "home.ingredients.heading", group: "首頁 · 成分", label: "標題", fallback: "MAPOROO 選擇的成分" },
+  {
+    key: "home.ingredients.lead",
+    group: "首頁 · 成分",
+    label: "說明",
+    multiline: true,
+    fallback: "每一支配方，都建立在科學實證之上。成分的可信，是照顧的前提。",
+  },
+
+  // ── 品牌故事 ──────────────────────────────────────────
+  { key: "home.story.eyebrow", group: "首頁 · 品牌故事", label: "上方小標", fallback: "MAPOROO 的故事" },
+  { key: "home.story.heading", group: "首頁 · 品牌故事", label: "標題", fallback: "關於 MAPOROO" },
+  {
+    key: "home.story.body",
+    group: "首頁 · 品牌故事",
+    label: "內文",
+    multiline: true,
+    fallback:
+      "MAPOROO 相信，有效與舒適可以並存。在科學實證的基礎上選擇可信的成分，配製出有效、溫和、令人安心的日常保養。適合每一種膚況，陪你每一次想照顧自己的時刻。",
+  },
+
+  // ── 合作聯盟 ──────────────────────────────────────────
+  { key: "home.alliance.eyebrow", group: "首頁 · 合作聯盟", label: "上方小標", fallback: "合作聯盟 ─ PARTNERSHIP" },
+  { key: "home.alliance.heading", group: "首頁 · 合作聯盟", label: "標題", fallback: "一起把好的配方，分享出去" },
+  {
+    key: "home.alliance.lead",
+    group: "首頁 · 合作聯盟",
+    label: "說明",
+    multiline: true,
+    fallback:
+      "MAPOROO 歡迎直播主、團購主與通路夥伴加入。分潤機制清楚、品牌素材完整，合作簡單透明。",
+  },
+
+  // ── 服務 ──────────────────────────────────────────────
+  { key: "home.service.eyebrow", group: "首頁 · 服務", label: "上方小標", fallback: "官網服務" },
+  { key: "home.service.heading", group: "首頁 · 服務", label: "標題", fallback: "MAPOROO 在你身邊" },
+
+  // 頁尾的文字還沒開放編輯：Footer 在根 layout 裡，讓它讀資料庫會使
+  // 全站每一頁都變成動態渲染，商品頁與文章頁的靜態產生會整個失效。
+  // 要開放的話得先把 Footer 從根 layout 拆出來，那是另一件事。
+];
+
+const BY_KEY = new Map(BLOCKS.map((b) => [b.key, b]));
+
+/** 一次把資料庫裡有值的文案讀出來。頁面只查一次，不要每個欄位查一次。 */
+export function loadContent(): Map<string, string> {
+  const map = new Map<string, string>();
+  try {
+    for (const r of all<{ key: string; value: string }>(`SELECT key, value FROM content_blocks`)) {
+      if (r.value != null && r.value !== "") map.set(r.key, r.value);
+    }
+  } catch {
+    // 資料庫還沒建好時（例如 build 階段）就全部走 fallback。
+  }
+  return map;
+}
+
+/** 取一段文案：資料庫優先，沒有就用程式碼裡的預設值。 */
+export function text(content: Map<string, string>, key: string): string {
+  const v = content.get(key);
+  if (v !== undefined) return v;
+  return BY_KEY.get(key)?.fallback ?? "";
+}
