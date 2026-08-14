@@ -1,0 +1,78 @@
+name: Reset admin password
+
+# 手動觸發用的救援流程。
+#
+# 為什麼需要它：開站產生的初始密碼只印在容器 log 裡，而每次部署都會重建容器，
+# 那行字就跟著消失。密碼在資料庫裡只存雜湊，反推不出來，於是負責人會被鎖在門外，
+# 而唯一的出路是 SSH 進伺服器下指令——對非工程背景的人不合理。
+#
+# 這個流程把那件事變成 GitHub 上按一個按鈕。
+#
+# 安全性：新密碼會出現在 Actions 的執行紀錄裡（只有這個私有 repo 的協作者看得到），
+# 而且帶著「第一次登入強制更換」的旗標，所以它的壽命就是從按下按鈕到第一次登入為止。
+# 用完請到 Actions 頁面把那次執行紀錄刪掉。
+
+on:
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-maporoo
+  cancel-in-progress: false
+
+jobs:
+  reset:
+    runs-on: [self-hosted, maporoo]
+    timeout-minutes: 10
+
+    steps:
+      - name: 現有的管理者
+        run: |
+          set -e
+          docker exec maporoo node -e "
+            const { DatabaseSync } = require('node:sqlite');
+            const d = new DatabaseSync('/app/data/maporoo.db');
+            const rows = d.prepare('SELECT id, username, name, role FROM admins ORDER BY id').all();
+            console.log('  目前共 ' + rows.length + ' 個管理者帳號');
+            for (const r of rows) console.log('   ', r.id, r.username, r.name, r.role);
+          "
+
+      - name: 清除管理者與登入狀態
+        run: |
+          set -e
+          # 只動 admins 與 sessions。訂單、會員、商品、文章都在別的資料表，不受影響。
+          docker exec maporoo node -e "
+            const { DatabaseSync } = require('node:sqlite');
+            const d = new DatabaseSync('/app/data/maporoo.db');
+            const n = d.prepare('SELECT COUNT(*) AS c FROM admins').get().c;
+            d.prepare('DELETE FROM sessions').run();
+            d.prepare('DELETE FROM admins').run();
+            console.log('  已清除 ' + n + ' 個管理者帳號與所有登入狀態');
+          "
+
+      - name: 重開容器，讓它產生新帳號
+        run: |
+          set -e
+          docker restart maporoo
+          for i in $(seq 1 24); do
+            STATUS=$(docker inspect maporoo --format '{{.State.Health.Status}}' 2>/dev/null || echo none)
+            [ "$STATUS" = "healthy" ] && break
+            sleep 5
+          done
+          echo "  容器狀態：$STATUS"
+          # 開站流程要有人拜訪 /admin 才會觸發，這裡替它敲一下門。
+          curl -sk -o /dev/null -H "Host: maporoo.com" https://localhost/admin || true
+          sleep 5
+
+      - name: 新的帳號密碼
+        run: |
+          set -e
+          echo ""
+          docker logs maporoo 2>&1 | grep -A8 "初始管理者" || {
+            echo "FAILED: log 裡找不到初始管理者的訊息"
+            echo "── 最後 60 行 log ──"
+            docker logs maporoo --tail 60 2>&1
+            exit 1
+          }
+          echo ""
+          echo "  ↑ 用上面這組登入 https://maporoo.com/admin"
+          echo "  ↑ 系統會強制你換掉，換完請到 Actions 把這次執行紀錄刪除"
