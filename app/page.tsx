@@ -45,10 +45,10 @@ export default function Home() {
       <Hero />
 
       {/* ICON ROW */}
-      <section style={{ padding: "62px 0", borderBottom: "1px solid var(--line)" }}>
+      <section style={{ padding: "18px 0", borderBottom: "1px solid var(--line)" }}>
         <div className="wrap">
           <p className="eyebrow rv" style={{ textAlign: "center", display: "block" }}>三個品類</p>
-          <div className="icons rv" style={{ marginTop: 34, gridTemplateColumns: `repeat(${iconRow.length}, 1fr)` }}>
+          <div className="icons rv" style={{ marginTop: 18, gridTemplateColumns: `repeat(${iconRow.length}, 1fr)` }}>
             {iconRow.map((it) => (
               <Link key={it.zh} className="icon-item" href={`/collections/${it.slug}`}>
                 <svg viewBox="0 0 24 24">{icons[it.icon]}</svg>
@@ -64,8 +64,8 @@ export default function Home() {
       <section className="pad-lg">
         <div className="wrap-narrow">
           <p className="eyebrow rv">{t("home.brand.eyebrow")}</p>
-          <h2 className="rv" style={{ marginTop: 22 }}>{t("home.brand.heading")}</h2>
-          <p className="lead rv" style={{ marginTop: 26, maxWidth: 700 }}>
+          <h2 className="rv" style={{ marginTop: 12 }}>{t("home.brand.heading")}</h2>
+          <p className="lead rv" style={{ marginTop: 14, maxWidth: 700 }}>
             {t("home.brand.body")}
           </p>
           <div className="rv" style={{ marginTop: 30 }}><a className="lnk-dark" href="#story">MAPOROO 的故事</a></div>
