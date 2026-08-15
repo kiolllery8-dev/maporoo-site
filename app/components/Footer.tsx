@@ -6,7 +6,7 @@ export default function Footer() {
     <footer style={{ borderTop: "1px solid var(--line)", padding: "66px 0 42px", background: "var(--paper2)" }}>
       <div className="wrap">
         <p className="font-black text-[1.5rem] tracking-[.3em]">MAPOROO</p>
-        <p style={{ marginTop: 14, color: "var(--soft)", fontSize: "1rem", maxWidth: 420, lineHeight: 1.95, fontWeight: 500 }}>
+        <p style={{ marginTop: 14, color: "var(--soft)", fontSize: "1rem", maxWidth: 420, lineHeight: 1.6, fontWeight: 500 }}>
           以實證成分於澳洲配製，有效而從容的日常保養。適合各種膚況。
         </p>
 

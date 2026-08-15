@@ -73,7 +73,7 @@ export default function Nav() {
               另外字距也會加在最後一個 O 後面，讓字看起來偏左、右邊像多一塊留白，
               負的 margin 剛好抵銷那一格，不影響字與字之間。 */}
           <span
-            className="font-black text-[1.05rem] min-[1080px]:text-[1.5rem] leading-none"
+            className="font-black text-[.85rem] min-[420px]:text-[1.05rem] min-[1080px]:text-[1.5rem] leading-none"
             style={{ letterSpacing: "0.5em", marginRight: "-0.5em" }}
           >
             MAPOROO
@@ -90,11 +90,12 @@ export default function Nav() {
         </nav>
 
         {/* Mobile: bag stays reachable without opening the drawer.
-            pl-3 是必要的，不是裝飾：字標尾端用負 margin 抵銷字距，
-            那讓字的墨水超出排版框約 0.5em，手機上實測會壓到這顆購物袋 9px。
-            這段內距把那一格讓出來。 */}
-        <span className="min-[1080px]:hidden ml-auto mr-3 pl-3 text-[.9rem] font-bold text-[var(--soft)]">
-          <CartLink />
+            用 compact 模式（圖示＋數字，不顯示「購物袋」三個字）：
+            320px 的螢幕上，那三個字會把漢堡擠出畫面 28px。實測過。
+            pl-3 也是必要的——字標尾端用負 margin 抵銷字距，
+            墨水會超出排版框約 0.5em，不留這段內距就會壓到購物袋。 */}
+        <span className="min-[1080px]:hidden ml-auto mr-4 pl-3 text-[var(--ink)]">
+          <CartLink compact />
         </span>
 
         {/* Mobile hamburger */}

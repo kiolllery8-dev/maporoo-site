@@ -98,8 +98,8 @@ ul.clean li { padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 
 .steps li::before { content: counter(s, decimal-leading-zero); position: absolute; left: 0; top: 15px; color: var(--accent); font-size: 1rem; font-weight: 700; letter-spacing: .08em; }
 
 .ing { padding: 24px 0; border-top: 1px solid var(--line); }
-.ftcol p.t { font-size: .78rem; letter-spacing: .2em; color: var(--accent); margin-bottom: 16px; font-weight: 700; }
-.ftcol a { display: block; padding: 8px 0; font-size: .98rem; color: var(--soft); font-weight: 500; }
+.ftcol p.t { font-size: .78rem; letter-spacing: .2em; color: var(--accent); margin-bottom: 10px; font-weight: 700; }
+.ftcol a { display: block; padding: 4px 0; font-size: .98rem; line-height: 1.5; color: var(--soft); font-weight: 500; }
 .ftcol a:hover { color: var(--ink); }
 .alliance-card { border: 1px solid var(--line); padding: 34px; background: var(--paper); }
 
