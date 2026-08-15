@@ -53,7 +53,7 @@ export default async function EditProduct({
       <AdminNotice ok={sp.ok === "saved" ? "已儲存。" : undefined} />
 
       <Panel title={p.name}>
-        <p style={{ marginBottom: 26, fontSize: ".9rem", color: "var(--mute)", lineHeight: 1.9 }}>
+        <p style={{ marginBottom: 26, fontSize: ".9rem", color: "var(--mute)", lineHeight: 1.5 }}>
           slug <code>{p.slug}</code>　·　SKU {p.sku || "未設定"}　·　品類 {p.collection || "未分類"}
           {p.origin && `　·　產地 ${p.origin}`}
           <br />

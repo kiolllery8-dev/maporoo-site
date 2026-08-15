@@ -136,7 +136,7 @@ export default async function StaffPage({
       </Panel>
 
       <Panel title="新增管理者">
-        <p style={{ marginBottom: 22, color: "var(--soft)", fontSize: ".95rem", lineHeight: 1.95, maxWidth: 620 }}>
+        <p style={{ marginBottom: 22, color: "var(--soft)", fontSize: ".95rem", lineHeight: 1.55, maxWidth: 620 }}>
           初始密碼由你設定，當面或用你們平常的方式交給對方。
           系統不會替你產生密碼，也不會寄信——密碼跑的路越少越安全。
           對方第一次登入會被要求立刻更換。
@@ -165,7 +165,7 @@ export default async function StaffPage({
       </Panel>
 
       <Panel title="修改帳號與名稱">
-        <p style={{ marginBottom: 22, color: "var(--soft)", fontSize: ".95rem", lineHeight: 1.95, maxWidth: 620 }}>
+        <p style={{ marginBottom: 22, color: "var(--soft)", fontSize: ".95rem", lineHeight: 1.55, maxWidth: 620 }}>
           開站時自動建立的帳號叫 <code>admin</code>，在這裡改成你自己的。
           改帳號不影響已登入的裝置，也不會動到密碼。
         </p>

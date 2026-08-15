@@ -254,7 +254,7 @@ export function AdminNotice({ e, m, ok }: { e?: string; m?: string; ok?: string 
         background: "var(--paper2)",
         color: good ? "var(--soft)" : "#7A3722",
         fontSize: ".95rem",
-        lineHeight: 1.75,
+        lineHeight: 1.5,
         fontWeight: 500,
       }}
     >
@@ -333,7 +333,7 @@ export function Td({
 
 export function Empty({ children }: { children: React.ReactNode }) {
   return (
-    <p style={{ color: "var(--mute)", fontSize: ".97rem", lineHeight: 1.9, padding: "18px 0" }}>
+    <p style={{ color: "var(--mute)", fontSize: ".97rem", lineHeight: 1.5, padding: "18px 0" }}>
       {children}
     </p>
   );
@@ -375,7 +375,7 @@ export function AdminField({
       color: "var(--ink)",
       fontWeight: 500,
       fontFamily: "inherit",
-      lineHeight: 1.7,
+      lineHeight: 1.45,
     } as React.CSSProperties,
   };
   return (
@@ -394,7 +394,7 @@ export function AdminField({
       </span>
       {textarea ? <textarea {...shared} rows={rows} /> : <input {...shared} type={type} />}
       {hint && (
-        <span style={{ display: "block", marginTop: 6, fontSize: ".83rem", color: "var(--mute)", lineHeight: 1.7 }}>
+        <span style={{ display: "block", marginTop: 6, fontSize: ".83rem", color: "var(--mute)", lineHeight: 1.45 }}>
           {hint}
         </span>
       )}

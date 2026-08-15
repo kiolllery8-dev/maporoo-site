@@ -52,7 +52,7 @@ export default async function AddressesPage({
 
       <div style={{ maxWidth: 640 }}>
         {rows.length === 0 ? (
-          <p style={{ color: "var(--soft)", lineHeight: 1.95, marginBottom: 40 }}>
+          <p style={{ color: "var(--soft)", lineHeight: 1.55, marginBottom: 40 }}>
             還沒有儲存的地址。存一筆之後，結帳時就不用每次重打。
           </p>
         ) : (
@@ -70,7 +70,7 @@ export default async function AddressesPage({
                     </span>
                   )}
                 </p>
-                <p style={{ color: "var(--soft)", fontSize: "1rem", marginTop: 6, lineHeight: 1.85 }}>
+                <p style={{ color: "var(--soft)", fontSize: "1rem", marginTop: 6, lineHeight: 1.5 }}>
                   {a.zipcode} {a.city} {a.address}
                 </p>
                 <p style={{ marginTop: 12, display: "flex", gap: 20 }}>

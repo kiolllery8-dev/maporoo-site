@@ -35,7 +35,7 @@ export default async function CheckoutPage({
       <h1 style={{ marginTop: 16, fontSize: "clamp(30px,4.6vw,48px)" }}>結帳</h1>
 
       {!member && (
-        <p style={{ marginTop: 18, color: "var(--soft)", fontSize: ".98rem", lineHeight: 1.9 }}>
+        <p style={{ marginTop: 18, color: "var(--soft)", fontSize: ".98rem", lineHeight: 1.5 }}>
           目前以訪客身分結帳。
           <Link href="/account/login?next=/checkout" className="lnk-dark" style={{ marginLeft: 8 }}>
             登入會員

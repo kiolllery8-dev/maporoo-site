@@ -16,7 +16,7 @@ export default async function Denied({
 
   return (
     <Panel title="這個頁面你沒有權限">
-      <p style={{ color: "var(--soft)", fontSize: "1rem", lineHeight: 2, maxWidth: 560 }}>
+      <p style={{ color: "var(--soft)", fontSize: "1rem", lineHeight: 1.6, maxWidth: 560 }}>
         你目前的角色是 <strong style={{ color: "var(--ink)" }}>{ROLE_LABEL[role] ?? admin.role}</strong>。
         <br />
         {ROLE_DESC[role] ?? "這個角色的權限範圍未定義，請找負責人確認。"}
@@ -34,7 +34,7 @@ export default async function Denied({
           回到你能操作的頁面
         </Link>
       </p>
-      <p style={{ marginTop: 20, color: "var(--mute)", fontSize: ".9rem", lineHeight: 1.9 }}>
+      <p style={{ marginTop: 20, color: "var(--mute)", fontSize: ".9rem", lineHeight: 1.5 }}>
         需要更多權限的話，請負責人到「管理者」頁面調整你的角色。
       </p>
     </Panel>

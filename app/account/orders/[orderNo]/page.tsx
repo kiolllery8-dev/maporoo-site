@@ -61,7 +61,7 @@ export default async function MemberOrderDetail({
       <AccountNav current="/account/orders" />
 
       <div style={{ maxWidth: 720 }}>
-        <p style={{ color: "var(--soft)", fontSize: "1rem", lineHeight: 2, marginBottom: 34 }}>
+        <p style={{ color: "var(--soft)", fontSize: "1rem", lineHeight: 1.6, marginBottom: 34 }}>
           成立時間 {o.created_at.slice(0, 16)}
           <br />
           訂單狀態 {ORDER_STATUS[o.order_status] ?? o.order_status}
@@ -105,7 +105,7 @@ export default async function MemberOrderDetail({
         </p>
 
         {o.payment_method === "bank_transfer" && o.payment_status === "pending" && bank.configured && (
-          <div style={{ marginTop: 30, padding: "18px 20px", background: "var(--paper2)", color: "var(--soft)", lineHeight: 2, fontSize: "1rem" }}>
+          <div style={{ marginTop: 30, padding: "18px 20px", background: "var(--paper2)", color: "var(--soft)", lineHeight: 1.6, fontSize: "1rem" }}>
             <strong style={{ color: "var(--ink)" }}>匯款資訊</strong>
             <br />
             {bank.bankName}　帳號 {bank.account}　戶名 {bank.holder}
@@ -117,7 +117,7 @@ export default async function MemberOrderDetail({
         )}
 
         <p className="eyebrow" style={{ margin: "40px 0 14px" }}>收件資訊</p>
-        <p style={{ color: "var(--soft)", fontSize: "1rem", lineHeight: 2 }}>
+        <p style={{ color: "var(--soft)", fontSize: "1rem", lineHeight: 1.6 }}>
           {o.recipient}　{o.phone}
           <br />
           {o.zipcode} {o.city} {o.address}

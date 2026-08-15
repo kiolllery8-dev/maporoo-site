@@ -87,7 +87,7 @@ export default function Home() {
               <p className="eyebrow">精選配方</p>
               <h2 style={{ marginTop: 16, fontSize: "clamp(26px,3.6vw,40px)" }}>{featured.name}</h2>
               <p className="en" style={{ marginTop: 8 }}>{featured.en} ─ {featured.size}</p>
-              <p style={{ marginTop: 22, color: "var(--soft)", fontSize: "1.08rem", lineHeight: 2, maxWidth: 460 }}>
+              <p style={{ marginTop: 22, color: "var(--soft)", fontSize: "1.08rem", lineHeight: 1.6, maxWidth: 460 }}>
                 {featured.about}
               </p>
               <div style={{ marginTop: 26, fontSize: "1rem", color: "var(--soft)", fontWeight: 500 }}>
@@ -113,17 +113,17 @@ export default function Home() {
       <section id="collections" className="pad-lg">
         <div className="wrap">
           <p className="eyebrow rv">COLLECTIONS</p>
-          <h2 className="rv" style={{ marginTop: 16, marginBottom: 10 }}>{t("home.collections.heading")}</h2>
+          <h2 className="rv" style={{ marginTop: 10, marginBottom: 8 }}>{t("home.collections.heading")}</h2>
           <p className="lead rv" style={{ marginBottom: 32 }}>
             {t("home.collections.lead")}
           </p>
           {collections.map((c) => (
-            <div key={c.zh} className="rv" style={{ padding: "32px 0", borderTop: "1px solid var(--line)" }}>
+            <div key={c.zh} className="rv" style={{ padding: "20px 0", borderTop: "1px solid var(--line)" }}>
               <div style={{ display: "flex", alignItems: "baseline", gap: 20, flexWrap: "wrap" }}>
                 <h3 style={{ fontSize: "2rem", fontWeight: 900 }}>{c.zh}</h3>
                 <span className="en">{c.en}</span>
               </div>
-              <p style={{ color: "var(--soft)", fontSize: "1.05rem", maxWidth: 700, lineHeight: 1.95, marginTop: 10 }}>{c.d}</p>
+              <p style={{ color: "var(--soft)", fontSize: "1.05rem", maxWidth: 700, lineHeight: 1.55, marginTop: 10 }}>{c.d}</p>
               <div style={{ marginTop: 18 }}>
                 {productsByCollection(c.slug).map((p) => (
                   <Link key={p.slug} href={`/products/${p.slug}`} style={{ display: "inline-block", margin: "0 20px 10px 0", fontSize: ".98rem", color: "var(--soft)", borderBottom: "1px solid var(--line)", paddingBottom: 3, fontWeight: 500 }} className="hover:text-[var(--ink)] transition-colors">{p.name}</Link>
@@ -138,7 +138,7 @@ export default function Home() {
       <section id="needs" className="pad" style={{ background: "var(--paper2)" }}>
         <div className="wrap">
           <p className="eyebrow rv">{t("home.needs.eyebrow")}</p>
-          <h2 className="rv" style={{ marginTop: 16, marginBottom: 46 }}>{t("home.needs.heading")}</h2>
+          <h2 className="rv" style={{ marginTop: 10, marginBottom: 26 }}>{t("home.needs.heading")}</h2>
           <div className="grid g3">
             {needs.map((n) => (
               <div key={n.en} className="rv">
@@ -156,7 +156,7 @@ export default function Home() {
       <section id="ingredients" className="pad-lg">
         <div className="wrap">
           <p className="eyebrow rv">{t("home.ingredients.eyebrow")}</p>
-          <h2 className="rv" style={{ marginTop: 16, marginBottom: 10 }}>{t("home.ingredients.heading")}</h2>
+          <h2 className="rv" style={{ marginTop: 10, marginBottom: 8 }}>{t("home.ingredients.heading")}</h2>
           <p className="lead rv" style={{ marginBottom: 22 }}>
             {t("home.ingredients.lead")}
           </p>
@@ -165,7 +165,7 @@ export default function Home() {
               <div key={g.zh} className="rv ing">
                 <span className="en">{g.en}</span>
                 <h3 style={{ fontSize: "1.8rem", marginTop: 10, fontWeight: 900 }}>{g.zh}</h3>
-                <p style={{ marginTop: 12, color: "var(--soft)", fontSize: ".98rem", lineHeight: 1.9 }}>{g.d}</p>
+                <p style={{ marginTop: 12, color: "var(--soft)", fontSize: ".98rem", lineHeight: 1.5 }}>{g.d}</p>
               </div>
             ))}
           </div>
@@ -195,16 +195,16 @@ export default function Home() {
       <section id="story" className="pad-lg">
         <div className="wrap-narrow">
           <p className="eyebrow rv">{t("home.story.eyebrow")}</p>
-          <h2 className="rv" style={{ marginTop: 18 }}>{t("home.story.heading")}</h2>
-          <p className="lead rv" style={{ marginTop: 24 }}>
+          <h2 className="rv" style={{ marginTop: 10 }}>{t("home.story.heading")}</h2>
+          <p className="lead rv" style={{ marginTop: 14 }}>
             {t("home.story.body")}
           </p>
-          <div className="rv" style={{ marginTop: 38, display: "grid", gap: 28 }}>
+          <div className="rv" style={{ marginTop: 22, display: "grid", gap: 14 }}>
             {pillars.map((p) => (
-              <div key={p.k} style={{ borderTop: "1px solid var(--line)", paddingTop: 20 }}>
+              <div key={p.k} style={{ borderTop: "1px solid var(--line)", paddingTop: 12 }}>
                 <span className="en">{p.k}</span>
-                <h3 style={{ fontSize: "1.6rem", marginTop: 8 }}>{p.t}</h3>
-                <p style={{ color: "var(--soft)", fontSize: "1.02rem", marginTop: 8 }}>{p.d}</p>
+                <h3 style={{ fontSize: "1.6rem", marginTop: 4 }}>{p.t}</h3>
+                <p style={{ color: "var(--soft)", fontSize: "1.02rem", marginTop: 4 }}>{p.d}</p>
               </div>
             ))}
           </div>
@@ -224,7 +224,7 @@ export default function Home() {
               <div key={a.no} className="alliance-card" style={{ background: "#26241f", borderColor: "#3a372f" }}>
                 <p className="en" style={{ color: "#B9B3A4" }}>{a.no}</p>
                 <h3 style={{ fontSize: "1.7rem", marginTop: 12, color: "#F5F1E8" }}>{a.zh}</h3>
-                <p style={{ marginTop: 14, color: "rgba(237,232,221,.72)", fontSize: "1rem", lineHeight: 1.95 }}>{a.d}</p>
+                <p style={{ marginTop: 14, color: "rgba(237,232,221,.72)", fontSize: "1rem", lineHeight: 1.55 }}>{a.d}</p>
                 <ul className="clean" style={{ marginTop: 18 }}>
                   {a.items.map((i) => <li key={i} style={{ borderColor: "#3a372f", color: "#CFC9BC" }}>{i}</li>)}
                 </ul>
@@ -239,12 +239,12 @@ export default function Home() {
       <section id="service" className="pad" style={{ background: "var(--paper2)" }}>
         <div className="wrap">
           <p className="eyebrow rv">{t("home.service.eyebrow")}</p>
-          <h2 className="rv" style={{ marginTop: 16, marginBottom: 46 }}>{t("home.service.heading")}</h2>
+          <h2 className="rv" style={{ marginTop: 10, marginBottom: 26 }}>{t("home.service.heading")}</h2>
           <div className="grid g2">
             {services.map((s) => (
               <div key={s.t} className="rv">
                 <h3 style={{ fontSize: "1.5rem" }}>{s.t}</h3>
-                <p style={{ color: "var(--soft)", fontSize: "1.02rem", marginTop: 12, lineHeight: 1.95 }}>{s.d}</p>
+                <p style={{ color: "var(--soft)", fontSize: "1.02rem", marginTop: 12, lineHeight: 1.55 }}>{s.d}</p>
                 <div style={{ marginTop: 16 }}><Link className="lnk-dark" href={s.href}>{s.cta}</Link></div>
               </div>
             ))}

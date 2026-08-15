@@ -126,7 +126,7 @@ export default function CheckoutForm({ methods, defaults }: Props) {
             name="note"
             rows={3}
             maxLength={500}
-            style={{ ...inputStyle, border: "1px solid var(--line)", padding: "10px 12px", lineHeight: 1.8 }}
+            style={{ ...inputStyle, border: "1px solid var(--line)", padding: "10px 12px", lineHeight: 1.5 }}
           />
         </label>
       </div>
@@ -189,7 +189,7 @@ export default function CheckoutForm({ methods, defaults }: Props) {
           送出訂單
         </button>
 
-        <p style={{ marginTop: 12, fontSize: ".85rem", color: "var(--mute)", lineHeight: 1.85 }}>
+        <p style={{ marginTop: 12, fontSize: ".85rem", color: "var(--mute)", lineHeight: 1.5 }}>
           線上刷卡尚未開通。送出後 MAPOROO 會以 Email 與你確認付款方式與出貨時間。
         </p>
 

@@ -106,7 +106,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
       {a.disclaimer === 1 && (
         <p
-          style={{ marginTop: 44, padding: "16px 18px", background: "var(--paper2)", color: "var(--soft)", fontSize: ".93rem", lineHeight: 1.9 }}
+          style={{ marginTop: 44, padding: "16px 18px", background: "var(--paper2)", color: "var(--soft)", fontSize: ".93rem", lineHeight: 1.5 }}
         >
           {DISCLAIMER_TEXT}
         </p>
@@ -117,7 +117,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <p className="eyebrow" style={{ marginBottom: 14 }}>出處</p>
           <ul className="clean">
             {sources.map((s, i) => (
-              <li key={i} style={{ color: "var(--soft)", fontSize: ".93rem", lineHeight: 1.9 }}>
+              <li key={i} style={{ color: "var(--soft)", fontSize: ".93rem", lineHeight: 1.5 }}>
                 {s}
               </li>
             ))}

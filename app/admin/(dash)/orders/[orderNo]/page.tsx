@@ -88,7 +88,7 @@ export default async function OrderDetail({
             <p style={{ fontSize: ".78rem", letterSpacing: ".16em", color: "var(--accent)", fontWeight: 700, marginBottom: 12 }}>
               收件資訊
             </p>
-            <p style={{ color: "var(--soft)", lineHeight: 2, fontSize: ".97rem", fontWeight: 500 }}>
+            <p style={{ color: "var(--soft)", lineHeight: 1.6, fontSize: ".97rem", fontWeight: 500 }}>
               {o.recipient || "—"}　{o.phone}
               <br />
               {o.zipcode} {o.city} {o.address || "—"}
@@ -100,7 +100,7 @@ export default async function OrderDetail({
               成立時間 {o.created_at}
             </p>
             {o.note && (
-              <p style={{ marginTop: 16, padding: "11px 14px", background: "var(--paper2)", fontSize: ".93rem", color: "var(--soft)", lineHeight: 1.85 }}>
+              <p style={{ marginTop: 16, padding: "11px 14px", background: "var(--paper2)", fontSize: ".93rem", color: "var(--soft)", lineHeight: 1.5 }}>
                 客人備註：{o.note}
               </p>
             )}
@@ -110,7 +110,7 @@ export default async function OrderDetail({
             <p style={{ fontSize: ".78rem", letterSpacing: ".16em", color: "var(--accent)", fontWeight: 700, marginBottom: 12 }}>
               金額
             </p>
-            <p style={{ color: "var(--soft)", lineHeight: 2, fontSize: ".97rem", fontWeight: 500 }}>
+            <p style={{ color: "var(--soft)", lineHeight: 1.6, fontSize: ".97rem", fontWeight: 500 }}>
               小計　NT$ {o.subtotal_twd.toLocaleString()}
               <br />
               運費　NT$ {o.shipping_twd.toLocaleString()}
@@ -175,7 +175,7 @@ export default async function OrderDetail({
               />
             </>
           ) : (
-            <p style={{ marginBottom: 20, padding: "11px 14px", background: "var(--paper2)", color: "var(--mute)", fontSize: ".92rem", lineHeight: 1.8 }}>
+            <p style={{ marginBottom: 20, padding: "11px 14px", background: "var(--paper2)", color: "var(--mute)", fontSize: ".92rem", lineHeight: 1.5 }}>
               付款狀態目前是「{PAYMENT_STATUS[o.payment_status] ?? o.payment_status}」。
               你的角色改不了付款相關欄位，需要調整請找負責人或營運人員。
             </p>

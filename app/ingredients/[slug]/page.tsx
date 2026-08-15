@@ -63,12 +63,12 @@ export default async function IngredientPage({ params }: { params: Promise<{ slu
       <article className="wrap-narrow" style={{ padding: "72px 30px 40px" }}>
         <section className="rv">
           <h2 style={{ fontSize: "1.7rem", fontWeight: 900 }}>它是什麼</h2>
-          <p style={{ marginTop: 16, color: "var(--soft)", fontSize: "1.06rem", lineHeight: 2.05 }}>{ing.what}</p>
+          <p style={{ marginTop: 16, color: "var(--soft)", fontSize: "1.06rem", lineHeight: 1.6 }}>{ing.what}</p>
         </section>
 
         <section className="rv" style={{ marginTop: 48 }}>
           <h2 style={{ fontSize: "1.7rem", fontWeight: 900 }}>在保養裡怎麼用</h2>
-          <p style={{ marginTop: 16, color: "var(--soft)", fontSize: "1.06rem", lineHeight: 2.05 }}>{ing.how}</p>
+          <p style={{ marginTop: 16, color: "var(--soft)", fontSize: "1.06rem", lineHeight: 1.6 }}>{ing.how}</p>
         </section>
 
         <section className="rv" style={{ marginTop: 48 }}>
@@ -76,14 +76,14 @@ export default async function IngredientPage({ params }: { params: Promise<{ slu
           {ing.faq.map((f) => (
             <div key={f.q} style={{ padding: "22px 0", borderTop: "1px solid var(--line)" }}>
               <h3 style={{ fontSize: "1.1rem", fontWeight: 700, lineHeight: 1.6 }}>{f.q}</h3>
-              <p style={{ marginTop: 10, color: "var(--soft)", fontSize: "1rem", lineHeight: 2 }}>{f.a}</p>
+              <p style={{ marginTop: 10, color: "var(--soft)", fontSize: "1rem", lineHeight: 1.6 }}>{f.a}</p>
             </div>
           ))}
         </section>
 
         <p
           className="rv"
-          style={{ marginTop: 40, paddingTop: 20, borderTop: "1px solid var(--line)", color: "var(--mute)", fontSize: ".9rem", lineHeight: 1.9 }}
+          style={{ marginTop: 40, paddingTop: 20, borderTop: "1px solid var(--line)", color: "var(--mute)", fontSize: ".9rem", lineHeight: 1.5 }}
         >
           以上為成分知識整理，不是醫療建議。MAPOROO 商品為化粧品，作用於肌膚角質層。個別膚況問題請諮詢皮膚科醫師。
         </p>

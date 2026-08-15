@@ -81,7 +81,7 @@ export default async function AccountPage({
       <div style={{ marginBottom: 54 }}>
         <p className="eyebrow" style={{ marginBottom: 20 }}>訂單紀錄</p>
         {orders.length === 0 ? (
-          <p style={{ color: "var(--soft)", lineHeight: 1.95 }}>
+          <p style={{ color: "var(--soft)", lineHeight: 1.55 }}>
             目前沒有訂單。
             <br />
             <TextLink href="/products">看看全部商品</TextLink>

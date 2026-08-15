@@ -140,7 +140,7 @@ export default function CartView() {
             >
               前往結帳
             </Link>
-            <p style={{ marginTop: 12, fontSize: ".85rem", color: "var(--mute)", lineHeight: 1.85 }}>
+            <p style={{ marginTop: 12, fontSize: ".85rem", color: "var(--mute)", lineHeight: 1.5 }}>
               目前提供匯款與貨到付款，線上刷卡還在準備中。
             </p>
 

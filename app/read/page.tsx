@@ -42,7 +42,7 @@ export default function ReadIndex() {
       </p>
 
       {rows.length === 0 ? (
-        <p style={{ marginTop: 50, color: "var(--mute)", fontSize: "1.02rem", lineHeight: 1.95 }}>
+        <p style={{ marginTop: 50, color: "var(--mute)", fontSize: "1.02rem", lineHeight: 1.55 }}>
           文章正在準備中。
           <br />
           <Link href="/products" className="lnk-dark" style={{ marginTop: 18, display: "inline-block" }}>
@@ -66,7 +66,7 @@ export default function ReadIndex() {
                 <h2 style={{ fontSize: "clamp(20px,2.6vw,28px)", fontWeight: 700, lineHeight: 1.5 }}>
                   <Link href={`/read/${r.slug}`}>{r.title}</Link>
                 </h2>
-                <p style={{ marginTop: 12, color: "var(--soft)", fontSize: "1.02rem", lineHeight: 1.95, maxWidth: 700 }}>
+                <p style={{ marginTop: 12, color: "var(--soft)", fontSize: "1.02rem", lineHeight: 1.55, maxWidth: 700 }}>
                   {r.description || excerpt(r.body_md)}
                 </p>
                 <p style={{ marginTop: 12, fontSize: ".82rem", letterSpacing: ".12em", color: "var(--mute)", fontWeight: 700 }}>

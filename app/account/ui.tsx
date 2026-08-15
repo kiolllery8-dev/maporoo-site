@@ -24,7 +24,7 @@ export function Shell({
           {title}
         </h1>
         {lead && (
-          <p style={{ marginTop: 18, color: "var(--soft)", fontSize: "1.05rem", lineHeight: 2, maxWidth: 620 }}>
+          <p style={{ marginTop: 18, color: "var(--soft)", fontSize: "1.05rem", lineHeight: 1.6, maxWidth: 620 }}>
             {lead}
           </p>
         )}
@@ -57,7 +57,7 @@ export function Notice({
         background: "var(--paper2)",
         color: good ? "var(--soft)" : "#7A3722",
         fontSize: ".98rem",
-        lineHeight: 1.8,
+        lineHeight: 1.5,
         fontWeight: 500,
       }}
     >
@@ -118,7 +118,7 @@ export function Field({
         }}
       />
       {hint && (
-        <span style={{ display: "block", marginTop: 8, fontSize: ".85rem", color: "var(--mute)", lineHeight: 1.7 }}>
+        <span style={{ display: "block", marginTop: 8, fontSize: ".85rem", color: "var(--mute)", lineHeight: 1.45 }}>
           {hint}
         </span>
       )}
@@ -140,7 +140,7 @@ export function Submit({ children }: { children: React.ReactNode }) {
 
 export function Aside({ children }: { children: React.ReactNode }) {
   return (
-    <p style={{ marginTop: 34, paddingTop: 24, borderTop: "1px solid var(--line)", color: "var(--soft)", fontSize: ".98rem", lineHeight: 1.9 }}>
+    <p style={{ marginTop: 34, paddingTop: 24, borderTop: "1px solid var(--line)", color: "var(--soft)", fontSize: ".98rem", lineHeight: 1.5 }}>
       {children}
     </p>
   );

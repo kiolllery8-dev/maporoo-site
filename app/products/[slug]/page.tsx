@@ -99,7 +99,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <p className="en" style={{ marginTop: 10 }}>
               {p.en} ─ {p.size} ─ {p.sku}
             </p>
-            <p style={{ marginTop: 22, color: "var(--soft)", fontSize: "1.1rem", lineHeight: 2, maxWidth: 480 }}>
+            <p style={{ marginTop: 22, color: "var(--soft)", fontSize: "1.1rem", lineHeight: 1.6, maxWidth: 480 }}>
               {p.tagline}
             </p>
 
@@ -114,7 +114,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
             <AddToCart slug={p.slug} />
 
-            <p style={{ marginTop: 30, color: "var(--soft)", fontSize: "1.05rem", lineHeight: 2 }}>{p.about}</p>
+            <p style={{ marginTop: 30, color: "var(--soft)", fontSize: "1.05rem", lineHeight: 1.6 }}>{p.about}</p>
 
             <div style={{ marginTop: 26, fontSize: "1rem", color: "var(--soft)", fontWeight: 500 }}>
               <p style={{ padding: "11px 0", borderTop: "1px solid var(--line)" }}>
@@ -181,7 +181,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               {p.highlights.map((k) => (
                 <div key={k.t} className="rv ing">
                   <h3 style={{ fontSize: "1.3rem", fontWeight: 900, lineHeight: 1.5 }}>{k.t}</h3>
-                  <p style={{ marginTop: 12, color: "var(--soft)", fontSize: ".98rem", lineHeight: 1.9 }}>{k.d}</p>
+                  <p style={{ marginTop: 12, color: "var(--soft)", fontSize: ".98rem", lineHeight: 1.5 }}>{k.d}</p>
                 </div>
               ))}
             </div>
@@ -209,7 +209,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               {p.note && (
                 <>
                   <p className="eyebrow">小提醒 ─ NOTE</p>
-                  <p style={{ marginTop: 18, color: "var(--soft)", fontSize: "1rem", lineHeight: 2, paddingTop: 15, borderTop: "1px solid var(--line)" }}>
+                  <p style={{ marginTop: 18, color: "var(--soft)", fontSize: "1rem", lineHeight: 1.6, paddingTop: 15, borderTop: "1px solid var(--line)" }}>
                     {p.note}
                   </p>
                 </>
@@ -217,7 +217,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               {p.caution && (
                 <>
                   <p className="eyebrow" style={{ marginTop: p.note ? 34 : 0 }}>注意事項 ─ CAUTION</p>
-                  <p style={{ marginTop: 18, color: "var(--soft)", fontSize: ".95rem", lineHeight: 2, paddingTop: 15, borderTop: "1px solid var(--line)" }}>
+                  <p style={{ marginTop: 18, color: "var(--soft)", fontSize: ".95rem", lineHeight: 1.6, paddingTop: 15, borderTop: "1px solid var(--line)" }}>
                     {p.caution}
                   </p>
                 </>
@@ -238,7 +238,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 {p.faq.map((f) => (
                   <div key={f.q} className="rv" style={{ padding: "22px 0", borderTop: "1px solid var(--line)" }}>
                     <h3 style={{ fontSize: "1.12rem", fontWeight: 700, lineHeight: 1.6 }}>{f.q}</h3>
-                    <p style={{ marginTop: 10, color: "var(--soft)", fontSize: "1rem", lineHeight: 2 }}>{f.a}</p>
+                    <p style={{ marginTop: 10, color: "var(--soft)", fontSize: "1rem", lineHeight: 1.6 }}>{f.a}</p>
                   </div>
                 ))}
               </div>

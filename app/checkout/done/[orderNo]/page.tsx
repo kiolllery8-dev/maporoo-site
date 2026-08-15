@@ -53,7 +53,7 @@ export default async function OrderDone({ params }: { params: Promise<{ orderNo:
 
       <p className="eyebrow">訂單已成立</p>
       <h1 style={{ marginTop: 16, fontSize: "clamp(28px,4.4vw,44px)" }}>謝謝你的訂購</h1>
-      <p style={{ marginTop: 20, color: "var(--soft)", fontSize: "1.05rem", lineHeight: 2 }}>
+      <p style={{ marginTop: 20, color: "var(--soft)", fontSize: "1.05rem", lineHeight: 1.6 }}>
         訂單編號 <strong style={{ color: "var(--ink)" }}>{order.order_no}</strong>
         <br />
         MAPOROO 會以 Email（{order.email}）與你確認付款與出貨時間。
@@ -88,13 +88,13 @@ export default async function OrderDone({ params }: { params: Promise<{ orderNo:
 
       <section style={{ marginTop: 44 }}>
         <p className="eyebrow" style={{ marginBottom: 16 }}>付款方式</p>
-        <p style={{ color: "var(--soft)", fontSize: "1rem", lineHeight: 2 }}>
+        <p style={{ color: "var(--soft)", fontSize: "1rem", lineHeight: 1.6 }}>
           {METHOD_LABEL[order.payment_method as PaymentMethod] ?? order.payment_method}
         </p>
 
         {order.payment_method === "bank_transfer" &&
           (bank.configured ? (
-            <div style={{ marginTop: 14, padding: "18px 20px", background: "var(--paper2)", color: "var(--soft)", lineHeight: 2, fontSize: "1rem" }}>
+            <div style={{ marginTop: 14, padding: "18px 20px", background: "var(--paper2)", color: "var(--soft)", lineHeight: 1.6, fontSize: "1rem" }}>
               {bank.bankName}
               <br />
               帳號 {bank.account}
@@ -106,7 +106,7 @@ export default async function OrderDone({ params }: { params: Promise<{ orderNo:
               </span>
             </div>
           ) : (
-            <p style={{ marginTop: 14, color: "var(--mute)", fontSize: ".95rem", lineHeight: 1.9 }}>
+            <p style={{ marginTop: 14, color: "var(--mute)", fontSize: ".95rem", lineHeight: 1.5 }}>
               匯款帳戶尚未設定，MAPOROO 會直接以 Email 提供付款資訊。
             </p>
           ))}
@@ -114,7 +114,7 @@ export default async function OrderDone({ params }: { params: Promise<{ orderNo:
 
       <section style={{ marginTop: 44 }}>
         <p className="eyebrow" style={{ marginBottom: 16 }}>收件資訊</p>
-        <p style={{ color: "var(--soft)", fontSize: "1rem", lineHeight: 2 }}>
+        <p style={{ color: "var(--soft)", fontSize: "1rem", lineHeight: 1.6 }}>
           {order.recipient}　{order.phone}
           <br />
           {order.zipcode} {order.city} {order.address}

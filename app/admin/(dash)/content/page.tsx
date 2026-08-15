@@ -36,7 +36,7 @@ export default async function ContentPage({
 
       <AdminNotice ok={ok} />
 
-      <p style={{ marginBottom: 30, color: "var(--soft)", fontSize: ".97rem", lineHeight: 1.95, maxWidth: 680 }}>
+      <p style={{ marginBottom: 30, color: "var(--soft)", fontSize: ".97rem", lineHeight: 1.55, maxWidth: 680 }}>
         這裡改的字會直接顯示在前台，不需要重新部署。
         欄位留空就會回到程式碼裡的預設文案，所以前台不會出現空白區塊。
         <br />

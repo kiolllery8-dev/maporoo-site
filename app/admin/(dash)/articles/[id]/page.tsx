@@ -91,7 +91,7 @@ export default async function EditArticle({
       {/* ── 上架檢查 ─────────────────────────────────────── */}
       <Panel title="上架檢查">
         {check.blocking.length === 0 && check.warnings.length === 0 ? (
-          <p style={{ color: "var(--soft)", fontSize: ".97rem", lineHeight: 1.9 }}>
+          <p style={{ color: "var(--soft)", fontSize: ".97rem", lineHeight: 1.5 }}>
             沒有發現問題。可以發布。
           </p>
         ) : (
@@ -99,7 +99,7 @@ export default async function EditArticle({
             {check.blocking.map((v, i) => (
               <p
                 key={`b${i}`}
-                style={{ margin: "0 0 10px", padding: "11px 14px", borderLeft: "3px solid #9B4A2F", background: "var(--paper2)", color: "#7A3722", fontSize: ".94rem", lineHeight: 1.8 }}
+                style={{ margin: "0 0 10px", padding: "11px 14px", borderLeft: "3px solid #9B4A2F", background: "var(--paper2)", color: "#7A3722", fontSize: ".94rem", lineHeight: 1.5 }}
               >
                 <strong>擋下發布 · {v.rule}</strong>
                 <br />
@@ -109,7 +109,7 @@ export default async function EditArticle({
             {check.warnings.map((v, i) => (
               <p
                 key={`w${i}`}
-                style={{ margin: "0 0 10px", padding: "11px 14px", borderLeft: "3px solid var(--mute)", background: "var(--paper2)", color: "var(--soft)", fontSize: ".94rem", lineHeight: 1.8 }}
+                style={{ margin: "0 0 10px", padding: "11px 14px", borderLeft: "3px solid var(--mute)", background: "var(--paper2)", color: "var(--soft)", fontSize: ".94rem", lineHeight: 1.5 }}
               >
                 <strong>提醒 · {v.rule}</strong>
                 <br />
@@ -119,7 +119,7 @@ export default async function EditArticle({
           </>
         )}
 
-        <p style={{ marginTop: 16, fontSize: ".86rem", color: "var(--mute)", lineHeight: 1.85 }}>
+        <p style={{ marginTop: 16, fontSize: ".86rem", color: "var(--mute)", lineHeight: 1.5 }}>
           規則來源：<code>000_Agent/knowledge/maporoo-brand-dna.md</code> 第三節（零商品置入）、
           2.7（禁詞）、2.8（AI 腔），以及 <code>compliance-redlines.md</code>。
         </p>
@@ -127,7 +127,7 @@ export default async function EditArticle({
 
       {/* ── 狀態與動作 ───────────────────────────────────── */}
       <Panel title={`狀態：${STATUS_LABEL[a.status] ?? a.status}`}>
-        <p style={{ marginBottom: 18, color: "var(--soft)", fontSize: ".95rem", lineHeight: 1.9 }}>
+        <p style={{ marginBottom: 18, color: "var(--soft)", fontSize: ".95rem", lineHeight: 1.5 }}>
           網址 <code>/read/{a.slug}</code>
           {a.published_at && `　·　發布於 ${a.published_at.slice(0, 16)}`}
           　·　最後編輯 {a.updated_at.slice(0, 16)}
@@ -204,7 +204,7 @@ export default async function EditArticle({
             hint="型態 B／C 必填。格式建議：媒體或節目名稱 / 日期 / 連結。查不到來源的說法不要寫進文章。"
           />
 
-          <label style={{ display: "block", marginBottom: 24, fontSize: ".95rem", fontWeight: 500, color: "var(--soft)", lineHeight: 1.8 }}>
+          <label style={{ display: "block", marginBottom: 24, fontSize: ".95rem", fontWeight: 500, color: "var(--soft)", lineHeight: 1.5 }}>
             <input type="checkbox" name="disclaimer" defaultChecked={a.disclaimer === 1} style={{ marginRight: 8 }} />
             文末附非醫療建議聲明（型態 B／C 必勾）
             <br />
@@ -222,7 +222,7 @@ export default async function EditArticle({
         {a.body_md.trim() ? (
           <div
             className="article-body"
-            style={{ maxWidth: 700, color: "var(--soft)", lineHeight: 2 }}
+            style={{ maxWidth: 700, color: "var(--soft)", lineHeight: 1.6 }}
             dangerouslySetInnerHTML={{ __html: renderMarkdown(a.body_md) }}
           />
         ) : (

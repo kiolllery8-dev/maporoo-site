@@ -25,7 +25,7 @@ export default async function AdminPasswordPage({
       <h1 style={{ margin: "16px 0 18px", fontSize: "1.8rem", fontWeight: 900 }}>
         {sp.first ? "先換一組你自己的密碼" : "修改密碼"}
       </h1>
-      <p style={{ marginBottom: 32, color: "var(--soft)", fontSize: ".97rem", lineHeight: 1.9 }}>
+      <p style={{ marginBottom: 32, color: "var(--soft)", fontSize: ".97rem", lineHeight: 1.5 }}>
         {sp.first
           ? "這個帳號目前用的是系統產生的初始密碼。換掉之後才能進入後台。"
           : "密碼更新後，其他裝置上的登入會全部登出，只保留你目前這一台。"}

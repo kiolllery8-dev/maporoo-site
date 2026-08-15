@@ -29,7 +29,7 @@ export default async function AdminLoginPage({
         <AdminSubmit>登入</AdminSubmit>
       </form>
 
-      <p style={{ marginTop: 34, fontSize: ".85rem", color: "var(--mute)", lineHeight: 1.9 }}>
+      <p style={{ marginTop: 34, fontSize: ".85rem", color: "var(--mute)", lineHeight: 1.5 }}>
         第一次使用？系統會在資料庫還沒有管理者時自動建立帳號，
         密碼印在伺服器 log（<code>docker logs maporoo</code>），只印一次。
       </p>
