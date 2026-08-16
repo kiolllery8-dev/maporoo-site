@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "./lib/site";
-import { collections, concerns, ingredientPages, products } from "./lib/catalog";
+import { collections, concerns, ingredientPages } from "./lib/catalog";
+import { shopProducts } from "./lib/shop";
 import { all } from "./lib/db";
 
 // Every indexable URL on the site. Generated from the catalogue, so adding a
@@ -51,7 +52,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  const productPages: MetadataRoute.Sitemap = products.map((p) => ({
+  const productPages: MetadataRoute.Sitemap = shopProducts().map((p) => ({
     url: `${SITE.url}/products/${p.slug}`,
     lastModified: now,
     changeFrequency: "weekly",

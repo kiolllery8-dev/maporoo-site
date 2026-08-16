@@ -5,7 +5,6 @@
 // the handoff needs to happen once a 金流 provider is chosen.
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { getProduct } from "./catalog";
 
 const KEY = "maporoo.cart.v1";
 
@@ -14,7 +13,6 @@ export type CartLine = { slug: string; qty: number };
 type CartApi = {
   lines: CartLine[];
   count: number;
-  subtotal: number;
   ready: boolean;
   add: (slug: string, qty?: number) => void;
   setQty: (slug: string, qty: number) => void;
@@ -31,10 +29,14 @@ function read(): CartLine[] {
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
-    // Drop lines whose product no longer exists, so a renamed slug can't
-    // wedge the bag into an unrenderable state.
+    // 只做形狀檢查，不比對商品是否存在。
+    //
+    // 舊版會過濾掉「不在 catalog.ts 裡」的 slug，那讓後台新增的商品一放進
+    // 購物袋就被丟掉——因為 catalog.ts 是程式碼檔，不含後台新增的商品。
+    // 認不出來的 slug 交給畫面與伺服器處理：畫面略過不顯示，
+    // 下單時伺服器本來就會忽略查不到的商品。
     return parsed
-      .filter((l) => l && typeof l.slug === "string" && getProduct(l.slug))
+      .filter((l) => l && typeof l.slug === "string")
       .map((l) => ({ slug: l.slug, qty: Math.max(1, Math.min(99, Number(l.qty) || 1)) }));
   } catch {
     return [];
@@ -63,14 +65,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const api = useMemo<CartApi>(() => {
     const count = lines.reduce((s, l) => s + l.qty, 0);
-    const subtotal = lines.reduce((s, l) => {
-      const p = getProduct(l.slug);
-      return p ? s + p.price * l.qty : s;
-    }, 0);
+    // 這裡刻意不提供金額。價格要用資料庫裡的，而這是 client component
+    // 讀不到資料庫；留一個永遠是 0 的 subtotal 只會讓人誤用。
+    // 需要金額的畫面自己拿伺服器傳來的商品表算（見 CartView / CheckoutForm）。
     return {
       lines,
       count,
-      subtotal,
       ready,
       add: (slug, qty = 1) =>
         setLines((prev) => {

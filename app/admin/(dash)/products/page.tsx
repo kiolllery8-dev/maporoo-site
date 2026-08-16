@@ -12,6 +12,7 @@ import {
   FilterTabs,
   PageHeader,
   Pill,
+  PrimaryLink,
   SearchBox,
   Table,
   Tag,
@@ -113,8 +114,13 @@ export default async function AdminProducts({
     return `/admin/products?${p.toString()}`;
   };
 
+  const OK_MSG: Record<string, string> = {
+    deleted: "商品已刪除。",
+  };
   const ok =
-    sp.ok === "import"
+    sp.ok && OK_MSG[sp.ok]
+      ? OK_MSG[sp.ok]
+      : sp.ok === "import"
       ? `匯入完成：新增 ${sp.created ?? 0} 筆，略過 ${sp.skipped ?? 0} 筆（已存在的不覆蓋）。`
       : undefined;
 
@@ -130,7 +136,9 @@ export default async function AdminProducts({
         }
         actions={
           mayEdit && (
-            <form action={importCatalogAction}>
+            <>
+              <PrimaryLink href="/admin/products/new">＋ 新增商品</PrimaryLink>
+              <form action={importCatalogAction}>
               <button
                 type="submit"
                 style={{
@@ -146,7 +154,8 @@ export default async function AdminProducts({
               >
                 從 catalog.ts 匯入（{catalogProducts.length} 支）
               </button>
-            </form>
+              </form>
+            </>
           )
         }
       />
@@ -155,12 +164,12 @@ export default async function AdminProducts({
 
       {counts.all === 0 ? (
         <Empty>
-          資料庫裡還沒有商品。按右上角的匯入，把現有的 {catalogProducts.length} 支商品帶進來。
+          資料庫裡還沒有商品，所以前台目前顯示的是程式碼裡那份（
+          <code>app/lib/catalog.ts</code>，{catalogProducts.length} 支）。
           <br />
           <br />
-          匯入之後前台仍然讀 <code>app/lib/catalog.ts</code>，不是讀資料庫。
-          切換讀取來源是下一步——這樣你可以先在後台把資料核對完再切，
-          不會中途出現半套資料的頁面。
+          按右上角的<strong style={{ color: "var(--ink)" }}>匯入</strong>把它們帶進資料庫。
+          匯入之後前台就改讀資料庫，你在這裡改什麼、網站就顯示什麼。
         </Empty>
       ) : (
         <>

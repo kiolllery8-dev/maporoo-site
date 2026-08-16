@@ -3,11 +3,18 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "../lib/cart";
-import { getProduct, heroImage } from "../lib/catalog";
+import type { CartProduct } from "../lib/cart-catalog";
 import { FREE_SHIPPING_OVER, shippingFor } from "../lib/shipping";
 
-export default function CartView() {
-  const { lines, subtotal, count, ready, setQty, remove } = useCart();
+// catalog 由伺服器傳進來（見 app/cart/page.tsx）。
+// 這是 client component，讀不到資料庫，所以商品資料必須用傳的。
+export default function CartView({ catalog }: { catalog: Record<string, CartProduct> }) {
+  const { lines, count, ready, setQty, remove } = useCart();
+  const getProduct = (slug: string) => catalog[slug];
+  const subtotal = lines.reduce((sum, l) => {
+    const p = catalog[l.slug];
+    return p ? sum + p.price * l.qty : sum;
+  }, 0);
 
   // 運費規則跟伺服器端共用同一份，避免畫面與實際收費對不起來。
   const shipping = shippingFor(subtotal);
@@ -45,7 +52,7 @@ export default function CartView() {
             {lines.map((l) => {
               const p = getProduct(l.slug);
               if (!p) return null;
-              const img = heroImage(p);
+              const img = p.image;
               return (
                 <div
                   key={l.slug}

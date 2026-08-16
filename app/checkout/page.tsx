@@ -3,6 +3,7 @@ import Link from "next/link";
 import { currentMember } from "../lib/auth";
 import { availableMethods, METHOD_LABEL } from "../lib/payment";
 import CheckoutForm from "./CheckoutForm";
+import { cartCatalog } from "../lib/cart-catalog";
 
 export const dynamic = "force-dynamic";
 
@@ -62,6 +63,7 @@ export default async function CheckoutPage({
       )}
 
       <CheckoutForm
+        catalog={cartCatalog()}
         methods={methods}
         defaults={{
           email: member?.email ?? "",

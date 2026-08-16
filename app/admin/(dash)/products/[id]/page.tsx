@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { get } from "../../../../lib/db";
 import { requireAdmin } from "../../../../lib/admin";
 import { AdminField, AdminLink, AdminNotice, AdminSelect, AdminSubmit, Panel } from "../../../ui";
-import { saveProductAction } from "../actions";
+import { deleteProductAction, saveProductAction } from "../actions";
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +34,7 @@ export default async function EditProduct({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ ok?: string }>;
+  searchParams: Promise<{ ok?: string; e?: string }>;
 }) {
   // 編輯頁直接要求 products.edit——沒有編輯權的人看列表就好，不必進到表單。
   await requireAdmin("products.edit");
@@ -50,7 +50,10 @@ export default async function EditProduct({
         <AdminLink href="/admin/products">← 回商品列表</AdminLink>
       </p>
 
-      <AdminNotice ok={sp.ok === "saved" ? "已儲存。" : undefined} />
+      <AdminNotice
+        ok={sp.ok === "saved" ? "已儲存。" : sp.ok === "created" ? "商品已建立，目前是草稿。確認內容後把狀態改成「上架中」就會出現在前台。" : undefined}
+        m={sp.e === "activedelete" ? "上架中的商品不能直接刪除。請先把狀態改成草稿，再刪。" : undefined}
+      />
 
       <Panel title={p.name}>
         <p style={{ marginBottom: 26, fontSize: ".9rem", color: "var(--mute)", lineHeight: 1.5 }}>
@@ -112,6 +115,21 @@ export default async function EditProduct({
 
           <AdminSubmit>儲存</AdminSubmit>
         </form>
+
+        <div style={{ marginTop: 34, paddingTop: 22, borderTop: "1px solid var(--line)" }}>
+          <form action={deleteProductAction}>
+            <input type="hidden" name="id" value={p.id} />
+            <button
+              type="submit"
+              style={{ cursor: "pointer", background: "none", border: "none", padding: 0, fontFamily: "inherit", fontSize: ".92rem", fontWeight: 700, color: "#9B4A2F" }}
+            >
+              刪除這個商品
+            </button>
+          </form>
+          <p style={{ marginTop: 8, fontSize: ".85rem", color: "var(--mute)", lineHeight: 1.6 }}>
+            上架中的商品不能刪，要先改成草稿。歷史訂單不受影響——訂單明細存的是下單當下的品名與價格。
+          </p>
+        </div>
       </Panel>
     </>
   );

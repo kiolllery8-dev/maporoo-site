@@ -10,7 +10,7 @@ import crypto from "node:crypto";
 import { redirect } from "next/navigation";
 import { get, run, transaction } from "../lib/db";
 import { currentMember } from "../lib/auth";
-import { getProduct } from "../lib/catalog";
+import { shopProduct } from "../lib/shop";
 import { shippingFor } from "../lib/shipping";
 import { availableMethods, type PaymentMethod } from "../lib/payment";
 
@@ -56,7 +56,7 @@ export async function placeOrderAction(form: FormData) {
 
   const lines: Array<{ slug: string; name: string; size: string; price: number; qty: number }> = [];
   for (let i = 0; i < slugs.length; i++) {
-    const p = getProduct(slugs[i]);
+    const p = shopProduct(slugs[i]);
     const qty = qtys[i];
     if (!p) continue; // 商品不存在就直接忽略這一列
     if (!Number.isFinite(qty) || qty < 1) continue;

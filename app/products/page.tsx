@@ -3,7 +3,10 @@ import Link from "next/link";
 import Reveal from "../components/Reveal";
 import ProductCard from "../components/ProductCard";
 import { BreadcrumbLd, ItemListLd } from "../components/JsonLd";
-import { collections, concerns, ingredientPages, products, productsByCollection } from "../lib/catalog";
+import { collections, concerns, ingredientPages } from "../lib/catalog";
+import { shopProducts, shopByCollection } from "../lib/shop";
+
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "全部商品｜MAPOROO",
@@ -15,7 +18,7 @@ export const metadata: Metadata = {
 export default function ProductsIndex() {
   return (
     <>
-      <ItemListLd items={products} name="MAPOROO 全部商品" />
+      <ItemListLd items={shopProducts()} name="MAPOROO 全部商品" />
       <BreadcrumbLd
         trail={[
           { name: "首頁", url: "/" },
@@ -28,7 +31,7 @@ export default function ProductsIndex() {
           <p className="eyebrow rv">ALL PRODUCTS</p>
           <h1 className="rv" style={{ marginTop: 16 }}>全部商品</h1>
           <p className="lead rv" style={{ marginTop: 22 }}>
-            MAPOROO 全系列共 {products.length} 件，分為三個品類。你也可以從肌膚需求或成分出發，找到適合現在的自己那一支。
+            MAPOROO 全系列共 {shopProducts().length} 件，分為三個品類。你也可以從肌膚需求或成分出發，找到適合現在的自己那一支。
           </p>
 
           {/* taxonomy entry points */}
@@ -63,7 +66,7 @@ export default function ProductsIndex() {
 
       <div className="wrap" style={{ padding: "84px 30px 100px" }}>
         {collections.map((c, ci) => {
-          const list = productsByCollection(c.slug);
+          const list = shopByCollection(c.slug);
           return (
             <section key={c.slug} id={c.slug} style={{ scrollMarginTop: 96, marginTop: ci === 0 ? 0 : 80 }}>
               <div

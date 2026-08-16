@@ -7,17 +7,17 @@ import Gallery from "../../components/Gallery";
 import AddToCart from "../../components/AddToCart";
 import { BreadcrumbLd, FaqLd, ProductLd } from "../../components/JsonLd";
 import {
-  products,
-  getProduct,
   getCollection,
   getConcern,
   getIngredientPage,
-  productsByCollection,
   imagesFor,
 } from "../../lib/catalog";
+import { shopProducts, shopProduct, shopByCollection } from "../../lib/shop";
+
+export const revalidate = 300;
 
 export function generateStaticParams() {
-  return products.map((p) => ({ slug: p.slug }));
+  return shopProducts().map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({
@@ -26,7 +26,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const p = getProduct(slug);
+  const p = shopProduct(slug);
   if (!p) return { title: "找不到商品｜MAPOROO" };
 
   const title = `${p.name}｜MAPOROO`;
@@ -50,12 +50,12 @@ export async function generateMetadata({
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const p = getProduct(slug);
+  const p = shopProduct(slug);
   if (!p) notFound();
 
   const col = getCollection(p.collection);
   const images = imagesFor(p);
-  const related = productsByCollection(p.collection)
+  const related = shopByCollection(p.collection)
     .filter((x) => x.slug !== p.slug)
     .slice(0, 4);
   const off = p.listPrice && p.listPrice > p.price;

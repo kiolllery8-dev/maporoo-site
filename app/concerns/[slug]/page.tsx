@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 import Reveal from "../../components/Reveal";
 import ProductCard from "../../components/ProductCard";
 import { BreadcrumbLd, ItemListLd } from "../../components/JsonLd";
-import { concerns, getConcern, productsByConcern } from "../../lib/catalog";
+import { concerns, getConcern } from "../../lib/catalog";
+import { shopByConcern } from "../../lib/shop";
+
+export const revalidate = 300;
 
 export function generateStaticParams() {
   return concerns.map((c) => ({ slug: c.slug }));
@@ -18,7 +21,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const c = getConcern(slug);
   if (!c) return { title: "找不到頁面｜MAPOROO" };
-  const n = productsByConcern(slug).length;
+  const n = shopByConcern(slug).length;
   const title = `${c.zh}｜MAPOROO 保養建議與商品`;
   const description = `${c.d}MAPOROO 為此需求配製的商品共 ${n} 件，附上挑選的原則與使用順序。`;
   return {
@@ -33,7 +36,7 @@ export default async function ConcernPage({ params }: { params: Promise<{ slug: 
   const { slug } = await params;
   const c = getConcern(slug);
   if (!c) notFound();
-  const list = productsByConcern(slug);
+  const list = shopByConcern(slug);
 
   return (
     <>

@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 import Reveal from "../../components/Reveal";
 import ProductCard from "../../components/ProductCard";
 import { BreadcrumbLd, ItemListLd } from "../../components/JsonLd";
-import { collections, getCollection, productsByCollection } from "../../lib/catalog";
+import { collections, getCollection } from "../../lib/catalog";
+import { shopByCollection } from "../../lib/shop";
+
+export const revalidate = 300;
 
 export function generateStaticParams() {
   return collections.map((c) => ({ slug: c.slug }));
@@ -18,7 +21,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const c = getCollection(slug);
   if (!c) return { title: "找不到分類｜MAPOROO" };
-  const n = productsByCollection(slug).length;
+  const n = shopByCollection(slug).length;
   const title = `${c.zh} ${c.en}｜MAPOROO`;
   const description = `${c.d}MAPOROO ${c.zh}系列共 ${n} 件商品。`;
   return {
@@ -33,7 +36,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
   const { slug } = await params;
   const c = getCollection(slug);
   if (!c) notFound();
-  const list = productsByCollection(slug);
+  const list = shopByCollection(slug);
 
   return (
     <>

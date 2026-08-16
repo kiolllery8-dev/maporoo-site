@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 import Reveal from "../../components/Reveal";
 import ProductCard from "../../components/ProductCard";
 import { BreadcrumbLd, FaqLd } from "../../components/JsonLd";
-import { ingredientPages, getIngredientPage, productsByIngredient } from "../../lib/catalog";
+import { ingredientPages, getIngredientPage } from "../../lib/catalog";
+import { shopByIngredient } from "../../lib/shop";
+
+export const revalidate = 300;
 
 export function generateStaticParams() {
   return ingredientPages.map((i) => ({ slug: i.slug }));
@@ -32,7 +35,7 @@ export default async function IngredientPage({ params }: { params: Promise<{ slu
   const { slug } = await params;
   const ing = getIngredientPage(slug);
   if (!ing) notFound();
-  const list = productsByIngredient(slug);
+  const list = shopByIngredient(slug);
 
   return (
     <>

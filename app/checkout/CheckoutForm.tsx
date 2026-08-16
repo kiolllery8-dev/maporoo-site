@@ -5,13 +5,15 @@
 
 import Link from "next/link";
 import { useCart } from "../lib/cart";
-import { getProduct } from "../lib/catalog";
+import type { CartProduct } from "../lib/cart-catalog";
 import { shippingFor } from "../lib/shipping";
 import { placeOrderAction } from "./actions";
 
 type Props = {
   methods: Array<{ value: string; label: string }>;
   defaults: { email: string; name: string; phone: string };
+  // 商品資料由伺服器傳進來，畫面上的價格才會跟 actions.ts 收的錢一致。
+  catalog: Record<string, CartProduct>;
 };
 
 const inputStyle: React.CSSProperties = {
@@ -44,8 +46,13 @@ function Label({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function CheckoutForm({ methods, defaults }: Props) {
-  const { lines, subtotal, count, ready } = useCart();
+export default function CheckoutForm({ methods, defaults, catalog }: Props) {
+  const { lines, count, ready } = useCart();
+  const getProduct = (slug: string) => catalog[slug];
+  const subtotal = lines.reduce((sum, l) => {
+    const p = catalog[l.slug];
+    return p ? sum + p.price * l.qty : sum;
+  }, 0);
 
   if (!ready) return <p style={{ marginTop: 40, color: "var(--mute)" }}>載入中⋯</p>;
 
