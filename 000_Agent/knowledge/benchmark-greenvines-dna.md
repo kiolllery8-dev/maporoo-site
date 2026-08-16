@@ -92,7 +92,7 @@
 
 綠藤的識別是「Nature's Code 自然密碼」：綠色漸層、自然數學、再生玻璃材質敘事。
 
-**MAPOROO 不抄這一套**——我們的視覺是紙感米白 ＋ 暖調近黑 ＋ 細線 ＋ 大留白（見 `maporoo-brand-dna.md` 第四節）。
+**MAPOROO 不抄這一套**——MAPOROO 的視覺是紙感米白 ＋ 暖調近黑 ＋ 細線分隔 ＋ 緊湊排版（見 `maporoo-brand-dna.md` 第四節）。
 
 值得學的是**方法**：
 
