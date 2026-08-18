@@ -1,14 +1,27 @@
 import Link from "next/link";
 import { collections, concerns, ingredientPages } from "../lib/catalog";
+import { loadContent, text } from "../lib/content";
+import SocialLinks from "./SocialLinks";
 
 export default function Footer() {
+  // 頁尾的文字與社群網址都讀資料庫，後台改了就會變。
+  const c = loadContent();
+  const t = (k: string) => text(c, k);
+
   return (
     <footer style={{ borderTop: "1px solid var(--line)", padding: "66px 0 42px", background: "var(--paper2)" }}>
       <div className="wrap">
         <p className="font-black text-[1.5rem] tracking-[.3em]">MAPOROO</p>
-        <p style={{ marginTop: 14, color: "var(--soft)", fontSize: "1rem", maxWidth: 420, lineHeight: 1, fontWeight: 500 }}>
-          以實證成分於澳洲配製，有效而從容的日常保養。適合各種膚況。
+        <p style={{ marginTop: 14, color: "var(--soft)", fontSize: "1rem", maxWidth: 420, lineHeight: 1, fontWeight: 500, whiteSpace: "pre-line" }}>
+          {t("footer.tagline")}
         </p>
+
+        <SocialLinks
+          heading={t("social.heading")}
+          facebook={t("social.facebook")}
+          line={t("social.line")}
+          instagram={t("social.instagram")}
+        />
 
         {/* 五欄：品類、需求、成分、會員與訂單、合作。
             會員那一欄是 2026-08-13 補的——改版時把會員入口整個弄丟了，
@@ -53,7 +66,7 @@ export default function Footer() {
         {/* 化粧品免責聲明已於 2026-08-13 依老闆指示移除。
             風險評估與後續建議記錄在 000_Agent/knowledge/compliance-redlines.md 第五節第 9 項。 */}
         <p style={{ fontSize: ".78rem", letterSpacing: ".14em", color: "var(--mute)", fontWeight: 500 }}>
-          © 2026 MAPOROO
+          {t("footer.copyright")}
         </p>
       </div>
     </footer>

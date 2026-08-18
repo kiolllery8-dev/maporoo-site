@@ -107,9 +107,49 @@ export const BLOCKS: Block[] = [
   { key: "home.service.eyebrow", group: "首頁 · 服務", label: "上方小標", fallback: "官網服務" },
   { key: "home.service.heading", group: "首頁 · 服務", label: "標題", fallback: "MAPOROO 在你身邊" },
 
-  // 頁尾的文字還沒開放編輯：Footer 在根 layout 裡，讓它讀資料庫會使
-  // 全站每一頁都變成動態渲染，商品頁與文章頁的靜態產生會整個失效。
-  // 要開放的話得先把 Footer 從根 layout 拆出來，那是另一件事。
+  // ── 社群與聯絡 ────────────────────────────────────────
+  // 頁尾在根 layout 裡，這幾個 key 是全站共用的。
+  // 留空的欄位前台就不顯示那顆按鈕，不會出現連到空白的圖示。
+  {
+    key: "social.facebook",
+    group: "社群與聯絡",
+    label: "FACEBOOK 粉絲專頁網址",
+    fallback: "",
+    hint: "完整網址，例如 https://www.facebook.com/maporoo。留空就不顯示 FB 按鈕。",
+  },
+  {
+    key: "social.line",
+    group: "社群與聯絡",
+    label: "LINE 官方帳號網址",
+    fallback: "",
+    hint: "例如 https://lin.ee/xxxxxxx 或 https://line.me/R/ti/p/@maporoo。留空就不顯示 LINE 按鈕。",
+  },
+  {
+    key: "social.instagram",
+    group: "社群與聯絡",
+    label: "INSTAGRAM 網址",
+    fallback: "",
+    hint: "例如 https://www.instagram.com/maporoo。留空就不顯示。",
+  },
+  {
+    key: "social.heading",
+    group: "社群與聯絡",
+    label: "頁尾社群區標題",
+    fallback: "追蹤 MAPOROO",
+  },
+  {
+    key: "footer.tagline",
+    group: "社群與聯絡",
+    label: "頁尾品牌介紹",
+    fallback: "以實證成分於澳洲配製，有效而從容的日常保養。適合各種膚況。",
+    multiline: true,
+  },
+  {
+    key: "footer.copyright",
+    group: "社群與聯絡",
+    label: "頁尾版權文字",
+    fallback: "© 2026 MAPOROO",
+  },
 ];
 
 const BY_KEY = new Map(BLOCKS.map((b) => [b.key, b]));

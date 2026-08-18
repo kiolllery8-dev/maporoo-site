@@ -27,3 +27,6 @@ tsconfig.tsbuildinfo
 .claude/settings.local.json
 .claude/settings.local.json.tmp.*
 .claude/worktrees/
+
+# rm -rf .next 遇到被鎖住的檔案時，msys 會把它改名丟在根目錄
+.msys*
