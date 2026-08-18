@@ -1,6 +1,7 @@
 import { requireAdmin } from "../../../lib/admin";
 import { BLOCKS, loadContent } from "../../../lib/content";
 import { AdminField, AdminNotice, AdminSubmit, InlineSubmit, Note, PageHeader, Panel } from "../../ui";
+import RichTextEditor from "../../RichTextEditor";
 import { resetContentAction, saveContentAction } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -62,19 +63,29 @@ export default async function ContentPage({
               )
             }
           >
-            <form action={saveContentAction} className="max-w-[720px]">
+            <form action={saveContentAction}>
               <input type="hidden" name="__group" value={g} />
-              {blocks.map((b) => (
-                <AdminField
-                  key={b.key}
-                  label={b.label}
-                  name={b.key}
-                  defaultValue={content.get(b.key) ?? b.fallback}
-                  textarea={b.multiline}
-                  rows={b.multiline ? 3 : undefined}
-                  hint={b.hint}
-                />
-              ))}
+              {blocks.map((b) =>
+                b.multiline ? (
+                  // 多行的段落給所見即所得：左邊寫、右邊即時看到前台的排版。
+                  <RichTextEditor
+                    key={b.key}
+                    label={b.label}
+                    name={b.key}
+                    defaultValue={content.get(b.key) ?? b.fallback}
+                    rows={6}
+                    hint={b.hint}
+                  />
+                ) : (
+                  <AdminField
+                    key={b.key}
+                    label={b.label}
+                    name={b.key}
+                    defaultValue={content.get(b.key) ?? b.fallback}
+                    hint={b.hint}
+                  />
+                )
+              )}
               <AdminSubmit>儲存這一區</AdminSubmit>
             </form>
           </Panel>

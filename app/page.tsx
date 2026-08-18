@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import Hero from "./components/Hero";
-import { loadContent, text } from "./lib/content";
+import { loadContent, richText, text } from "./lib/content";
+import Rich from "./components/Rich";
 import Reveal from "./components/Reveal";
 import {
   collections,
@@ -39,6 +40,7 @@ export const revalidate = 300;
 export default function Home() {
   const c = loadContent();
   const t = (k: string) => text(c, k);
+  const rich = (k: string) => richText(c, k);
 
   return (
     <>
@@ -65,9 +67,7 @@ export default function Home() {
         <div className="wrap-narrow">
           <p className="eyebrow rv">{t("home.brand.eyebrow")}</p>
           <h2 className="rv" style={{ marginTop: 12 }}>{t("home.brand.heading")}</h2>
-          <p className="lead rv" style={{ marginTop: 14, maxWidth: 700 }}>
-            {t("home.brand.body")}
-          </p>
+          <Rich className="lead rv" html={rich("home.brand.body")} />
           <div className="rv" style={{ marginTop: 30 }}><a className="lnk-dark" href="#story">MAPOROO 的故事</a></div>
         </div>
       </section>
@@ -114,9 +114,7 @@ export default function Home() {
         <div className="wrap">
           <p className="eyebrow rv">COLLECTIONS</p>
           <h2 className="rv" style={{ marginTop: 10, marginBottom: 8 }}>{t("home.collections.heading")}</h2>
-          <p className="lead rv" style={{ marginBottom: 32 }}>
-            {t("home.collections.lead")}
-          </p>
+          <Rich className="lead rv" html={rich("home.collections.lead")} />
           {collections.map((c) => (
             <div key={c.zh} className="rv" style={{ padding: "20px 0", borderTop: "1px solid var(--line)" }}>
               <div style={{ display: "flex", alignItems: "baseline", gap: 20, flexWrap: "wrap" }}>
@@ -157,9 +155,7 @@ export default function Home() {
         <div className="wrap">
           <p className="eyebrow rv">{t("home.ingredients.eyebrow")}</p>
           <h2 className="rv" style={{ marginTop: 10, marginBottom: 8 }}>{t("home.ingredients.heading")}</h2>
-          <p className="lead rv" style={{ marginBottom: 22 }}>
-            {t("home.ingredients.lead")}
-          </p>
+          <Rich className="lead rv" html={rich("home.ingredients.lead")} />
           <div className="grid g4">
             {ingredients.map((g) => (
               <div key={g.zh} className="rv ing">
@@ -196,9 +192,7 @@ export default function Home() {
         <div className="wrap-narrow">
           <p className="eyebrow rv">{t("home.story.eyebrow")}</p>
           <h2 className="rv" style={{ marginTop: 10 }}>{t("home.story.heading")}</h2>
-          <p className="lead rv" style={{ marginTop: 14 }}>
-            {t("home.story.body")}
-          </p>
+          <Rich className="lead rv" html={rich("home.story.body")} />
           <div className="rv" style={{ marginTop: 22, display: "grid", gap: 14 }}>
             {pillars.map((p) => (
               <div key={p.k} style={{ borderTop: "1px solid var(--line)", paddingTop: 12 }}>
@@ -216,9 +210,7 @@ export default function Home() {
         <div className="wrap">
           <p className="eyebrow rv" style={{ color: "#B9B3A4" }}>{t("home.alliance.eyebrow")}</p>
           <h2 className="rv" style={{ marginTop: 18, color: "#F5F1E8" }}>{t("home.alliance.heading")}</h2>
-          <p className="lead rv" style={{ marginTop: 24, color: "rgba(237,232,221,.78)", maxWidth: 640 }}>
-            {t("home.alliance.lead")}
-          </p>
+          <Rich className="lead rv" html={rich("home.alliance.lead")} />
           <div className="grid g2 rv" style={{ marginTop: 48, gap: 24 }}>
             {alliance.map((a) => (
               <div key={a.no} className="alliance-card" style={{ background: "#26241f", borderColor: "#3a372f" }}>

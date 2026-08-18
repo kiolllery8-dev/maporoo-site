@@ -225,3 +225,20 @@ ul.clean li { padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 
   border: 1px solid var(--line); color: var(--soft); background: var(--paper);
 }
 .social-row a:hover { color: var(--ink); border-color: var(--ink); }
+
+/* 後台 Markdown 文案在前台的排版。間距照緊湊那組數字，不要另外撐開。 */
+.cms > :first-child { margin-top: 0; }
+.cms > :last-child { margin-bottom: 0; }
+.cms p { margin: 0 0 10px; }
+.cms h2 { font-size: clamp(20px, 2.4vw, 26px); font-weight: 900; color: var(--ink); line-height: 1.22; margin: 18px 0 8px; }
+.cms h3 { font-size: 1.05rem; font-weight: 700; color: var(--ink); margin: 14px 0 6px; }
+.cms ul, .cms ol { margin: 0 0 12px; padding-left: 1.3em; }
+.cms ul li { list-style: disc; }
+.cms ol li { list-style: decimal; }
+.cms li { margin-bottom: 4px; }
+.cms blockquote { margin: 12px 0; padding-left: 14px; border-left: 2px solid var(--line); color: var(--mute); }
+.cms img { display: block; width: 100%; height: auto; margin: 14px 0; background: var(--paper2); }
+.cms figure { margin: 14px 0; }
+.cms figcaption { margin-top: 6px; font-size: .86rem; color: var(--mute); }
+.ft-tagline { margin-top: 14px; max-width: 420px; color: var(--soft); font-size: 1rem; font-weight: 500; }
+.ft-tagline p { line-height: 1; margin: 0 0 4px; }

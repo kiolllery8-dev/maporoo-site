@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { get } from "../../../../lib/db";
 import { requireAdmin } from "../../../../lib/admin";
 import { checkArticle, DISCLAIMER_TEXT } from "../../../../lib/article-guard";
-import MarkdownEditor from "./MarkdownEditor";
+import RichTextEditor from "../../../RichTextEditor";
 import { ArticleImagesPanel } from "../../../ArticleImagesPanel";
 import { listMedia } from "../../../../lib/media";
 import { UPLOAD_ERRORS } from "../../../../lib/uploads";
@@ -226,7 +226,7 @@ export default async function EditArticle({
             />
           </div>
 
-          <MarkdownEditor name="body_md" defaultValue={a.body_md} rows={24} />
+          <RichTextEditor label="內文（MARKDOWN）" name="body_md" defaultValue={a.body_md} rows={24} />
 
           <div className="max-w-[620px]">
             <AdminField

@@ -12,6 +12,7 @@ import "server-only";
 // 新增一段可編輯文案的方式：在 BLOCKS 加一筆，然後在頁面上用 text(key) 取值。
 
 import { all } from "./db";
+import { renderMarkdown } from "./markdown";
 
 export type Block = {
   key: string;
@@ -165,6 +166,15 @@ export function loadContent(): Map<string, string> {
     // 資料庫還沒建好時（例如 build 階段）就全部走 fallback。
   }
   return map;
+}
+
+/**
+ * 取一段多行文案並轉成 HTML。
+ * 後台的多行欄位是所見即所得的 Markdown 編輯器，前台要照同一支轉譯器排版，
+ * 不然後台看到的跟上線的會是兩回事。
+ */
+export function richText(content: Map<string, string>, key: string): string {
+  return renderMarkdown(text(content, key));
 }
 
 /** 取一段文案：資料庫優先，沒有就用程式碼裡的預設值。 */

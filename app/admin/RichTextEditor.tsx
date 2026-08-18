@@ -10,7 +10,7 @@
 // 桌機左右並排並且捲動同步；手機寬度不夠並排，改成「寫作／對照」兩個頁籤。
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { renderMarkdown } from "../../../../lib/markdown";
+import { renderMarkdown } from "../lib/markdown";
 
 type Tool =
   | { kind: "prefix"; label: string; title: string; mark: string; ordered?: boolean }
@@ -29,14 +29,18 @@ const TOOLS: Tool[] = [
   { kind: "wrap", label: "`程式`", title: "行內程式碼", mark: "`" },
 ];
 
-export default function MarkdownEditor({
+export default function RichTextEditor({
+  label,
   name,
   defaultValue,
   rows = 24,
+  hint,
 }: {
+  label: string;
   name: string;
   defaultValue: string;
   rows?: number;
+  hint?: string;
 }) {
   const [value, setValue] = useState(defaultValue);
   const [tab, setTab] = useState<"write" | "preview">("write");
@@ -163,7 +167,7 @@ export default function MarkdownEditor({
   return (
     <div className="mb-4">
       <div className="flex items-center justify-between gap-3 flex-wrap mb-1.5">
-        <span className="adm-label mb-0">內文（MARKDOWN）</span>
+        <span className="adm-label mb-0">{label}</span>
         {/* 手機用頁籤切換，桌機直接左右並排 */}
         <div className="flex lg:hidden gap-1 text-xs">
           {(["write", "preview"] as const).map((k) => (
@@ -227,7 +231,8 @@ export default function MarkdownEditor({
         <span>{stats.paragraphs} 段</span>
         <span>{stats.headings} 個標題</span>
         <span className="hidden sm:inline">
-          支援 ## 標題、### 小標、- 清單、1. 清單、&gt; 引言、**粗體**、[文字](網址)。不支援原始 HTML。
+          {hint ??
+            "支援 ## 標題、### 小標、- 清單、1. 清單、> 引言、**粗體**、[文字](網址)。不支援原始 HTML。"}
         </span>
       </div>
     </div>

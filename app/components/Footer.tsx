@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { collections, concerns, ingredientPages } from "../lib/catalog";
-import { loadContent, text } from "../lib/content";
+import { loadContent, richText, text } from "../lib/content";
+import Rich from "./Rich";
 import SocialLinks from "./SocialLinks";
 
 export default function Footer() {
@@ -12,9 +13,10 @@ export default function Footer() {
     <footer style={{ borderTop: "1px solid var(--line)", padding: "66px 0 42px", background: "var(--paper2)" }}>
       <div className="wrap">
         <p className="font-black text-[1.5rem] tracking-[.3em]">MAPOROO</p>
-        <p style={{ marginTop: 14, color: "var(--soft)", fontSize: "1rem", maxWidth: 420, lineHeight: 1, fontWeight: 500, whiteSpace: "pre-line" }}>
-          {t("footer.tagline")}
-        </p>
+        <Rich
+          className="ft-tagline"
+          html={richText(c, "footer.tagline")}
+        />
 
         <SocialLinks
           heading={t("social.heading")}
