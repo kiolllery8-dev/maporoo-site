@@ -21,6 +21,20 @@ function escapeHtml(s: string) {
   return s.replace(/[&<>"']/g, (c) => ESCAPE[c]);
 }
 
+/**
+ * 圖片來源只收站內路徑（/uploads/ 是後台上傳的，/images/ 是隨程式碼進版的）。
+ * 不收外站圖：next.config 的 remotePatterns 是空的，外連圖等於把版面交給
+ * 別人的主機管，對方換圖或關站，我們的文章就破圖。
+ */
+function safeImgSrc(raw: string): string | null {
+  const url = raw.trim();
+  if (!url.startsWith("/") || url.startsWith("//")) return null;
+  if (!/^\/(uploads|images)\//.test(url)) return null;
+  // 只看開頭前綴會漏掉 /uploads/../../something——把跳出去的路徑一併擋掉。
+  if (url.includes("..") || url.includes("%2e") || url.includes("%2E")) return null;
+  return url;
+}
+
 /** 只放行 http、https 與站內的相對路徑。javascript: 之類一律擋掉。 */
 function safeHref(raw: string): string | null {
   const url = raw.trim();
@@ -36,6 +50,17 @@ function inline(escaped: string): string {
 
   // `程式碼`
   out = out.replace(/`([^`]+)`/g, "<code>$1</code>");
+
+  // ![替代文字](圖片路徑)——一定要排在連結前面，
+  // 否則 [文字](網址) 會先吃掉後半段，留下一個孤零零的驚嘆號。
+  out = out.replace(
+    /!\[([^\]]*)\]\(((?:[^()\s]|\([^()]*\))*)\)/g,
+    (_whole, alt: string, src: string) => {
+      const safe = safeImgSrc(src);
+      if (!safe) return alt;
+      return `<img src="${safe}" alt="${alt}" loading="lazy" decoding="async" />`;
+    }
+  );
 
   // [文字](網址)
   //
@@ -98,6 +123,20 @@ export function renderMarkdown(src: string): string {
     if (!line.trim()) {
       flushAll();
       continue;
+    }
+
+    // 整行只有一張圖 → 圖說式區塊。替代文字同時當圖說用。
+    const fig = line.match(/^!\[([^\]]*)\]\(((?:[^()\s]|\([^()]*\))*)\)$/);
+    if (fig) {
+      const src = safeImgSrc(fig[2]);
+      if (src) {
+        flushAll();
+        const cap = fig[1] ? `<figcaption>${inline(fig[1])}</figcaption>` : "";
+        out.push(
+          `<figure><img src="${src}" alt="${fig[1]}" loading="lazy" decoding="async" />${cap}</figure>`
+        );
+        continue;
+      }
     }
 
     const h3 = line.match(/^###\s+(.*)$/);

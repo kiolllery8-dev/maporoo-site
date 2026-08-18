@@ -33,6 +33,11 @@ export type Product = {
   suits: string;
   origin?: string;
   faq: Faq[];
+  /**
+   * 後台相簿的圖。只有從資料庫來的商品會帶這個欄位；
+   * 沒有的話 imagesFor() 會退回 product-images.ts 那份 SKU 對照。
+   */
+  images?: string[];
 };
 
 export type Collection = { slug: string; zh: string; en: string; d: string; intro: string };
@@ -842,6 +847,8 @@ export function productsByIngredient(slug: string): Product[] {
   return products.filter((p) => p.ingredients.includes(slug));
 }
 export function imagesFor(p: Product): string[] {
+  // 後台相簿優先；沒設過相簿的商品才看 SKU 對照那份。
+  if (p.images && p.images.length) return p.images;
   return productImages[p.sku] ?? [];
 }
 export function heroImage(p: Product): string | undefined {

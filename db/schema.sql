@@ -232,3 +232,30 @@ CREATE TABLE IF NOT EXISTS daily_stats (
   new_members  INTEGER NOT NULL DEFAULT 0,
   updated_at   TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+-- ── 媒體庫 ─────────────────────────────────────────────────
+-- 後台上傳的每一張圖都在這裡留一筆。檔案本體放 public/uploads/
+-- （Docker 掛 named volume，重建容器不會掉）。
+-- 同一張圖可以同時當商品圖與文章插圖，所以媒體與用途分兩張表。
+CREATE TABLE IF NOT EXISTS media (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  url         TEXT NOT NULL UNIQUE,              -- /uploads/xxxx.jpg
+  filename    TEXT NOT NULL DEFAULT '',          -- 上傳時的原始檔名，只做顯示用
+  mime        TEXT NOT NULL DEFAULT '',
+  bytes       INTEGER NOT NULL DEFAULT 0,
+  alt         TEXT NOT NULL DEFAULT '',          -- 替代文字，給讀者與搜尋引擎
+  uploaded_by TEXT NOT NULL DEFAULT '',
+  created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_media_created ON media(created_at DESC);
+
+-- ── 商品相簿 ───────────────────────────────────────────────
+-- sort 最小的那張就是封面。刪商品時一併刪掉關聯（檔案留在媒體庫）。
+CREATE TABLE IF NOT EXISTS product_images (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  url        TEXT NOT NULL,
+  alt        TEXT NOT NULL DEFAULT '',
+  sort       INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_product_images_product ON product_images(product_id, sort);

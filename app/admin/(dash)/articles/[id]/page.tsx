@@ -4,6 +4,9 @@ import { get } from "../../../../lib/db";
 import { requireAdmin } from "../../../../lib/admin";
 import { checkArticle, DISCLAIMER_TEXT } from "../../../../lib/article-guard";
 import MarkdownEditor from "./MarkdownEditor";
+import { ArticleImagesPanel } from "../../../ArticleImagesPanel";
+import { listMedia } from "../../../../lib/media";
+import { UPLOAD_ERRORS } from "../../../../lib/uploads";
 import {
   AdminCheckbox,
   AdminField,
@@ -34,6 +37,7 @@ type Article = {
   category: string;
   title: string;
   description: string;
+  cover: string;
   reading_time: string;
   body_md: string;
   sources_json: string;
@@ -47,6 +51,11 @@ const OK: Record<string, string> = {
   saved: "已儲存。",
   published: "已發布。文章現在出現在 /read 上。",
   unpublished: "已下架，狀態回到草稿。前台看不到了。",
+  uploaded: "圖片已上傳，在下面的圖庫裡。",
+  cover: "封面已更新。",
+  coverclear: "封面已移除。",
+  inserted: "圖片語法已接到內文最後面。把那一行剪到想要的位置，再按儲存。",
+  alt: "替代文字已儲存。",
 };
 
 export default async function EditArticle({
@@ -54,7 +63,7 @@ export default async function EditArticle({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ ok?: string; e?: string; blocked?: string }>;
+  searchParams: Promise<{ ok?: string; e?: string; blocked?: string; n?: string }>;
 }) {
   await requireAdmin("articles.manage");
   const { id } = await params;
@@ -80,7 +89,10 @@ export default async function EditArticle({
     kind: a.kind,
     sources,
     disclaimer: a.disclaimer === 1,
+    cover: a.cover,
   });
+
+  const library = listMedia();
 
   const published = a.status === "published";
   const clean = check.blocking.length === 0 && check.warnings.length === 0;
@@ -117,7 +129,9 @@ export default async function EditArticle({
             ? "這篇還不能發布——下面「上架檢查」列出的問題要先處理完。"
             : sp.e === "publisheddelete"
               ? "已發布的文章不能直接刪除。請先下架，再刪。"
-              : undefined
+              : sp.e
+                ? UPLOAD_ERRORS[sp.e] ?? undefined
+                : undefined
         }
       />
 
@@ -235,6 +249,8 @@ export default async function EditArticle({
           </div>
         </form>
       </Panel>
+
+      <ArticleImagesPanel articleId={a.id} cover={a.cover} library={library} />
     </>
   );
 }

@@ -14,6 +14,7 @@ type Article = {
   title: string;
   description: string;
   category: string;
+  cover: string;
   reading_time: string;
   body_md: string;
   sources_json: string;
@@ -23,7 +24,7 @@ type Article = {
 
 function load(slug: string) {
   return get<Article>(
-    `SELECT id, slug, title, description, category, reading_time, body_md,
+    `SELECT id, slug, title, description, category, cover, reading_time, body_md,
             sources_json, disclaimer, published_at
        FROM articles WHERE slug = ? AND status = 'published'`,
     slug
@@ -48,6 +49,7 @@ export async function generateMetadata({
       description: a.description,
       type: "article",
       url: `/read/${a.slug}`,
+      images: a.cover ? [a.cover] : undefined,
     },
   };
 }
@@ -82,6 +84,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     author: { "@type": "Organization", name: "MAPOROO" },
     publisher: { "@type": "Organization", name: "MAPOROO" },
     mainEntityOfPage: `${SITE.url}/read/${a.slug}`,
+    image: a.cover ? `${SITE.url}${a.cover}` : undefined,
   };
 
   return (
@@ -97,6 +100,17 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         {a.published_at ? a.published_at.slice(0, 10) : ""}
         {a.reading_time ? `　·　閱讀 ${a.reading_time}` : ""}
       </p>
+
+      {a.cover && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={a.cover}
+          alt=""
+          className="article-cover"
+          loading="eager"
+          decoding="async"
+        />
+      )}
 
       <div
         className="article-body"

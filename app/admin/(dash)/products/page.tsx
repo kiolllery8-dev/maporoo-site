@@ -4,6 +4,7 @@ import { requireAdmin } from "../../../lib/admin";
 import { can } from "../../../lib/permissions";
 import { products as catalogProducts } from "../../../lib/catalog";
 import { productImages } from "../../../lib/product-images";
+import { imagesByProductId } from "../../../lib/media";
 import {
   AdminLink,
   AdminNotice,
@@ -98,6 +99,10 @@ export default async function AdminProducts({
     PAGE_SIZE,
     (page - 1) * PAGE_SIZE
   );
+
+  // 相簿封面一次撈完，列表每一列不用各查一次。
+  const gallery = imagesByProductId();
+  const coverOf = (row: Row) => gallery.get(row.id)?.[0] ?? productImages[row.sku]?.[0];
 
   // 頁籤數字看全部，不受目前搜尋條件影響。
   const n = (sql: string, ...p: (string | number)[]) => get<{ c: number }>(sql, ...p)?.c ?? 0;
@@ -204,7 +209,7 @@ export default async function AdminProducts({
               {/* 手機：兩欄卡片格 */}
               <div className="md:hidden grid grid-cols-2 gap-3">
                 {rows.map((p) => {
-                  const img = productImages[p.sku]?.[0];
+                  const img = coverOf(p);
                   const low = p.track_stock === 1 && p.stock <= LOW_STOCK;
                   const listed = p.status === "active";
                   return (
@@ -275,7 +280,7 @@ export default async function AdminProducts({
               <div className="hidden md:block">
                 <Table head={["商品", "分類", "肌膚需求", "售價", "庫存", "狀態", "操作"]}>
                   {rows.map((p) => {
-                    const img = productImages[p.sku]?.[0];
+                    const img = coverOf(p);
                     const low = p.track_stock === 1 && p.stock <= LOW_STOCK;
                     const listed = p.status === "active";
                     const concerns = parseConcerns(p.concerns_json);

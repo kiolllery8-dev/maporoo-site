@@ -18,6 +18,7 @@ type Row = {
   title: string;
   description: string;
   category: string;
+  cover: string;
   reading_time: string;
   body_md: string;
   published_at: string | null;
@@ -25,7 +26,7 @@ type Row = {
 
 export default function ReadIndex() {
   const rows = all<Row>(
-    `SELECT slug, title, description, category, reading_time, body_md, published_at
+    `SELECT slug, title, description, category, cover, reading_time, body_md, published_at
        FROM articles
       WHERE status = 'published'
       ORDER BY published_at DESC, id DESC`
@@ -61,7 +62,14 @@ export default function ReadIndex() {
 
           <div style={{ marginTop: 42 }}>
             {rows.map((r) => (
-              <article key={r.slug} style={{ padding: "30px 0", borderTop: "1px solid var(--line)" }}>
+              <article key={r.slug} className="read-row" style={{ padding: "30px 0", borderTop: "1px solid var(--line)" }}>
+                {r.cover && (
+                  <Link href={`/read/${r.slug}`} className="read-thumb">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={r.cover} alt="" loading="lazy" decoding="async" />
+                  </Link>
+                )}
+                <div>
                 <p className="en" style={{ marginBottom: 10 }}>{r.category}</p>
                 <h2 style={{ fontSize: "clamp(20px,2.6vw,28px)", fontWeight: 700, lineHeight: 1.5 }}>
                   <Link href={`/read/${r.slug}`}>{r.title}</Link>
@@ -73,6 +81,7 @@ export default function ReadIndex() {
                   {r.published_at ? r.published_at.slice(0, 10) : ""}
                   {r.reading_time ? `　·　閱讀 ${r.reading_time}` : ""}
                 </p>
+                </div>
               </article>
             ))}
           </div>

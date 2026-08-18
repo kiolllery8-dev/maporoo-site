@@ -44,6 +44,7 @@ export function checkArticle(input: {
   kind: string; // A / B / C / D
   sources: unknown[];
   disclaimer: boolean;
+  cover?: string;
 }): GuardResult {
   const blocking: Violation[] = [];
   const warnings: Violation[] = [];
@@ -64,6 +65,21 @@ export function checkArticle(input: {
     blocking.push({
       rule: "零商品置入",
       detail: "文中有指向 /products/ 的連結。部落格不放商品連結。",
+    });
+  }
+
+  // 圖片也算置入。把商品照片放進知識文，等於用圖片做了文字不准做的事，
+  // 讀者一眼就認得出那是哪一支商品。
+  if (/!\[[^\]]*\]\(\s*\/images\/products\//.test(input.body)) {
+    blocking.push({
+      rule: "零商品置入",
+      detail: "內文插入了商品照片（/images/products/）。部落格不放商品圖，換成情境圖或示意圖。",
+    });
+  }
+  if (input.cover && input.cover.startsWith("/images/products/")) {
+    blocking.push({
+      rule: "零商品置入",
+      detail: "封面用的是商品照片。封面請換成不指向特定商品的圖。",
     });
   }
 

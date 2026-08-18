@@ -18,8 +18,10 @@ import {
   type Product,
 } from "./catalog";
 import { all, get } from "./db";
+import { imagesByProductId, productImageRows } from "./media";
 
 type Row = {
+  id: number;
   slug: string;
   sku: string;
   name: string;
@@ -53,7 +55,7 @@ function json<T>(raw: string, fallback: T): T {
 }
 
 /** 資料庫的一列轉成前台在用的 Product 形狀，讓所有頁面不用改寫。 */
-function toProduct(r: Row): Product {
+function toProduct(r: Row, images?: string[]): Product {
   return {
     slug: r.slug,
     sku: r.sku,
@@ -74,10 +76,11 @@ function toProduct(r: Row): Product {
     suits: r.suits,
     origin: r.origin || undefined,
     faq: json(r.faq_json, [] as Product["faq"]),
+    images,
   };
 }
 
-const COLUMNS = `slug, sku, name, en, size, price, list_price, collection, origin,
+const COLUMNS = `id, slug, sku, name, en, size, price, list_price, collection, origin,
   tagline, about, suits, note, caution, status, sort,
   highlights_json, how_to_use_json, faq_json, concerns_json, ingredients_json`;
 
@@ -87,7 +90,11 @@ export function shopProducts(): Product[] {
     const rows = all<Row>(
       `SELECT ${COLUMNS} FROM products WHERE status = 'active' ORDER BY sort, id`
     );
-    if (rows.length > 0) return rows.map(toProduct);
+    if (rows.length > 0) {
+      // 相簿一次撈完再對回去，避免每個商品各查一次資料庫。
+      const gallery = imagesByProductId();
+      return rows.map((r) => toProduct(r, gallery.get(r.id)));
+    }
   } catch {
     // 資料庫不可用（例如 build 階段還沒有檔案）就走 fallback。
   }
@@ -97,7 +104,7 @@ export function shopProducts(): Product[] {
 export function shopProduct(slug: string): Product | undefined {
   try {
     const r = get<Row>(`SELECT ${COLUMNS} FROM products WHERE slug = ? AND status = 'active'`, slug);
-    if (r) return toProduct(r);
+    if (r) return toProduct(r, productImageRows(r.id).map((i) => i.url));
     // 資料庫有商品但沒有這一支，代表它被下架或刪掉了——
     // 這時不要退回 catalog.ts，否則下架的商品會繼續出現在前台。
     const any = get<{ c: number }>(`SELECT COUNT(*) AS c FROM products`);

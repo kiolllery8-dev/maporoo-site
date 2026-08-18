@@ -172,3 +172,42 @@ ul.clean li { padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 
 }
 .adm-input:focus { @apply border-ink; }
 .adm-label { @apply block text-[11px] tracking-[0.2em] text-brand-600 font-bold mb-1.5; }
+
+/* ── 文章圖片 ─────────────────────────────────────────────
+   封面與內文插圖。間距照緊湊排版那組數字走（2026-08-16 老闆拍板），
+   不要用大留白把圖跟文字推開。 */
+.article-cover {
+  display: block;
+  width: 100%;
+  margin-top: 26px;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  background: var(--paper2);
+}
+.article-body figure { margin: 26px 0; }
+.article-body figure img,
+.article-body > img,
+.article-body p img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--paper2);
+}
+.article-body figcaption {
+  margin-top: 8px;
+  font-size: .86rem;
+  line-height: 1.5;
+  color: var(--mute);
+}
+
+/* 文章列表：有封面就左圖右文，沒有就整列都是文字。 */
+.read-row { display: grid; gap: 20px; align-items: start; }
+.read-row:has(.read-thumb) { grid-template-columns: 200px 1fr; }
+.read-thumb { display: block; }
+.read-thumb img {
+  display: block; width: 100%; aspect-ratio: 3 / 2;
+  object-fit: cover; background: var(--paper2);
+}
+@media (max-width: 680px) {
+  .read-row:has(.read-thumb) { grid-template-columns: 1fr; gap: 14px; }
+}

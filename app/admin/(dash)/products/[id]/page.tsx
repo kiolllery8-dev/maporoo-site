@@ -17,6 +17,10 @@ import {
   Pill,
 } from "../../../ui";
 import { deleteProductAction, saveProductAction } from "../actions";
+import { GalleryPanel } from "../../../GalleryPanel";
+import { productImageRows } from "../../../../lib/media";
+import { productImages } from "../../../../lib/product-images";
+import { UPLOAD_ERRORS } from "../../../../lib/uploads";
 
 export const dynamic = "force-dynamic";
 
@@ -49,12 +53,21 @@ const STATUS_LABEL: Record<string, string> = {
   sold_out: "已售完",
 };
 
+const GALLERY_OK: Record<string, (n?: string) => string> = {
+  uploaded: (n) => `已上傳 ${n ?? ""} 張，接在相簿最後面。第一張是封面。`,
+  removed: () => "已從這個商品移除。檔案留在媒體庫。",
+  moved: () => "順序已更新。",
+  cover: () => "已設為封面。商品列表與首頁跟著換。",
+  alt: () => "替代文字已儲存。",
+  attached: () => "已從媒體庫加入相簿。",
+};
+
 export default async function EditProduct({
   params,
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ ok?: string; e?: string }>;
+  searchParams: Promise<{ ok?: string; e?: string; n?: string }>;
 }) {
   // 編輯頁直接要求 products.edit——沒有編輯權的人看列表就好，不必進到表單。
   await requireAdmin("products.edit");
@@ -63,6 +76,8 @@ export default async function EditProduct({
 
   const p = get<Product>(`SELECT * FROM products WHERE id = ?`, Number(id));
   if (!p) notFound();
+
+  const gallery = productImageRows(p.id);
 
   const listed = p.status === "active";
 
@@ -99,9 +114,17 @@ export default async function EditProduct({
             ? "已儲存。"
             : sp.ok === "created"
               ? "商品已建立，目前是草稿。確認內容後把狀態改成「上架中」就會出現在前台。"
+              : sp.ok
+                ? GALLERY_OK[sp.ok]?.(sp.n) ?? "相簿已更新。"
+                : undefined
+        }
+        m={
+          sp.e === "activedelete"
+            ? "上架中的商品不能直接刪除。請先把狀態改成草稿，再刪。"
+            : sp.e
+              ? UPLOAD_ERRORS[sp.e] ?? undefined
               : undefined
         }
-        m={sp.e === "activedelete" ? "上架中的商品不能直接刪除。請先把狀態改成草稿，再刪。" : undefined}
       />
 
       <Panel title="商品內容">
@@ -173,6 +196,12 @@ export default async function EditProduct({
           </p>
         </div>
       </Panel>
+
+      <GalleryPanel
+        productId={p.id}
+        images={gallery}
+        fallback={productImages[p.sku] ?? []}
+      />
     </>
   );
 }
