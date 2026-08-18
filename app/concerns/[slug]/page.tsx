@@ -4,13 +4,17 @@ import { notFound } from "next/navigation";
 import Reveal from "../../components/Reveal";
 import ProductCard from "../../components/ProductCard";
 import { BreadcrumbLd, ItemListLd } from "../../components/JsonLd";
-import { concerns, getConcern } from "../../lib/catalog";
+import { shopConcerns, getShopConcern } from "../../lib/taxonomy";
 import { shopByConcern } from "../../lib/shop";
+
+import { loadContent, text } from "../../lib/content";
+import Rich from "../../components/Rich";
+import { renderMarkdown } from "../../lib/markdown";
 
 export const revalidate = 300;
 
 export function generateStaticParams() {
-  return concerns.map((c) => ({ slug: c.slug }));
+  return shopConcerns().map((c) => ({ slug: c.slug }));
 }
 
 export async function generateMetadata({
@@ -19,7 +23,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const c = getConcern(slug);
+  const c = getShopConcern(slug);
   if (!c) return { title: "找不到頁面｜MAPOROO" };
   const n = shopByConcern(slug).length;
   const title = `${c.zh}｜MAPOROO 保養建議與商品`;
@@ -34,8 +38,11 @@ export async function generateMetadata({
 
 export default async function ConcernPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const c = getConcern(slug);
+  const c = getShopConcern(slug);
   if (!c) notFound();
+
+  const cms = loadContent();
+  const t = (k: string) => text(cms, k);
   const list = shopByConcern(slug);
 
   return (
@@ -60,7 +67,7 @@ export default async function ConcernPage({ params }: { params: Promise<{ slug: 
           </nav>
           <p className="eyebrow rv">{c.en}</p>
           <h1 className="rv" style={{ marginTop: 16 }}>{c.zh}</h1>
-          <p className="lead rv" style={{ marginTop: 22 }}>{c.intro}</p>
+          <Rich className="lead rv" html={renderMarkdown(c.intro)} />
         </div>
       </section>
 
@@ -75,9 +82,9 @@ export default async function ConcernPage({ params }: { params: Promise<{ slug: 
         </div>
 
         <div className="rv" style={{ marginTop: 72, paddingTop: 34, borderTop: "1px solid var(--line)" }}>
-          <p className="en" style={{ marginBottom: 14 }}>其他肌膚需求</p>
+          <p className="en" style={{ marginBottom: 14 }}>{t("taxonomy.other_concerns")}</p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            {concerns
+            {shopConcerns()
               .filter((x) => x.slug !== c.slug)
               .map((x) => (
                 <Link

@@ -4,13 +4,17 @@ import { notFound } from "next/navigation";
 import Reveal from "../../components/Reveal";
 import ProductCard from "../../components/ProductCard";
 import { BreadcrumbLd, ItemListLd } from "../../components/JsonLd";
-import { collections, getCollection } from "../../lib/catalog";
+import { shopCollections, getShopCollection } from "../../lib/taxonomy";
 import { shopByCollection } from "../../lib/shop";
+
+import { loadContent, text } from "../../lib/content";
+import Rich from "../../components/Rich";
+import { renderMarkdown } from "../../lib/markdown";
 
 export const revalidate = 300;
 
 export function generateStaticParams() {
-  return collections.map((c) => ({ slug: c.slug }));
+  return shopCollections().map((c) => ({ slug: c.slug }));
 }
 
 export async function generateMetadata({
@@ -19,7 +23,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const c = getCollection(slug);
+  const c = getShopCollection(slug);
   if (!c) return { title: "找不到分類｜MAPOROO" };
   const n = shopByCollection(slug).length;
   const title = `${c.zh} ${c.en}｜MAPOROO`;
@@ -34,8 +38,11 @@ export async function generateMetadata({
 
 export default async function CollectionPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const c = getCollection(slug);
+  const c = getShopCollection(slug);
   if (!c) notFound();
+
+  const cms = loadContent();
+  const t = (k: string) => text(cms, k);
   const list = shopByCollection(slug);
 
   return (
@@ -60,12 +67,12 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
           </nav>
           <p className="eyebrow rv">{c.en}</p>
           <h1 className="rv" style={{ marginTop: 16 }}>{c.zh}</h1>
-          <p className="lead rv" style={{ marginTop: 22 }}>{c.intro}</p>
+          <Rich className="lead rv" html={renderMarkdown(c.intro)} />
         </div>
       </section>
 
       <div className="wrap" style={{ padding: "72px 30px 100px" }}>
-        <p className="en rv" style={{ marginBottom: 30 }}>共 {list.length} 件商品</p>
+        <p className="en rv" style={{ marginBottom: 30 }}>{t("taxonomy.count_label").replace("{n}", String(list.length))}</p>
         <div className="grid g4">
           {list.map((p) => (
             <ProductCard key={p.slug} product={p} />
@@ -73,9 +80,9 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
         </div>
 
         <div className="rv" style={{ marginTop: 72, paddingTop: 34, borderTop: "1px solid var(--line)" }}>
-          <p className="en" style={{ marginBottom: 14 }}>其他品類</p>
+          <p className="en" style={{ marginBottom: 14 }}>{t("taxonomy.other_collections")}</p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            {collections
+            {shopCollections()
               .filter((x) => x.slug !== c.slug)
               .map((x) => (
                 <Link

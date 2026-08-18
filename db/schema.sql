@@ -259,3 +259,27 @@ CREATE TABLE IF NOT EXISTS product_images (
   sort       INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS idx_product_images_product ON product_images(product_id, sort);
+
+-- ── 分類（品類／肌膚需求／成分）─────────────────────────────
+-- 三組原本寫死在 app/lib/catalog.ts，後台完全碰不到。
+-- 三組的欄位大同小異，所以用同一張表以 kind 分，不開三張。
+-- 成分頁多出來的「這是什麼／怎麼用／FAQ」放在 what / how / faq_json，
+-- 品類與需求那兩種留空即可。
+CREATE TABLE IF NOT EXISTS taxonomies (
+  id        INTEGER PRIMARY KEY AUTOINCREMENT,
+  kind      TEXT NOT NULL,                       -- collection | concern | ingredient
+  slug      TEXT NOT NULL,
+  zh        TEXT NOT NULL DEFAULT '',
+  en        TEXT NOT NULL DEFAULT '',
+  d         TEXT NOT NULL DEFAULT '',            -- 一句話描述，列表與頁尾用
+  intro     TEXT NOT NULL DEFAULT '',            -- 分類頁上方的導言（品類／需求）
+  what      TEXT NOT NULL DEFAULT '',            -- 成分頁：這是什麼
+  how       TEXT NOT NULL DEFAULT '',            -- 成分頁：在保養品裡怎麼用
+  faq_json  TEXT NOT NULL DEFAULT '[]',          -- 成分頁 FAQ
+  sort      INTEGER NOT NULL DEFAULT 0,
+  disabled  INTEGER NOT NULL DEFAULT 0,          -- 1 = 前台不顯示
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_taxonomies_kind_slug ON taxonomies(kind, slug);
+CREATE INDEX IF NOT EXISTS idx_taxonomies_kind ON taxonomies(kind, sort);

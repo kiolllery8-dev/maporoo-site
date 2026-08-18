@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { collections, concerns, ingredientPages } from "../lib/catalog";
+import { shopCollections, shopConcerns, shopIngredientPages } from "../lib/taxonomy";
 import { loadContent, richText, text } from "../lib/content";
 import Rich from "./Rich";
 import SocialLinks from "./SocialLinks";
@@ -31,20 +31,20 @@ export default function Footer() {
         <div className="grid g4" style={{ marginTop: 42, gap: 34 }}>
           <div className="ftcol">
             <p className="t">品類</p>
-            {collections.map((c) => (
+            {shopCollections().map((c) => (
               <Link key={c.slug} href={`/collections/${c.slug}`}>{c.zh}</Link>
             ))}
             <Link href="/products">全部商品</Link>
           </div>
           <div className="ftcol">
             <p className="t">依肌膚需求</p>
-            {concerns.map((c) => (
+            {shopConcerns().map((c) => (
               <Link key={c.slug} href={`/concerns/${c.slug}`}>{c.zh}</Link>
             ))}
           </div>
           <div className="ftcol">
             <p className="t">成分知識</p>
-            {ingredientPages.map((i) => (
+            {shopIngredientPages().map((i) => (
               <Link key={i.slug} href={`/ingredients/${i.slug}`}>{i.zh}</Link>
             ))}
             <Link href="/read">閱讀</Link>

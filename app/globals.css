@@ -242,3 +242,5 @@ ul.clean li { padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 
 .cms figcaption { margin-top: 6px; font-size: .86rem; color: var(--mute); }
 .ft-tagline { margin-top: 14px; max-width: 420px; color: var(--soft); font-size: 1rem; font-weight: 500; }
 .ft-tagline p { line-height: 1; margin: 0 0 4px; }
+.ing-body { margin-top: 16px; color: var(--soft); font-size: 1.06rem; }
+.ing-body p { line-height: 1.6; margin: 0 0 10px; }

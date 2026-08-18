@@ -35,6 +35,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     label: "商品與內容",
     items: [
       { href: "/admin/products", label: "商品", icon: "📦", cap: "products.view" },
+      { href: "/admin/taxonomies", label: "分類", icon: "🗂", cap: "products.edit" },
       { href: "/admin/articles", label: "文章", icon: "📝", cap: "articles.manage", badge: "draftArticles" },
       { href: "/admin/content", label: "前台文案", icon: "🎨", cap: "content.manage" },
     ],

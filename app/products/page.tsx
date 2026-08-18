@@ -3,8 +3,10 @@ import Link from "next/link";
 import Reveal from "../components/Reveal";
 import ProductCard from "../components/ProductCard";
 import { BreadcrumbLd, ItemListLd } from "../components/JsonLd";
-import { collections, concerns, ingredientPages } from "../lib/catalog";
+import { shopCollections, shopConcerns, shopIngredientPages } from "../lib/taxonomy";
 import { shopProducts, shopByCollection } from "../lib/shop";
+import { loadContent, richText, text } from "../lib/content";
+import Rich from "../components/Rich";
 
 export const revalidate = 300;
 
@@ -16,6 +18,10 @@ export const metadata: Metadata = {
 };
 
 export default function ProductsIndex() {
+  const c = loadContent();
+  const t = (k: string) => text(c, k);
+  const total = shopProducts().length;
+
   return (
     <>
       <ItemListLd items={shopProducts()} name="MAPOROO 全部商品" />
@@ -28,17 +34,18 @@ export default function ProductsIndex() {
 
       <section className="pad" style={{ background: "var(--paper2)", borderBottom: "1px solid var(--line)" }}>
         <div className="wrap">
-          <p className="eyebrow rv">ALL PRODUCTS</p>
-          <h1 className="rv" style={{ marginTop: 16 }}>全部商品</h1>
-          <p className="lead rv" style={{ marginTop: 22 }}>
-            MAPOROO 全系列共 {shopProducts().length} 件，分為三個品類。你也可以從肌膚需求或成分出發，找到適合現在的自己那一支。
-          </p>
+          <p className="eyebrow rv">{t("products.eyebrow")}</p>
+          <h1 className="rv" style={{ marginTop: 16 }}>{t("products.heading")}</h1>
+          <Rich
+            className="lead rv"
+            html={richText(c, "products.lead").replace(/\{n\}/g, String(total))}
+          />
 
           {/* taxonomy entry points */}
           <div className="rv" style={{ marginTop: 34 }}>
-            <p className="en" style={{ marginBottom: 12 }}>依肌膚需求</p>
+            <p className="en" style={{ marginBottom: 12 }}>{t("products.by_concern")}</p>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              {concerns.map((c) => (
+              {shopConcerns().map((c) => (
                 <Link
                   key={c.slug}
                   href={`/concerns/${c.slug}`}
@@ -48,9 +55,9 @@ export default function ProductsIndex() {
                 </Link>
               ))}
             </div>
-            <p className="en" style={{ margin: "24px 0 12px" }}>依成分</p>
+            <p className="en" style={{ margin: "24px 0 12px" }}>{t("products.by_ingredient")}</p>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              {ingredientPages.map((i) => (
+              {shopIngredientPages().map((i) => (
                 <Link
                   key={i.slug}
                   href={`/ingredients/${i.slug}`}
@@ -65,7 +72,7 @@ export default function ProductsIndex() {
       </section>
 
       <div className="wrap" style={{ padding: "84px 30px 100px" }}>
-        {collections.map((c, ci) => {
+        {shopCollections().map((c, ci) => {
           const list = shopByCollection(c.slug);
           return (
             <section key={c.slug} id={c.slug} style={{ scrollMarginTop: 96, marginTop: ci === 0 ? 0 : 80 }}>

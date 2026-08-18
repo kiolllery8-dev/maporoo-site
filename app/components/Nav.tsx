@@ -3,26 +3,23 @@
 import { useEffect, useState } from "react";
 import CartLink from "./CartLink";
 
+export type NavItem = { href: string; label: string };
+
 // 左右兩側的「寬度」要接近，品牌才會落在視覺正中間。
 // 之前左邊 3 項、右邊 6 項，右側把品牌往左推，左邊就空出一大塊。
-// 現在左邊放四個逛商品的入口，右邊放知識與帳戶，兩側寬度差不多。
-const LEFT = [
-  { href: "/products", label: "商品" },
-  { href: "/collections/facial-care", label: "臉部保養" },
-  { href: "/collections/hair-scalp", label: "頭皮髮絲" },
-  { href: "/collections/bath-fragrance", label: "沐浴香氛" }
-];
-const RIGHT = [
-  { href: "/ingredients/pdrn", label: "成分" },
-  { href: "/read", label: "閱讀" },
-  { href: "/#story", label: "關於" }
-];
-// 會員入口。登入與否的判斷在 /account 裡做（未登入會導去登入頁），
-// 所以 Nav 不需要知道登入狀態，也就不必為了這顆連結變成動態渲染。
-const ACCOUNT = { href: "/account", label: "會員" };
-const ALL = [...LEFT, ...RIGHT, ACCOUNT];
+// 現在左邊放逛商品的入口，右邊放知識與帳戶，兩側寬度差不多。
+//
+// 品類與成分那幾個入口由 layout 從資料庫撈好再傳進來——這是 client component，
+// 自己讀不到資料庫。後台改名或隱藏一個分類，導覽列要跟著變，不能寫死。
+//
+// 會員入口不需要知道登入狀態：/account 未登入會自己導去登入頁，
+// 所以 Nav 不必為了這顆連結變成動態渲染。
+const ACCOUNT: NavItem = { href: "/account", label: "會員" };
 
-export default function Nav() {
+export default function Nav({ left, right }: { left: NavItem[]; right: NavItem[] }) {
+  const LEFT = left;
+  const RIGHT = right;
+  const ALL = [...LEFT, ...RIGHT, ACCOUNT];
   const [open, setOpen] = useState(false);
 
   useEffect(() => {

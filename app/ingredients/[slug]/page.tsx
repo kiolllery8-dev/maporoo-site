@@ -4,13 +4,17 @@ import { notFound } from "next/navigation";
 import Reveal from "../../components/Reveal";
 import ProductCard from "../../components/ProductCard";
 import { BreadcrumbLd, FaqLd } from "../../components/JsonLd";
-import { ingredientPages, getIngredientPage } from "../../lib/catalog";
+import { shopIngredientPages, getShopIngredientPage } from "../../lib/taxonomy";
 import { shopByIngredient } from "../../lib/shop";
+
+import { loadContent, text } from "../../lib/content";
+import Rich from "../../components/Rich";
+import { renderMarkdown } from "../../lib/markdown";
 
 export const revalidate = 300;
 
 export function generateStaticParams() {
-  return ingredientPages.map((i) => ({ slug: i.slug }));
+  return shopIngredientPages().map((i) => ({ slug: i.slug }));
 }
 
 export async function generateMetadata({
@@ -19,7 +23,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const i = getIngredientPage(slug);
+  const i = getShopIngredientPage(slug);
   if (!i) return { title: "找不到頁面｜MAPOROO" };
   const title = `${i.zh}是什麼？成分解析與保養用途｜MAPOROO`;
   const description = `${i.d}${i.what.slice(0, 80)}…`;
@@ -33,8 +37,11 @@ export async function generateMetadata({
 
 export default async function IngredientPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const ing = getIngredientPage(slug);
+  const ing = getShopIngredientPage(slug);
   if (!ing) notFound();
+
+  const cms = loadContent();
+  const t = (k: string) => text(cms, k);
   const list = shopByIngredient(slug);
 
   return (
@@ -66,12 +73,12 @@ export default async function IngredientPage({ params }: { params: Promise<{ slu
       <article className="wrap-narrow" style={{ padding: "72px 30px 40px" }}>
         <section className="rv">
           <h2 style={{ fontSize: "1.7rem", fontWeight: 900 }}>它是什麼</h2>
-          <p style={{ marginTop: 16, color: "var(--soft)", fontSize: "1.06rem", lineHeight: 1.6 }}>{ing.what}</p>
+          <Rich className="ing-body" html={renderMarkdown(ing.what)} />
         </section>
 
         <section className="rv" style={{ marginTop: 48 }}>
           <h2 style={{ fontSize: "1.7rem", fontWeight: 900 }}>在保養裡怎麼用</h2>
-          <p style={{ marginTop: 16, color: "var(--soft)", fontSize: "1.06rem", lineHeight: 1.6 }}>{ing.how}</p>
+          <Rich className="ing-body" html={renderMarkdown(ing.how)} />
         </section>
 
         <section className="rv" style={{ marginTop: 48 }}>
@@ -109,9 +116,9 @@ export default async function IngredientPage({ params }: { params: Promise<{ slu
       )}
 
       <div className="wrap" style={{ padding: "60px 30px 90px" }}>
-        <p className="en rv" style={{ marginBottom: 14 }}>其他成分</p>
+        <p className="en rv" style={{ marginBottom: 14 }}>{t("taxonomy.other_ingredients")}</p>
         <div className="rv" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          {ingredientPages
+          {shopIngredientPages()
             .filter((x) => x.slug !== ing.slug)
             .map((x) => (
               <Link

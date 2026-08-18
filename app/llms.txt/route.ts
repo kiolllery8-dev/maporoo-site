@@ -1,5 +1,6 @@
 import { SITE } from "../lib/site";
-import { collections, concerns, ingredientPages, products, productsByCollection } from "../lib/catalog";
+import { products, productsByCollection } from "../lib/catalog";
+import { shopCollections, shopConcerns, shopIngredientPages } from "../lib/taxonomy";
 
 // /llms.txt — a plain-text map of the site written for language models.
 //
@@ -22,7 +23,7 @@ export function GET() {
 
   lines.push("## 商品目錄");
   lines.push("");
-  for (const c of collections) {
+  for (const c of shopCollections()) {
     const list = productsByCollection(c.slug);
     lines.push(`### ${c.zh}（${c.en}）— ${list.length} 件`);
     lines.push("");
@@ -38,14 +39,14 @@ export function GET() {
 
   lines.push("## 依肌膚需求瀏覽");
   lines.push("");
-  for (const c of concerns) {
+  for (const c of shopConcerns()) {
     lines.push(`- [${c.zh}](${SITE.url}/concerns/${c.slug})：${c.d}`);
   }
   lines.push("");
 
   lines.push("## 成分知識");
   lines.push("");
-  for (const i of ingredientPages) {
+  for (const i of shopIngredientPages()) {
     lines.push(`- [${i.zh}（${i.en}）](${SITE.url}/ingredients/${i.slug})：${i.d}`);
   }
   lines.push("");

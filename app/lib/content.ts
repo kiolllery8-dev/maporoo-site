@@ -108,6 +108,40 @@ export const BLOCKS: Block[] = [
   { key: "home.service.eyebrow", group: "首頁 · 服務", label: "上方小標", fallback: "官網服務" },
   { key: "home.service.heading", group: "首頁 · 服務", label: "標題", fallback: "MAPOROO 在你身邊" },
 
+  // ── 商品列表頁 ────────────────────────────────────────
+  { key: "products.eyebrow", group: "商品列表頁", label: "上方小標", fallback: "ALL PRODUCTS" },
+  { key: "products.heading", group: "商品列表頁", label: "頁面標題", fallback: "全部商品" },
+  {
+    key: "products.lead",
+    group: "商品列表頁",
+    label: "頁面說明",
+    fallback:
+      "MAPOROO 全系列共 {n} 件，分為三個品類。你也可以從肌膚需求或成分出發，找到適合現在的自己那一支。",
+    multiline: true,
+    hint: "{n} 會自動換成目前上架的商品件數。",
+  },
+  { key: "products.by_concern", group: "商品列表頁", label: "需求標籤區標題", fallback: "依肌膚需求" },
+  { key: "products.by_ingredient", group: "商品列表頁", label: "成分標籤區標題", fallback: "依成分" },
+
+  // ── 分類頁共用 ────────────────────────────────────────
+  { key: "taxonomy.count_label", group: "分類頁共用", label: "商品件數說明", fallback: "共 {n} 件商品", hint: "{n} 會換成該分類的商品件數。" },
+  { key: "taxonomy.other_collections", group: "分類頁共用", label: "其他品類區標題", fallback: "其他品類" },
+  { key: "taxonomy.other_concerns", group: "分類頁共用", label: "其他需求區標題", fallback: "其他肌膚需求" },
+  { key: "taxonomy.other_ingredients", group: "分類頁共用", label: "其他成分區標題", fallback: "其他成分" },
+  { key: "taxonomy.empty", group: "分類頁共用", label: "沒有商品時顯示", fallback: "這個分類目前沒有上架商品。" },
+
+  // ── 閱讀列表頁 ────────────────────────────────────────
+  { key: "read.eyebrow", group: "閱讀列表頁", label: "上方小標", fallback: "閱讀 ─ LIBRARY" },
+  { key: "read.heading", group: "閱讀列表頁", label: "頁面標題", fallback: "理解，是保養的開始" },
+  {
+    key: "read.lead",
+    group: "閱讀列表頁",
+    label: "頁面說明",
+    fallback: "這裡是純粹的知識分享——日常保健、趨勢觀察與生活風格。不推銷任何商品。",
+    multiline: true,
+  },
+  { key: "read.empty", group: "閱讀列表頁", label: "還沒有文章時顯示", fallback: "文章正在準備中。" },
+
   // ── 社群與聯絡 ────────────────────────────────────────
   // 頁尾在根 layout 裡，這幾個 key 是全站共用的。
   // 留空的欄位前台就不顯示那顆按鈕，不會出現連到空白的圖示。

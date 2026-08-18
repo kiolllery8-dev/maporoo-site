@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Nav from "./components/Nav";
+import { shopCollections, shopIngredientPages } from "./lib/taxonomy";
 import StorefrontChrome from "./components/StorefrontChrome";
 import Footer from "./components/Footer";
 import { CartProvider } from "./lib/cart";
@@ -46,6 +47,19 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // 導覽列的品類與成分入口跟著後台的分類走。
+  const cols = shopCollections();
+  const ings = shopIngredientPages();
+  const navLeft = [
+    { href: "/products", label: "商品" },
+    ...cols.slice(0, 3).map((c) => ({ href: `/collections/${c.slug}`, label: c.zh })),
+  ];
+  const navRight = [
+    ...(ings[0] ? [{ href: `/ingredients/${ings[0].slug}`, label: "成分" }] : []),
+    { href: "/read", label: "閱讀" },
+    { href: "/#story", label: "關於" },
+  ];
+
   return (
     <html lang="zh-Hant-TW">
       <head>
@@ -57,7 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <WebSiteLd />
         <CartProvider>
           <StorefrontChrome>
-            <Nav />
+            <Nav left={navLeft} right={navRight} />
           </StorefrontChrome>
           {/* Film hero bleeds under the fixed 64px header; sections flow below. */}
           <main>{children}</main>
