@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { get } from "../../../../lib/db";
 import { requireAdmin } from "../../../../lib/admin";
 import { checkArticle, DISCLAIMER_TEXT } from "../../../../lib/article-guard";
-import { renderMarkdown } from "../../../../lib/markdown";
+import MarkdownEditor from "./MarkdownEditor";
 import {
   AdminCheckbox,
   AdminField,
@@ -13,7 +13,6 @@ import {
   BackLink,
   DangerButton,
   FieldRow,
-  Note,
   PageHeader,
   Panel,
   Pill,
@@ -187,68 +186,54 @@ export default async function EditArticle({
 
       {/* ── 內容 ─────────────────────────────────────────── */}
       <Panel title="內容">
-        <form action={saveArticleAction} className="max-w-[760px]">
+        <form action={saveArticleAction}>
           <input type="hidden" name="id" value={a.id} />
 
-          <AdminField label="標題" name="title" required defaultValue={a.title} />
-          <AdminField
-            label="META DESCRIPTION"
-            name="description"
-            defaultValue={a.description}
-            hint="搜尋結果顯示的摘要，150 字內。"
-          />
+          {/* 短欄位維持窄版好讀；編輯器要左右對照，讓它吃滿整個面板。 */}
+          <div className="max-w-[620px]">
+            <AdminField label="標題" name="title" required defaultValue={a.title} />
+            <AdminField
+              label="META DESCRIPTION"
+              name="description"
+              defaultValue={a.description}
+              hint="搜尋結果顯示的摘要，150 字內。"
+            />
 
-          <FieldRow>
-            <AdminSelect label="內容型態" name="kind" defaultValue={a.kind} options={KIND_OPTIONS} />
-            <AdminSelect label="分類" name="category" defaultValue={a.category} options={CATEGORY_OPTIONS} />
-          </FieldRow>
+            <FieldRow>
+              <AdminSelect label="內容型態" name="kind" defaultValue={a.kind} options={KIND_OPTIONS} />
+              <AdminSelect label="分類" name="category" defaultValue={a.category} options={CATEGORY_OPTIONS} />
+            </FieldRow>
 
-          <AdminField
-            label="閱讀時間"
-            name="reading_time"
-            defaultValue={a.reading_time}
-            hint="例如「3 分鐘」。"
-          />
+            <AdminField
+              label="閱讀時間"
+              name="reading_time"
+              defaultValue={a.reading_time}
+              hint="例如「3 分鐘」。"
+            />
+          </div>
 
-          <AdminField
-            label="內文（MARKDOWN）"
-            name="body_md"
-            textarea
-            rows={22}
-            defaultValue={a.body_md}
-            hint="支援 ## 標題、### 小標、- 清單、1. 清單、> 引言、**粗體**、[文字](網址)。不支援原始 HTML。"
-          />
+          <MarkdownEditor name="body_md" defaultValue={a.body_md} rows={24} />
 
-          <AdminField
-            label="出處（一行一筆）"
-            name="sources"
-            textarea
-            rows={4}
-            defaultValue={sources.join("\n")}
-            hint="型態 B／C 必填。格式建議：媒體或節目名稱 / 日期 / 連結。查不到來源的說法不要寫進文章。"
-          />
+          <div className="max-w-[620px]">
+            <AdminField
+              label="出處（一行一筆）"
+              name="sources"
+              textarea
+              rows={4}
+              defaultValue={sources.join("\n")}
+              hint="型態 B／C 必填。格式建議：媒體或節目名稱 / 日期 / 連結。查不到來源的說法不要寫進文章。"
+            />
 
-          <AdminCheckbox
-            name="disclaimer"
-            defaultChecked={a.disclaimer === 1}
-            label="文末附非醫療建議聲明（型態 B／C 必勾）"
-            hint={`會自動加上：「${DISCLAIMER_TEXT}」`}
-          />
+            <AdminCheckbox
+              name="disclaimer"
+              defaultChecked={a.disclaimer === 1}
+              label="文末附非醫療建議聲明（型態 B／C 必勾）"
+              hint={`會自動加上：「${DISCLAIMER_TEXT}」`}
+            />
 
-          <AdminSubmit>儲存</AdminSubmit>
+            <AdminSubmit>儲存</AdminSubmit>
+          </div>
         </form>
-      </Panel>
-
-      {/* ── 預覽 ─────────────────────────────────────────── */}
-      <Panel title="預覽">
-        {a.body_md.trim() ? (
-          <div
-            className="article-body max-w-[700px] text-ink/80 leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: renderMarkdown(a.body_md) }}
-          />
-        ) : (
-          <Note>還沒有內文。在上面的「內文」欄位寫，儲存之後這裡就會顯示排版後的樣子。</Note>
-        )}
       </Panel>
     </>
   );
