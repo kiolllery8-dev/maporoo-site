@@ -1,7 +1,23 @@
 import { all } from "../../../lib/db";
 import { requireAdmin } from "../../../lib/admin";
 import { ROLE_DESC, ROLE_LABEL, type Role } from "../../../lib/permissions";
-import { AdminField, AdminNotice, AdminSelect, AdminSubmit, Panel, Table, Td } from "../../ui";
+import {
+  AdminField,
+  AdminNotice,
+  AdminSelect,
+  AdminSubmit,
+  DangerButton,
+  FieldRow,
+  InlineSelect,
+  InlineSubmit,
+  Note,
+  PageHeader,
+  Panel,
+  Pill,
+  Table,
+  Td,
+  Tr,
+} from "../../ui";
 import {
   changeRoleAction,
   createAdminAction,
@@ -58,90 +74,108 @@ export default async function StaffPage({
        FROM admins ORDER BY id`
   );
 
+  const active = rows.filter((r) => r.disabled === 0).length;
+  const pending = rows.filter((r) => r.must_change_password === 1).length;
+
   return (
     <>
+      <PageHeader
+        eyebrow="STAFF"
+        title="管理者"
+        crumbs={[{ label: "後台", href: "/admin" }, { label: "管理者" }]}
+        stats={`共 ${rows.length} 位・啟用 ${active}${pending ? `・${pending} 位尚未更換初始密碼` : ""}`}
+      />
+
       <AdminNotice
         ok={sp.ok ? OK[sp.ok] : undefined}
         e={sp.e && !ERR[sp.e] ? sp.e : undefined}
         m={sp.m ?? (sp.e && ERR[sp.e] ? ERR[sp.e] : undefined)}
       />
 
-      <Panel title={`管理者（${rows.length}）`}>
+      {/* 手機：一列一張卡 */}
+      <div className="md:hidden flex flex-col gap-3 mb-8">
+        {rows.map((a) => (
+          <div
+            key={a.id}
+            className={`bg-white border p-4 ${a.disabled ? "border-red-200 bg-red-50/30" : "border-brand-200"}`}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <div className="font-medium text-ink break-all">
+                  {a.username}
+                  {a.id === me.id && <span className="ml-2 text-xs text-ink/50">（你）</span>}
+                </div>
+                <div className="text-xs text-ink/50 mt-0.5">{a.name || "未設定顯示名稱"}</div>
+              </div>
+              <Pill tone={a.disabled ? "off" : "on"}>{a.disabled ? "已停用" : "正常"}</Pill>
+            </div>
+            {a.must_change_password === 1 && (
+              <p className="mt-2 text-[11px] text-amber-700">尚未更換初始密碼</p>
+            )}
+            <div className="mt-3 pt-3 border-t border-brand-100 flex items-center justify-between gap-3">
+              <form action={changeRoleAction} className="flex items-center gap-2">
+                <input type="hidden" name="id" value={a.id} />
+                <InlineSelect name="role" defaultValue={a.role} options={ROLE_OPTIONS} />
+                <InlineSubmit>改</InlineSubmit>
+              </form>
+              {a.id !== me.id && (
+                <form action={toggleAdminAction}>
+                  <input type="hidden" name="id" value={a.id} />
+                  {a.disabled ? <InlineSubmit>恢復</InlineSubmit> : <DangerButton>停用</DangerButton>}
+                </form>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 桌機：資料表 */}
+      <div className="hidden md:block mb-8">
         <Table head={["帳號", "顯示名稱", "角色", "最後登入", "建立", "狀態", "操作"]}>
           {rows.map((a) => (
-            <tr key={a.id} style={a.disabled ? { opacity: 0.5 } : undefined}>
+            <Tr key={a.id} muted={a.disabled === 1}>
               <Td nowrap>
-                <code style={{ color: "var(--ink)", fontWeight: 700 }}>{a.username}</code>
-                {a.id === me.id && (
-                  <span style={{ marginLeft: 8, fontSize: ".78rem", color: "var(--mute)" }}>（你）</span>
-                )}
+                <span className="font-medium text-ink">{a.username}</span>
+                {a.id === me.id && <span className="ml-2 text-xs text-ink/50">（你）</span>}
                 {a.must_change_password === 1 && (
-                  <>
-                    <br />
-                    <span style={{ fontSize: ".8rem", color: "#9B4A2F" }}>尚未更換初始密碼</span>
-                  </>
+                  <div className="text-[11px] text-amber-700 mt-0.5">尚未更換初始密碼</div>
                 )}
               </Td>
               <Td>{a.name || "—"}</Td>
               <Td nowrap>
-                <form action={changeRoleAction} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <form action={changeRoleAction} className="flex items-center gap-2">
                   <input type="hidden" name="id" value={a.id} />
-                  <select
-                    name="role"
-                    defaultValue={a.role}
-                    style={{
-                      background: "var(--paper2)",
-                      border: "1px solid var(--line)",
-                      padding: "5px 8px",
-                      fontSize: ".9rem",
-                      fontFamily: "inherit",
-                      color: "var(--ink)",
-                    }}
-                  >
-                    {ROLE_OPTIONS.map((o) => (
-                      <option key={o.value} value={o.value}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    type="submit"
-                    style={{ cursor: "pointer", background: "none", border: "none", padding: 0, fontFamily: "inherit", fontSize: ".85rem", fontWeight: 700, color: "var(--ink)" }}
-                  >
-                    改
-                  </button>
+                  <InlineSelect name="role" defaultValue={a.role} options={ROLE_OPTIONS} />
+                  <InlineSubmit>改</InlineSubmit>
                 </form>
               </Td>
               <Td nowrap dim>{a.last_login_at ? a.last_login_at.slice(0, 16) : "未登入過"}</Td>
               <Td nowrap dim>{a.created_at.slice(0, 10)}</Td>
-              <Td nowrap>{a.disabled ? "已停用" : "正常"}</Td>
+              <Td nowrap>
+                <Pill tone={a.disabled ? "off" : "on"}>{a.disabled ? "已停用" : "正常"}</Pill>
+              </Td>
               <Td nowrap>
                 {a.id === me.id ? (
-                  <span style={{ color: "var(--mute)", fontSize: ".88rem" }}>—</span>
+                  <span className="text-ink/30 text-xs">—</span>
                 ) : (
                   <form action={toggleAdminAction}>
                     <input type="hidden" name="id" value={a.id} />
-                    <button
-                      type="submit"
-                      style={{ cursor: "pointer", background: "none", border: "none", padding: 0, fontFamily: "inherit", fontSize: ".88rem", fontWeight: 700, color: a.disabled ? "var(--ink)" : "#9B4A2F" }}
-                    >
-                      {a.disabled ? "恢復" : "停用"}
-                    </button>
+                    {a.disabled ? <InlineSubmit>恢復</InlineSubmit> : <DangerButton>停用</DangerButton>}
                   </form>
                 )}
               </Td>
-            </tr>
+            </Tr>
           ))}
         </Table>
-      </Panel>
+      </div>
 
       <Panel title="新增管理者">
-        <p style={{ marginBottom: 22, color: "var(--soft)", fontSize: ".95rem", lineHeight: 1.55, maxWidth: 620 }}>
+        <Note>
           初始密碼由你設定，當面或用你們平常的方式交給對方。
           系統不會替你產生密碼，也不會寄信——密碼跑的路越少越安全。
           對方第一次登入會被要求立刻更換。
-        </p>
-        <form action={createAdminAction} style={{ maxWidth: 460 }}>
+        </Note>
+        <form action={createAdminAction} className="max-w-[460px]">
           <AdminField
             label="帳號"
             name="username"
@@ -150,7 +184,13 @@ export default async function StaffPage({
             hint="登入用。小寫英文、數字，以及 - _ . 三種符號，例如 yankaiboss。"
           />
           <AdminField label="顯示名稱" name="name" autoComplete="off" hint="後台顯示用，例如 晏愷老闆。" />
-          <AdminField label="EMAIL（可留空）" name="email" type="email" autoComplete="off" hint="只是聯絡方式，不用來登入。" />
+          <AdminField
+            label="EMAIL（可留空）"
+            name="email"
+            type="email"
+            autoComplete="off"
+            hint="只是聯絡方式，不用來登入。"
+          />
           <AdminSelect label="角色" name="role" options={ROLE_OPTIONS} defaultValue="shipping" />
           <AdminField
             label="初始密碼"
@@ -165,39 +205,38 @@ export default async function StaffPage({
       </Panel>
 
       <Panel title="修改帳號與名稱">
-        <p style={{ marginBottom: 22, color: "var(--soft)", fontSize: ".95rem", lineHeight: 1.55, maxWidth: 620 }}>
-          開站時自動建立的帳號叫 <code>admin</code>，在這裡改成你自己的。
-          改帳號不影響已登入的裝置，也不會動到密碼。
-        </p>
-        {rows.map((a) => (
-          <form
-            key={a.id}
-            action={editAdminAction}
-            style={{ display: "flex", gap: 12, alignItems: "flex-end", flexWrap: "wrap", marginBottom: 16, paddingBottom: 16, borderBottom: "1px solid var(--line)" }}
-          >
-            <input type="hidden" name="id" value={a.id} />
-            <span style={{ width: 150 }}>
-              <AdminField label="帳號" name="username" defaultValue={a.username} required />
-            </span>
-            <span style={{ width: 150 }}>
-              <AdminField label="顯示名稱" name="name" defaultValue={a.name} />
-            </span>
-            <span style={{ width: 210 }}>
-              <AdminField
-                label="EMAIL"
-                name="email"
-                defaultValue={a.email.endsWith("@no-email.local") ? "" : a.email}
-              />
-            </span>
-            <span style={{ paddingBottom: 20 }}>
-              <AdminSubmit>儲存</AdminSubmit>
-            </span>
-          </form>
-        ))}
+        <Note>
+          改帳號不影響已登入的裝置，也不會動到密碼。顯示名稱是登入後右上角出現的那個名字。
+        </Note>
+        <div className="flex flex-col gap-4">
+          {rows.map((a) => (
+            <form
+              key={a.id}
+              action={editAdminAction}
+              className="pb-4 border-b border-brand-100 last:border-0 last:pb-0"
+            >
+              <input type="hidden" name="id" value={a.id} />
+              <FieldRow>
+                <AdminField label="帳號" name="username" defaultValue={a.username} required />
+                <AdminField label="顯示名稱" name="name" defaultValue={a.name} />
+              </FieldRow>
+              <FieldRow>
+                <AdminField
+                  label="EMAIL"
+                  name="email"
+                  defaultValue={a.email.endsWith("@no-email.local") ? "" : a.email}
+                />
+                <div className="flex items-end pb-4">
+                  <AdminSubmit>儲存</AdminSubmit>
+                </div>
+              </FieldRow>
+            </form>
+          ))}
+        </div>
       </Panel>
 
       <Panel title="重設某人的密碼">
-        <form action={resetAdminPasswordAction} style={{ maxWidth: 460 }}>
+        <form action={resetAdminPasswordAction} className="max-w-[460px]">
           <AdminSelect
             label="對象"
             name="id"
@@ -220,14 +259,13 @@ export default async function StaffPage({
       <Panel title="四個角色能做什麼">
         <Table head={["角色", "權限範圍"]}>
           {(Object.keys(ROLE_LABEL) as Role[]).map((r) => (
-            <tr key={r}>
+            <Tr key={r}>
               <Td nowrap>
-                <strong style={{ color: "var(--ink)" }}>{ROLE_LABEL[r]}</strong>
-                <br />
-                <span style={{ fontSize: ".82rem", color: "var(--mute)" }}>{r}</span>
+                <strong className="text-ink">{ROLE_LABEL[r]}</strong>
+                <div className="text-xs text-ink/50">{r}</div>
               </Td>
               <Td>{ROLE_DESC[r]}</Td>
-            </tr>
+            </Tr>
           ))}
         </Table>
       </Panel>

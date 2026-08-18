@@ -1,6 +1,6 @@
 import { requireAdmin } from "../../../lib/admin";
 import { BLOCKS, loadContent } from "../../../lib/content";
-import { AdminField, AdminNotice, AdminSubmit, PageHeader, Panel } from "../../ui";
+import { AdminField, AdminNotice, AdminSubmit, InlineSubmit, Note, PageHeader, Panel } from "../../ui";
 import { resetContentAction, saveContentAction } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -36,13 +36,13 @@ export default async function ContentPage({
 
       <AdminNotice ok={ok} />
 
-      <p style={{ marginBottom: 30, color: "var(--soft)", fontSize: ".97rem", lineHeight: 1.55, maxWidth: 680 }}>
+      <Note>
         這裡改的字會直接顯示在前台，不需要重新部署。
         欄位留空就會回到程式碼裡的預設文案，所以前台不會出現空白區塊。
         <br />
-        改完之後前台<strong style={{ color: "var(--ink)" }}>最多 5 分鐘</strong>更新一次（頁面有快取）。
+        改完之後前台<strong className="text-ink">最多 5 分鐘</strong>更新一次（頁面有快取）。
         想立刻看到，重新整理兩次即可。
-      </p>
+      </Note>
 
       {groups.map((g) => {
         const blocks = BLOCKS.filter((b) => b.group === g);
@@ -55,19 +55,14 @@ export default async function ContentPage({
               customised ? (
                 <form action={resetContentAction}>
                   <input type="hidden" name="__group" value={g} />
-                  <button
-                    type="submit"
-                    style={{ cursor: "pointer", background: "none", border: "none", padding: 0, fontFamily: "inherit", fontSize: ".88rem", fontWeight: 700, color: "var(--mute)" }}
-                  >
-                    回復預設
-                  </button>
+                  <InlineSubmit>回復預設</InlineSubmit>
                 </form>
               ) : (
-                <span style={{ fontSize: ".85rem", color: "var(--mute)" }}>使用預設文案</span>
+                <span className="text-xs text-ink/50">使用預設文案</span>
               )
             }
           >
-            <form action={saveContentAction} style={{ maxWidth: 720 }}>
+            <form action={saveContentAction} className="max-w-[720px]">
               <input type="hidden" name="__group" value={g} />
               {blocks.map((b) => (
                 <AdminField

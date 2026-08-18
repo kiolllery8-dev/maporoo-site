@@ -145,3 +145,30 @@ ul.clean li { padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 
   color: var(--mute);
 }
 .article-body blockquote p { margin: 0; }
+
+/* ── 後台共用 class（移植自 auslife-www 的 admin）────────────
+   元件與版面直接對照那邊，只有顏色換成 MAPOROO 的。          */
+.container-x { @apply max-w-7xl mx-auto px-5 md:px-8; }
+.serif { font-weight: 700; }
+
+.btn {
+  @apply inline-flex items-center justify-center gap-1.5 px-4 py-2 text-sm border border-transparent transition;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+}
+.btn-primary { @apply bg-ink text-cream hover:bg-brand-700; }
+.btn-outline { @apply border-ink/80 text-ink hover:bg-ink hover:text-cream; }
+.btn-ghost   { @apply border-brand-300 text-ink hover:bg-brand-50; }
+.btn-sm      { @apply px-3 py-1.5 text-xs; }
+
+/* 商品縮圖的底 */
+.product-img { @apply bg-brand-50 border border-brand-200; }
+
+/* 後台的輸入元件 */
+.adm-input {
+  @apply w-full bg-white border border-brand-200 px-3 py-2 text-sm text-ink outline-none;
+  font-family: inherit;
+}
+.adm-input:focus { @apply border-ink; }
+.adm-label { @apply block text-[11px] tracking-[0.2em] text-brand-600 font-bold mb-1.5; }

@@ -1,7 +1,21 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { get } from "../../../../lib/db";
 import { requireAdmin } from "../../../../lib/admin";
-import { AdminField, AdminLink, AdminNotice, AdminSelect, AdminSubmit, Panel } from "../../../ui";
+import {
+  AdminCheckbox,
+  AdminField,
+  AdminNotice,
+  AdminSelect,
+  AdminSubmit,
+  BackLink,
+  DangerButton,
+  FieldRow,
+  Note,
+  PageHeader,
+  Panel,
+  Pill,
+} from "../../../ui";
 import { deleteProductAction, saveProductAction } from "../actions";
 
 export const dynamic = "force-dynamic";
@@ -29,6 +43,12 @@ type Product = {
   sort: number;
 };
 
+const STATUS_LABEL: Record<string, string> = {
+  active: "上架中",
+  draft: "草稿",
+  sold_out: "已售完",
+};
+
 export default async function EditProduct({
   params,
   searchParams,
@@ -44,34 +64,63 @@ export default async function EditProduct({
   const p = get<Product>(`SELECT * FROM products WHERE id = ?`, Number(id));
   if (!p) notFound();
 
+  const listed = p.status === "active";
+
   return (
     <>
-      <p style={{ marginBottom: 20, fontSize: ".9rem" }}>
-        <AdminLink href="/admin/products">← 回商品列表</AdminLink>
-      </p>
+      <BackLink href="/admin/products">← 回商品列表</BackLink>
+
+      <PageHeader
+        eyebrow="PRODUCT"
+        title={p.name}
+        crumbs={[
+          { label: "後台", href: "/admin" },
+          { label: "商品", href: "/admin/products" },
+          { label: p.name.length > 14 ? p.name.slice(0, 14) + "…" : p.name },
+        ]}
+        stats={`/${p.slug}・SKU ${p.sku || "未設定"}・${p.collection || "未分類"}${p.origin ? `・產地 ${p.origin}` : ""}`}
+        actions={
+          <>
+            <Pill tone={listed ? "on" : p.status === "draft" ? "warn" : "off"}>
+              {STATUS_LABEL[p.status] ?? p.status}
+            </Pill>
+            {listed && (
+              <Link href={`/products/${p.slug}`} className="btn btn-outline">
+                看前台
+              </Link>
+            )}
+          </>
+        }
+      />
 
       <AdminNotice
-        ok={sp.ok === "saved" ? "已儲存。" : sp.ok === "created" ? "商品已建立，目前是草稿。確認內容後把狀態改成「上架中」就會出現在前台。" : undefined}
+        ok={
+          sp.ok === "saved"
+            ? "已儲存。"
+            : sp.ok === "created"
+              ? "商品已建立，目前是草稿。確認內容後把狀態改成「上架中」就會出現在前台。"
+              : undefined
+        }
         m={sp.e === "activedelete" ? "上架中的商品不能直接刪除。請先把狀態改成草稿，再刪。" : undefined}
       />
 
-      <Panel title={p.name}>
-        <p style={{ marginBottom: 26, fontSize: ".9rem", color: "var(--mute)", lineHeight: 1.5 }}>
-          slug <code>{p.slug}</code>　·　SKU {p.sku || "未設定"}　·　品類 {p.collection || "未分類"}
-          {p.origin && `　·　產地 ${p.origin}`}
-          <br />
+      <Panel title="商品內容">
+        <Note>
           文案改動請照 <code>000_Agent/knowledge/compliance-redlines.md</code> 的紅線寫，
           尤其避開醫療效能、誇大保證，以及「醫療級／醫美級」這類身分誤導用語。
-        </p>
+        </Note>
 
-        <form action={saveProductAction} style={{ maxWidth: 640 }}>
+        <form action={saveProductAction} className="max-w-[640px]">
           <input type="hidden" name="id" value={p.id} />
 
           <AdminField label="品名" name="name" required defaultValue={p.name} />
-          <AdminField label="英文名" name="en" defaultValue={p.en} />
-          <AdminField label="容量" name="size" defaultValue={p.size} />
 
-          <div className="grid g2" style={{ gap: 20 }}>
+          <FieldRow>
+            <AdminField label="英文名" name="en" defaultValue={p.en} />
+            <AdminField label="容量" name="size" defaultValue={p.size} />
+          </FieldRow>
+
+          <FieldRow>
             <AdminField label="售價（TWD）" name="price" type="number" required defaultValue={p.price} />
             <AdminField
               label="原價（TWD）"
@@ -80,7 +129,7 @@ export default async function EditProduct({
               defaultValue={p.list_price ?? ""}
               hint="留空 = 不顯示原價"
             />
-          </div>
+          </FieldRow>
 
           <AdminField label="一句話定位" name="tagline" defaultValue={p.tagline} />
           <AdminField label="商品敘述" name="about" textarea rows={6} defaultValue={p.about} />
@@ -88,10 +137,10 @@ export default async function EditProduct({
           <AdminField label="使用提醒" name="note" textarea rows={3} defaultValue={p.note} />
           <AdminField label="注意事項" name="caution" textarea rows={3} defaultValue={p.caution} />
 
-          <div className="grid g2" style={{ gap: 20 }}>
+          <FieldRow>
             <AdminField label="庫存" name="stock" type="number" defaultValue={p.stock} />
             <AdminField label="排序" name="sort" type="number" defaultValue={p.sort} />
-          </div>
+          </FieldRow>
 
           <AdminSelect
             label="狀態"
@@ -104,29 +153,22 @@ export default async function EditProduct({
             ]}
           />
 
-          <label style={{ display: "block", marginBottom: 14, fontSize: ".95rem", fontWeight: 500, color: "var(--soft)" }}>
-            <input type="checkbox" name="track_stock" defaultChecked={p.track_stock === 1} style={{ marginRight: 8 }} />
-            控管庫存（不勾＝永遠可以下單）
-          </label>
-          <label style={{ display: "block", marginBottom: 28, fontSize: ".95rem", fontWeight: 500, color: "var(--soft)" }}>
-            <input type="checkbox" name="featured" defaultChecked={p.featured === 1} style={{ marginRight: 8 }} />
-            設為精選商品
-          </label>
+          <AdminCheckbox
+            name="track_stock"
+            defaultChecked={p.track_stock === 1}
+            label="控管庫存（不勾＝永遠可以下單）"
+          />
+          <AdminCheckbox name="featured" defaultChecked={p.featured === 1} label="設為精選商品" />
 
           <AdminSubmit>儲存</AdminSubmit>
         </form>
 
-        <div style={{ marginTop: 34, paddingTop: 22, borderTop: "1px solid var(--line)" }}>
+        <div className="mt-8 pt-5 border-t border-brand-100">
           <form action={deleteProductAction}>
             <input type="hidden" name="id" value={p.id} />
-            <button
-              type="submit"
-              style={{ cursor: "pointer", background: "none", border: "none", padding: 0, fontFamily: "inherit", fontSize: ".92rem", fontWeight: 700, color: "#9B4A2F" }}
-            >
-              刪除這個商品
-            </button>
+            <DangerButton>刪除這個商品</DangerButton>
           </form>
-          <p style={{ marginTop: 8, fontSize: ".85rem", color: "var(--mute)", lineHeight: 1.6 }}>
+          <p className="mt-2 text-xs text-ink/50 leading-relaxed max-w-[520px]">
             上架中的商品不能刪，要先改成草稿。歷史訂單不受影響——訂單明細存的是下單當下的品名與價格。
           </p>
         </div>

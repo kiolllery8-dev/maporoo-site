@@ -1,214 +1,96 @@
-// 後台共用元件。刻意樸素——後台要的是看得清楚、改得快，不是漂亮。
-// 全部 server component，表單走原生 POST + server action，不需要 client JS。
+// 後台共用元件。版面與命名對照 auslife-www 的 components/AdminPageHeader
+// 與各列表頁，改用 Tailwind class 而不是內嵌 style，日後兩邊互相搬移比較容易。
+//
+// 全部是 server component；表單走原生 POST ＋ server action，不需要 client JS。
 
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { ADMIN_ERRORS } from "./errors";
 
-/** 每一頁最上方的標題區：麵包屑、大標、統計、右側動作。 */
+type Crumb = { label: string; href?: string };
+
 export function PageHeader({
   eyebrow,
   title,
   stats,
+  crumbs,
   actions,
 }: {
   eyebrow: string;
   title: string;
   stats?: string;
-  actions?: React.ReactNode;
+  crumbs?: Crumb[];
+  actions?: ReactNode;
 }) {
   return (
-    <header
-      style={{
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "space-between",
-        gap: 24,
-        flexWrap: "wrap",
-        marginBottom: 30,
-      }}
-    >
-      <div>
-        <p style={{ fontSize: ".7rem", letterSpacing: ".24em", color: "var(--accent)", fontWeight: 700 }}>
-          {eyebrow}
-        </p>
-        <h1 style={{ marginTop: 9, fontSize: "1.9rem", fontWeight: 900, letterSpacing: ".02em" }}>
-          {title}
-        </h1>
-        {stats && (
-          <p style={{ marginTop: 8, fontSize: ".9rem", color: "var(--mute)", fontWeight: 500 }}>{stats}</p>
-        )}
+    <div className="mb-6">
+      {crumbs && crumbs.length > 0 && (
+        <nav className="text-[11px] tracking-[0.25em] text-ink/50 mb-2 flex flex-wrap items-center gap-1">
+          {crumbs.map((c, i) => (
+            <span key={i} className="flex items-center gap-1">
+              {c.href ? (
+                <Link href={c.href} className="hover:text-ink">{c.label}</Link>
+              ) : (
+                <span className="text-ink">{c.label}</span>
+              )}
+              {i < crumbs.length - 1 && <span className="opacity-40">/</span>}
+            </span>
+          ))}
+        </nav>
+      )}
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="text-xs tracking-[0.3em] text-brand-600">{eyebrow}</p>
+          <h2 className="serif text-2xl md:text-3xl mt-1">{title}</h2>
+          {stats && <p className="text-sm text-ink/60 mt-1">{stats}</p>}
+        </div>
+        {actions && <div className="flex items-center gap-2 flex-wrap">{actions}</div>}
       </div>
-      {actions && <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>{actions}</div>}
-    </header>
+    </div>
   );
 }
 
-/** 上架／下架這類狀態小標籤。 */
-export function Pill({ tone, children }: { tone: "on" | "off" | "warn"; children: React.ReactNode }) {
-  const colours = {
-    on: { dot: "#2E7D52", fg: "var(--ink)" },
-    off: { dot: "#9B4A2F", fg: "#9B4A2F" },
-    warn: { dot: "#B8860B", fg: "var(--soft)" },
-  }[tone];
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 6,
-        padding: "3px 10px",
-        border: "1px solid var(--line)",
-        background: "var(--paper2)",
-        fontSize: ".82rem",
-        fontWeight: 700,
-        color: colours.fg,
-        whiteSpace: "nowrap",
-      }}
-    >
-      <span style={{ width: 6, height: 6, borderRadius: 3, background: colours.dot }} />
-      {children}
-    </span>
-  );
-}
-
-/** 分類標籤。 */
-export function Tag({ children }: { children: React.ReactNode }) {
-  return (
-    <span
-      style={{
-        display: "inline-block",
-        padding: "2px 8px",
-        background: "var(--paper2)",
-        border: "1px solid var(--line)",
-        fontSize: ".76rem",
-        color: "var(--soft)",
-        fontWeight: 600,
-        marginRight: 5,
-        whiteSpace: "nowrap",
-      }}
-    >
-      {children}
-    </span>
-  );
-}
-
-/** 列表上方的篩選頁籤。 */
-export function FilterTabs({
-  tabs,
-  current,
+export function StatCard({
+  label,
+  value,
+  hint,
+  tone = "neutral",
+  href,
 }: {
-  tabs: Array<{ href: string; label: string; count?: number; key: string }>;
-  current: string;
+  label: string;
+  value: ReactNode;
+  hint?: string;
+  tone?: "neutral" | "good" | "warn" | "bad" | "accent";
+  href?: string;
 }) {
-  return (
-    <p style={{ display: "flex", gap: 10, flexWrap: "wrap", margin: "0 0 20px" }}>
-      {tabs.map((t) => {
-        const active = t.key === current;
-        return (
-          <Link
-            key={t.key || "all"}
-            href={t.href}
-            style={{
-              padding: "6px 14px",
-              border: "1px solid var(--line)",
-              background: active ? "var(--ink)" : "transparent",
-              color: active ? "var(--paper)" : "var(--soft)",
-              fontSize: ".9rem",
-              fontWeight: 700,
-            }}
-          >
-            {t.label}
-            {typeof t.count === "number" && `（${t.count}）`}
-          </Link>
-        );
-      })}
-    </p>
+  const toneCls =
+    tone === "good"
+      ? "text-green-700"
+      : tone === "warn"
+        ? "text-amber-700"
+        : tone === "bad"
+          ? "text-red-700"
+          : tone === "accent"
+            ? "text-brand-700"
+            : "text-ink";
+  const inner = (
+    <>
+      <p className="text-[11px] tracking-[0.25em] text-ink/50 uppercase">{label}</p>
+      <p className={"serif text-3xl mt-1 " + toneCls}>{value}</p>
+      {hint && <p className="text-[11px] text-ink/50 mt-1">{hint}</p>}
+    </>
   );
-}
-
-/** 搜尋框。用原生 GET 表單，不需要 client JS。 */
-export function SearchBox({
-  name = "q",
-  defaultValue,
-  placeholder,
-  hidden,
-}: {
-  name?: string;
-  defaultValue?: string;
-  placeholder: string;
-  hidden?: Record<string, string>;
-}) {
-  return (
-    <form style={{ display: "flex", gap: 0, marginBottom: 18, maxWidth: 640 }}>
-      {hidden &&
-        Object.entries(hidden).map(([k, v]) => <input key={k} type="hidden" name={k} value={v} />)}
-      <input
-        name={name}
-        defaultValue={defaultValue}
-        placeholder={placeholder}
-        style={{
-          flex: 1,
-          background: "var(--paper2)",
-          border: "1px solid var(--line)",
-          borderRight: "none",
-          padding: "10px 13px",
-          fontSize: ".95rem",
-          fontFamily: "inherit",
-          color: "var(--ink)",
-        }}
-      />
-      <button
-        type="submit"
-        style={{
-          cursor: "pointer",
-          background: "var(--ink)",
-          color: "var(--paper)",
-          border: "none",
-          padding: "10px 22px",
-          fontSize: ".92rem",
-          fontWeight: 700,
-          fontFamily: "inherit",
-        }}
-      >
-        搜尋
-      </button>
-    </form>
-  );
-}
-
-/** 次要動作按鈕（外框式）。 */
-export function GhostLink({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <Link
-      href={href}
-      style={{
-        border: "1px solid var(--line)",
-        padding: "9px 16px",
-        fontSize: ".9rem",
-        fontWeight: 700,
-        color: "var(--ink)",
-      }}
-    >
-      {children}
-    </Link>
-  );
-}
-
-export function PrimaryLink({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <Link
-      href={href}
-      style={{
-        background: "var(--ink)",
-        color: "var(--paper)",
-        padding: "9px 18px",
-        fontSize: ".9rem",
-        fontWeight: 700,
-      }}
-    >
-      {children}
-    </Link>
-  );
+  if (href) {
+    return (
+      <Link href={href} className="block bg-white border border-brand-200 p-5 hover:border-ink transition group">
+        {inner}
+        <p className="text-[10px] tracking-[0.3em] text-brand-600 mt-3 opacity-0 group-hover:opacity-100 transition">
+          查看 →
+        </p>
+      </Link>
+    );
+  }
+  return <div className="bg-white border border-brand-200 p-5">{inner}</div>;
 }
 
 export function Panel({
@@ -217,25 +99,16 @@ export function Panel({
   children,
 }: {
   title: string;
-  action?: React.ReactNode;
-  children: React.ReactNode;
+  action?: ReactNode;
+  children: ReactNode;
 }) {
   return (
-    <section style={{ marginBottom: 48 }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "baseline",
-          justifyContent: "space-between",
-          gap: 20,
-          flexWrap: "wrap",
-          marginBottom: 18,
-        }}
-      >
-        <h2 style={{ fontSize: "1.25rem", fontWeight: 900, letterSpacing: ".02em" }}>{title}</h2>
+    <section className="mb-8 bg-white border border-brand-200">
+      <div className="flex items-baseline justify-between gap-4 flex-wrap px-5 py-4 border-b border-brand-100">
+        <h3 className="serif text-lg">{title}</h3>
         {action}
       </div>
-      {children}
+      <div className="p-5">{children}</div>
     </section>
   );
 }
@@ -247,54 +120,116 @@ export function AdminNotice({ e, m, ok }: { e?: string; m?: string; ok?: string 
   return (
     <p
       role="status"
-      style={{
-        margin: "0 0 24px",
-        padding: "12px 15px",
-        borderLeft: `3px solid ${good ? "var(--ink)" : "#9B4A2F"}`,
-        background: "var(--paper2)",
-        color: good ? "var(--soft)" : "#7A3722",
-        fontSize: ".95rem",
-        lineHeight: 1.5,
-        fontWeight: 500,
-      }}
+      className={
+        "mb-5 px-4 py-3 text-sm border-l-[3px] " +
+        (good ? "border-ink bg-brand-50 text-ink/80" : "border-red-700 bg-red-50 text-red-800")
+      }
     >
       {text}
     </p>
   );
 }
 
-export function Stat({ label, value, sub }: { label: string; value: React.ReactNode; sub?: string }) {
+export function Pill({ tone, children }: { tone: "on" | "off" | "warn"; children: ReactNode }) {
+  const cls =
+    tone === "on"
+      ? "bg-green-50 text-green-800 border-green-200"
+      : tone === "warn"
+        ? "bg-amber-50 text-amber-800 border-amber-200"
+        : "bg-red-50 text-red-700 border-red-200";
+  const dot = tone === "on" ? "bg-green-600" : tone === "warn" ? "bg-amber-500" : "bg-red-600";
   return (
-    <div style={{ borderTop: "2px solid var(--ink)", paddingTop: 14 }}>
-      <p style={{ fontSize: ".78rem", letterSpacing: ".16em", color: "var(--accent)", fontWeight: 700 }}>
-        {label}
-      </p>
-      <p style={{ fontSize: "2rem", fontWeight: 900, lineHeight: 1.2, marginTop: 8 }}>{value}</p>
-      {sub && <p style={{ fontSize: ".85rem", color: "var(--mute)", marginTop: 4, fontWeight: 500 }}>{sub}</p>}
+    <span className={"inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-medium border whitespace-nowrap " + cls}>
+      <span className={"w-1.5 h-1.5 rounded-full " + dot} />
+      {children}
+    </span>
+  );
+}
+
+export function Tag({ children }: { children: ReactNode }) {
+  return (
+    <span className="inline-block px-1.5 py-0.5 bg-brand-100 text-brand-700 text-[10px] mr-1 whitespace-nowrap">
+      {children}
+    </span>
+  );
+}
+
+export function FilterTabs({
+  tabs,
+  current,
+}: {
+  tabs: Array<{ href: string; label: string; count?: number; key: string; tone?: "on" | "off" }>;
+  current: string;
+}) {
+  return (
+    <div className="flex flex-wrap gap-2 text-xs mb-4">
+      {tabs.map((t) => {
+        const active = t.key === current;
+        const activeCls =
+          t.tone === "on"
+            ? "bg-green-700 text-white border-green-700"
+            : t.tone === "off"
+              ? "bg-red-700 text-white border-red-700"
+              : "bg-ink text-cream border-ink";
+        return (
+          <Link
+            key={t.key || "all"}
+            href={t.href}
+            className={"px-3 py-1.5 border " + (active ? activeCls : "border-brand-300 hover:bg-brand-50")}
+          >
+            {t.label}
+            {typeof t.count === "number" ? " (" + t.count + ")" : ""}
+          </Link>
+        );
+      })}
     </div>
   );
 }
 
-export function Table({ head, children }: { head: string[]; children: React.ReactNode }) {
+export function SearchBox({
+  name = "q",
+  defaultValue,
+  placeholder,
+  hidden,
+  clearHref,
+}: {
+  name?: string;
+  defaultValue?: string;
+  placeholder: string;
+  hidden?: Record<string, string>;
+  clearHref?: string;
+}) {
   return (
-    <div style={{ overflowX: "auto" }}>
-      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: ".95rem" }}>
-        <thead>
+    <form className="flex flex-wrap gap-2 mb-4">
+      {hidden &&
+        Object.entries(hidden).map(([k, v]) => <input key={k} type="hidden" name={k} value={v} />)}
+      <input
+        name={name}
+        defaultValue={defaultValue}
+        placeholder={placeholder}
+        className="adm-input flex-1 min-w-[220px] max-w-xl"
+      />
+      <button className="btn btn-primary" type="submit">
+        搜尋
+      </button>
+      {defaultValue && clearHref && (
+        <Link href={clearHref} className="btn btn-outline">
+          清除
+        </Link>
+      )}
+    </form>
+  );
+}
+
+/** 資料表。外層自帶橫向捲動，寬表格在手機上不會撐破版面。 */
+export function Table({ head, children }: { head: ReactNode[]; children: ReactNode }) {
+  return (
+    <div className="bg-white border border-brand-200 overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead className="bg-brand-50 text-xs uppercase tracking-wider text-brand-700">
           <tr>
-            {head.map((h) => (
-              <th
-                key={h}
-                style={{
-                  textAlign: "left",
-                  padding: "10px 14px 10px 0",
-                  borderBottom: "1px solid var(--ink)",
-                  fontSize: ".78rem",
-                  letterSpacing: ".14em",
-                  color: "var(--accent)",
-                  fontWeight: 700,
-                  whiteSpace: "nowrap",
-                }}
-              >
+            {head.map((h, i) => (
+              <th key={i} className="text-left p-3 whitespace-nowrap font-medium">
                 {h}
               </th>
             ))}
@@ -306,36 +241,41 @@ export function Table({ head, children }: { head: string[]; children: React.Reac
   );
 }
 
+export function Tr({ children, muted }: { children: ReactNode; muted?: boolean }) {
+  return <tr className={"border-t border-brand-100 " + (muted ? "bg-red-50/40" : "")}>{children}</tr>;
+}
+
 export function Td({
   children,
   nowrap,
   dim,
+  align = "left",
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   nowrap?: boolean;
   dim?: boolean;
+  align?: "left" | "right" | "center";
 }) {
+  const alignCls = align === "right" ? "text-right" : align === "center" ? "text-center" : "";
   return (
     <td
-      style={{
-        padding: "12px 14px 12px 0",
-        borderBottom: "1px solid var(--line)",
-        color: dim ? "var(--mute)" : "var(--soft)",
-        fontWeight: 500,
-        whiteSpace: nowrap ? "nowrap" : undefined,
-        verticalAlign: "top",
-      }}
+      className={
+        "p-3 align-top " +
+        (nowrap ? "whitespace-nowrap " : "") +
+        (dim ? "text-ink/50 " : "text-ink/80 ") +
+        alignCls
+      }
     >
       {children}
     </td>
   );
 }
 
-export function Empty({ children }: { children: React.ReactNode }) {
+export function Empty({ children }: { children: ReactNode }) {
   return (
-    <p style={{ color: "var(--mute)", fontSize: ".97rem", lineHeight: 1.5, padding: "18px 0" }}>
+    <div className="p-10 text-center text-ink/60 bg-white border border-brand-200 text-sm leading-relaxed">
       {children}
-    </p>
+    </div>
   );
 }
 
@@ -365,39 +305,13 @@ export function AdminField({
     required,
     defaultValue: defaultValue as string | undefined,
     autoComplete,
-    style: {
-      width: "100%",
-      background: "var(--paper2)",
-      border: "1px solid var(--line)",
-      outline: "none",
-      padding: "9px 11px",
-      fontSize: "1rem",
-      color: "var(--ink)",
-      fontWeight: 500,
-      fontFamily: "inherit",
-      lineHeight: 1.45,
-    } as React.CSSProperties,
+    className: "adm-input",
   };
   return (
-    <label style={{ display: "block", marginBottom: 20 }}>
-      <span
-        style={{
-          display: "block",
-          fontSize: ".78rem",
-          letterSpacing: ".14em",
-          color: "var(--accent)",
-          fontWeight: 700,
-          marginBottom: 7,
-        }}
-      >
-        {label}
-      </span>
+    <label className="block mb-4">
+      <span className="adm-label">{label}</span>
       {textarea ? <textarea {...shared} rows={rows} /> : <input {...shared} type={type} />}
-      {hint && (
-        <span style={{ display: "block", marginTop: 6, fontSize: ".83rem", color: "var(--mute)", lineHeight: 1.45 }}>
-          {hint}
-        </span>
-      )}
+      {hint && <span className="block mt-1.5 text-[12px] text-ink/50 leading-relaxed">{hint}</span>}
     </label>
   );
 }
@@ -414,33 +328,9 @@ export function AdminSelect({
   defaultValue?: string;
 }) {
   return (
-    <label style={{ display: "block", marginBottom: 20 }}>
-      <span
-        style={{
-          display: "block",
-          fontSize: ".78rem",
-          letterSpacing: ".14em",
-          color: "var(--accent)",
-          fontWeight: 700,
-          marginBottom: 7,
-        }}
-      >
-        {label}
-      </span>
-      <select
-        name={name}
-        defaultValue={defaultValue}
-        style={{
-          width: "100%",
-          background: "var(--paper2)",
-          border: "1px solid var(--line)",
-          padding: "9px 11px",
-          fontSize: "1rem",
-          color: "var(--ink)",
-          fontWeight: 500,
-          fontFamily: "inherit",
-        }}
-      >
+    <label className="block mb-4">
+      <span className="adm-label">{label}</span>
+      <select name={name} defaultValue={defaultValue} className="adm-input">
         {options.map((o) => (
           <option key={o.value} value={o.value}>
             {o.label}
@@ -451,34 +341,163 @@ export function AdminSelect({
   );
 }
 
-export function AdminSubmit({ children }: { children: React.ReactNode }) {
+export function AdminSubmit({ children }: { children: ReactNode }) {
+  return (
+    <button type="submit" className="btn btn-primary">
+      {children}
+    </button>
+  );
+}
+
+export function AdminLink({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <Link
+      href={href}
+      className="text-ink font-medium hover:text-brand-700 underline underline-offset-4 decoration-brand-300"
+    >
+      {children}
+    </Link>
+  );
+}
+
+export function GhostLink({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <Link href={href} className="btn btn-ghost">
+      {children}
+    </Link>
+  );
+}
+
+export function PrimaryLink({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <Link href={href} className="btn btn-primary">
+      {children}
+    </Link>
+  );
+}
+
+/** 表格裡的危險動作（刪除／停用）。 */
+export function DangerButton({ children }: { children: ReactNode }) {
   return (
     <button
       type="submit"
-      style={{
-        cursor: "pointer",
-        background: "var(--ink)",
-        color: "var(--paper)",
-        border: "none",
-        padding: "11px 26px",
-        fontSize: ".95rem",
-        fontWeight: 700,
-        letterSpacing: ".08em",
-        fontFamily: "inherit",
-      }}
+      className="text-xs font-medium text-red-700 hover:text-red-900 bg-transparent border-none p-0 cursor-pointer"
     >
       {children}
     </button>
   );
 }
 
-export function AdminLink({ href, children }: { href: string; children: React.ReactNode }) {
+/** 表格底下的頁碼。href 由呼叫端組，因為每一頁的查詢字串不一樣。 */
+export function Pagination({
+  page,
+  pages,
+  href,
+}: {
+  page: number;
+  pages: number;
+  href: (n: number) => string;
+}) {
+  if (pages <= 1) return null;
   return (
-    <Link
-      href={href}
-      style={{ color: "var(--ink)", fontWeight: 700, borderBottom: "1px solid var(--line)", paddingBottom: 2 }}
+    <div className="flex flex-wrap gap-1.5 mt-5 text-xs">
+      {Array.from({ length: pages }, (_, i) => i + 1).map((n) => (
+        <Link
+          key={n}
+          href={href(n)}
+          className={
+            "px-3 py-1.5 border " +
+            (n === page ? "bg-ink text-cream border-ink" : "border-brand-300 hover:bg-brand-50")
+          }
+        >
+          {n}
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+/** 回上一層的麵包屑連結。 */
+export function BackLink({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <p className="mb-4 text-sm">
+      <Link href={href} className="text-ink/60 hover:text-ink">
+        {children}
+      </Link>
+    </p>
+  );
+}
+
+/** 說明文字。後台到處都有一段講規則的話，統一長相。 */
+export function Note({ children }: { children: ReactNode }) {
+  return <p className="mb-5 max-w-[680px] text-sm text-ink/70 leading-relaxed">{children}</p>;
+}
+
+/** 兩欄表單列，手機自動變一欄。 */
+export function FieldRow({ children }: { children: ReactNode }) {
+  return <div className="grid sm:grid-cols-2 gap-x-5">{children}</div>;
+}
+
+export function AdminCheckbox({
+  name,
+  label,
+  hint,
+  defaultChecked,
+}: {
+  name: string;
+  label: string;
+  hint?: string;
+  defaultChecked?: boolean;
+}) {
+  return (
+    <label className="flex items-start gap-2.5 mb-4 text-sm text-ink/80 cursor-pointer">
+      <input
+        type="checkbox"
+        name={name}
+        defaultChecked={defaultChecked}
+        className="mt-0.5 w-4 h-4 accent-ink shrink-0"
+      />
+      <span className="leading-relaxed">
+        {label}
+        {hint && <span className="block text-[12px] text-ink/50 mt-0.5">{hint}</span>}
+      </span>
+    </label>
+  );
+}
+
+/** 表格／面板裡的次要動作按鈕（送出用）。 */
+export function InlineSubmit({ children }: { children: ReactNode }) {
+  return (
+    <button
+      type="submit"
+      className="text-xs font-medium text-ink hover:text-brand-700 bg-transparent border-none p-0 cursor-pointer whitespace-nowrap"
     >
       {children}
-    </Link>
+    </button>
+  );
+}
+
+/** 表格裡的小型下拉（例如角色切換），高度對齊 InlineSubmit。 */
+export function InlineSelect({
+  name,
+  options,
+  defaultValue,
+}: {
+  name: string;
+  options: Array<{ value: string; label: string }>;
+  defaultValue?: string;
+}) {
+  return (
+    <select
+      name={name}
+      defaultValue={defaultValue}
+      className="border border-brand-300 bg-white px-2 py-1 text-xs text-ink focus:outline-none focus:border-ink"
+    >
+      {options.map((o) => (
+        <option key={o.value} value={o.value}>
+          {o.label}
+        </option>
+      ))}
+    </select>
   );
 }

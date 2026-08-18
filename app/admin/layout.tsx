@@ -15,7 +15,5 @@ export default function AdminRootLayout({ children }: { children: React.ReactNod
   // 資料庫還沒有管理者的話，在這裡建立初始帳號並把密碼印進伺服器 log。
   ensureAdminExists();
 
-  return (
-    <div style={{ minHeight: "100vh", background: "var(--paper)", paddingTop: 0 }}>{children}</div>
-  );
+  return <div className="min-h-screen bg-cream">{children}</div>;
 }

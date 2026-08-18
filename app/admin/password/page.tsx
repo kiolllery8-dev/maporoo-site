@@ -18,33 +18,35 @@ export default async function AdminPasswordPage({
   const sp = await searchParams;
 
   return (
-    <div style={{ maxWidth: 420, margin: "0 auto", padding: "110px 30px" }}>
-      <p style={{ fontSize: ".78rem", letterSpacing: ".26em", color: "var(--accent)", fontWeight: 700 }}>
-        MAPOROO 後台
-      </p>
-      <h1 style={{ margin: "16px 0 18px", fontSize: "1.8rem", fontWeight: 900 }}>
-        {sp.first ? "先換一組你自己的密碼" : "修改密碼"}
-      </h1>
-      <p style={{ marginBottom: 32, color: "var(--soft)", fontSize: ".97rem", lineHeight: 1.5 }}>
-        {sp.first
-          ? "這個帳號目前用的是系統產生的初始密碼。換掉之後才能進入後台。"
-          : "密碼更新後，其他裝置上的登入會全部登出，只保留你目前這一台。"}
-      </p>
+    <div className="min-h-screen flex items-center justify-center px-6 py-16">
+      <div className="w-full max-w-[420px]">
+        <div className="bg-white border border-brand-200 shadow-soft p-8">
+          <p className="text-[11px] tracking-[0.3em] text-brand-600">MAPOROO 後台</p>
+          <h1 className="serif text-2xl mt-2 mb-3">
+            {sp.first ? "先換一組你自己的密碼" : "修改密碼"}
+          </h1>
+          <p className="mb-6 text-sm text-ink/70 leading-relaxed">
+            {sp.first
+              ? "這個帳號目前用的是別人設定的初始密碼。換掉之後才能進入後台。"
+              : "密碼更新後，其他裝置上的登入會全部登出，只保留你目前這一台。"}
+          </p>
 
-      <AdminNotice e={sp.e} m={sp.m} />
+          <AdminNotice e={sp.e} m={sp.m} />
 
-      <form action={adminChangePasswordAction}>
-        <AdminField label="目前的密碼" name="current" type="password" required autoComplete="current-password" />
-        <AdminField
-          label="新密碼"
-          name="next"
-          type="password"
-          required
-          autoComplete="new-password"
-          hint="至少 8 個字元，需要同時包含英文字母與數字。"
-        />
-        <AdminSubmit>更新密碼</AdminSubmit>
-      </form>
+          <form action={adminChangePasswordAction}>
+            <AdminField label="目前的密碼" name="current" type="password" required autoComplete="current-password" />
+            <AdminField
+              label="新密碼"
+              name="next"
+              type="password"
+              required
+              autoComplete="new-password"
+              hint="至少 8 個字元，需要同時包含英文字母與數字。"
+            />
+            <AdminSubmit>更新密碼</AdminSubmit>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

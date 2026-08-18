@@ -1,6 +1,7 @@
 import { all } from "../../lib/db";
 import { dashboardStats, requireAdmin } from "../../lib/admin";
-import { AdminLink, AdminNotice, Empty, Panel, Stat, Table, Td } from "../ui";
+import { AdminLink, AdminNotice, Empty, PageHeader, Pill, StatCard, Table, Td, Tr } from "../ui";
+import { METHOD, ORDER_STATUS, PAYMENT_STATUS } from "./orders/labels";
 
 export const dynamic = "force-dynamic";
 
@@ -10,21 +11,8 @@ type RecentOrder = {
   total_twd: number;
   order_status: string;
   payment_status: string;
+  payment_method: string;
   created_at: string;
-};
-
-const ORDER_STATUS: Record<string, string> = {
-  new: "已成立",
-  processing: "處理中",
-  shipped: "已出貨",
-  done: "已完成",
-  cancelled: "已取消",
-};
-const PAYMENT_STATUS: Record<string, string> = {
-  pending: "待付款",
-  paid: "已付款",
-  refunded: "已退款",
-  failed: "付款失敗",
 };
 
 export default async function AdminHome({
@@ -37,55 +25,86 @@ export default async function AdminHome({
   const s = dashboardStats();
 
   const recent = all<RecentOrder>(
-    `SELECT order_no, recipient, total_twd, order_status, payment_status, created_at
+    `SELECT order_no, recipient, total_twd, order_status, payment_status, payment_method, created_at
        FROM orders ORDER BY created_at DESC LIMIT 8`
   );
 
   return (
     <>
+      <PageHeader
+        eyebrow="DASHBOARD"
+        title="儀表板"
+        stats="今天的營運狀況"
+      />
+
       <AdminNotice ok={sp.password ? "密碼已更新。" : undefined} />
 
-      <Panel title="總覽">
-        <div className="grid g4" style={{ gap: 26 }}>
-          <Stat label="訂單" value={s.orders} sub={`待處理 ${s.ordersNew}・待付款 ${s.unpaid}`} />
-          <Stat label="已付款營收" value={`NT$ ${s.revenue.toLocaleString()}`} sub="累計" />
-          <Stat label="會員" value={s.members} sub={`近 7 天新增 ${s.membersThisWeek}`} />
-          <Stat label="商品" value={s.products} sub={`未上架 ${s.productsDraft}`} />
-        </div>
-      </Panel>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+        <StatCard
+          label="待處理訂單"
+          value={s.ordersNew}
+          hint={`累計 ${s.orders} 筆`}
+          tone={s.ordersNew > 0 ? "warn" : "neutral"}
+          href="/admin/orders?status=new"
+        />
+        <StatCard
+          label="待付款"
+          value={s.unpaid}
+          hint="需要對帳"
+          tone={s.unpaid > 0 ? "bad" : "neutral"}
+          href="/admin/orders"
+        />
+        <StatCard
+          label="已付款營收"
+          value={`NT$ ${s.revenue.toLocaleString()}`}
+          hint="累計"
+          tone="accent"
+        />
+        <StatCard
+          label="會員"
+          value={s.members}
+          hint={`近 7 天新增 ${s.membersThisWeek}`}
+          href="/admin/members"
+        />
+      </div>
 
-      <Panel title="最近的訂單" action={<AdminLink href="/admin/orders">全部訂單</AdminLink>}>
-        {recent.length === 0 ? (
-          <Empty>
-            還沒有任何訂單。前台的結帳流程尚未接上——目前購物袋只存在瀏覽器裡，
-            按下結帳不會產生訂單。這是下一個要做的部分。
-          </Empty>
-        ) : (
-          <Table head={["訂單編號", "收件人", "金額", "訂單狀態", "付款", "成立時間"]}>
-            {recent.map((o) => (
-              <tr key={o.order_no}>
-                <Td nowrap>
-                  <AdminLink href={`/admin/orders/${o.order_no}`}>{o.order_no}</AdminLink>
-                </Td>
-                <Td>{o.recipient || "—"}</Td>
-                <Td nowrap>NT$ {o.total_twd.toLocaleString()}</Td>
-                <Td nowrap>{ORDER_STATUS[o.order_status] ?? o.order_status}</Td>
-                <Td nowrap>{PAYMENT_STATUS[o.payment_status] ?? o.payment_status}</Td>
-                <Td nowrap dim>{o.created_at.slice(0, 16)}</Td>
-              </tr>
-            ))}
-          </Table>
-        )}
-      </Panel>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
+        <StatCard label="商品" value={s.products} hint={`未上架 ${s.productsDraft}`} href="/admin/products" />
+        <StatCard label="文章" value={s.articles} hint={`已發布 ${s.articlesPublished}`} href="/admin/articles" />
+      </div>
 
-      <Panel title="還沒接上的部分">
+      <div className="mb-3 flex items-baseline justify-between">
+        <h3 className="serif text-lg">最近的訂單</h3>
+        <AdminLink href="/admin/orders">全部訂單</AdminLink>
+      </div>
+
+      {recent.length === 0 ? (
         <Empty>
-          資料表都建好了，這幾件事的介面還在做：前台結帳流程、文章管理（
-          <code>/read</code> 路由）、文案區塊、報表。
-          線上金流依老闆指示留給後續工程師，接口在
-          <code style={{ margin: "0 4px" }}>app/lib/payment.ts</code>。
+          還沒有任何訂單。
+          <br />
+          客人在前台結帳之後，訂單會出現在這裡。
         </Empty>
-      </Panel>
+      ) : (
+        <Table head={["訂單編號", "收件人", "金額", "付款方式", "付款", "訂單狀態", "成立時間"]}>
+          {recent.map((o) => (
+            <Tr key={o.order_no} muted={o.order_status === "cancelled"}>
+              <Td nowrap>
+                <AdminLink href={`/admin/orders/${o.order_no}`}>{o.order_no}</AdminLink>
+              </Td>
+              <Td>{o.recipient || "—"}</Td>
+              <Td nowrap align="right">NT$ {o.total_twd.toLocaleString()}</Td>
+              <Td nowrap dim>{METHOD[o.payment_method] ?? o.payment_method}</Td>
+              <Td nowrap>
+                <Pill tone={o.payment_status === "paid" ? "on" : o.payment_status === "pending" ? "warn" : "off"}>
+                  {PAYMENT_STATUS[o.payment_status] ?? o.payment_status}
+                </Pill>
+              </Td>
+              <Td nowrap>{ORDER_STATUS[o.order_status] ?? o.order_status}</Td>
+              <Td nowrap dim>{o.created_at.slice(0, 16)}</Td>
+            </Tr>
+          ))}
+        </Table>
+      )}
     </>
   );
 }

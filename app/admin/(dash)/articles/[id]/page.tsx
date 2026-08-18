@@ -1,9 +1,23 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { get } from "../../../../lib/db";
 import { requireAdmin } from "../../../../lib/admin";
 import { checkArticle, DISCLAIMER_TEXT } from "../../../../lib/article-guard";
 import { renderMarkdown } from "../../../../lib/markdown";
-import { AdminField, AdminLink, AdminNotice, AdminSelect, AdminSubmit, Panel } from "../../../ui";
+import {
+  AdminCheckbox,
+  AdminField,
+  AdminNotice,
+  AdminSelect,
+  AdminSubmit,
+  BackLink,
+  DangerButton,
+  FieldRow,
+  Note,
+  PageHeader,
+  Panel,
+  Pill,
+} from "../../../ui";
 import { CATEGORY_OPTIONS, KIND_OPTIONS, STATUS_LABEL } from "../labels";
 import {
   deleteArticleAction,
@@ -70,12 +84,32 @@ export default async function EditArticle({
   });
 
   const published = a.status === "published";
+  const clean = check.blocking.length === 0 && check.warnings.length === 0;
 
   return (
     <>
-      <p style={{ marginBottom: 20, fontSize: ".9rem" }}>
-        <AdminLink href="/admin/articles">← 回文章列表</AdminLink>
-      </p>
+      <BackLink href="/admin/articles">← 回文章列表</BackLink>
+
+      <PageHeader
+        eyebrow="ARTICLE"
+        title={a.title}
+        crumbs={[
+          { label: "後台", href: "/admin" },
+          { label: "文章", href: "/admin/articles" },
+          { label: a.title.length > 14 ? a.title.slice(0, 14) + "…" : a.title },
+        ]}
+        stats={`/read/${a.slug}${a.published_at ? `・發布於 ${a.published_at.slice(0, 16)}` : ""}・最後編輯 ${a.updated_at.slice(0, 16)}`}
+        actions={
+          <>
+            <Pill tone={published ? "on" : "warn"}>{STATUS_LABEL[a.status] ?? a.status}</Pill>
+            {published && (
+              <Link href={`/read/${a.slug}`} className="btn btn-outline">
+                看前台
+              </Link>
+            )}
+          </>
+        }
+      />
 
       <AdminNotice
         ok={sp.ok ? OK[sp.ok] : undefined}
@@ -89,37 +123,38 @@ export default async function EditArticle({
       />
 
       {/* ── 上架檢查 ─────────────────────────────────────── */}
-      <Panel title="上架檢查">
-        {check.blocking.length === 0 && check.warnings.length === 0 ? (
-          <p style={{ color: "var(--soft)", fontSize: ".97rem", lineHeight: 1.5 }}>
-            沒有發現問題。可以發布。
-          </p>
+      <Panel
+        title="上架檢查"
+        action={
+          clean ? (
+            <Pill tone="on">通過</Pill>
+          ) : check.blocking.length ? (
+            <Pill tone="off">擋下 {check.blocking.length} 項</Pill>
+          ) : (
+            <Pill tone="warn">提醒 {check.warnings.length} 項</Pill>
+          )
+        }
+      >
+        {clean ? (
+          <p className="text-sm text-ink/70 leading-relaxed">沒有發現問題。可以發布。</p>
         ) : (
-          <>
+          <div className="flex flex-col gap-2.5">
             {check.blocking.map((v, i) => (
-              <p
-                key={`b${i}`}
-                style={{ margin: "0 0 10px", padding: "11px 14px", borderLeft: "3px solid #9B4A2F", background: "var(--paper2)", color: "#7A3722", fontSize: ".94rem", lineHeight: 1.5 }}
-              >
-                <strong>擋下發布 · {v.rule}</strong>
-                <br />
-                {v.detail}
-              </p>
+              <div key={`b${i}`} className="px-4 py-3 bg-red-50 border-l-[3px] border-red-700">
+                <p className="text-sm font-medium text-red-800">擋下發布 · {v.rule}</p>
+                <p className="text-sm text-red-700/90 mt-0.5 leading-relaxed">{v.detail}</p>
+              </div>
             ))}
             {check.warnings.map((v, i) => (
-              <p
-                key={`w${i}`}
-                style={{ margin: "0 0 10px", padding: "11px 14px", borderLeft: "3px solid var(--mute)", background: "var(--paper2)", color: "var(--soft)", fontSize: ".94rem", lineHeight: 1.5 }}
-              >
-                <strong>提醒 · {v.rule}</strong>
-                <br />
-                {v.detail}
-              </p>
+              <div key={`w${i}`} className="px-4 py-3 bg-amber-50 border-l-[3px] border-amber-500">
+                <p className="text-sm font-medium text-amber-800">提醒 · {v.rule}</p>
+                <p className="text-sm text-amber-800/80 mt-0.5 leading-relaxed">{v.detail}</p>
+              </div>
             ))}
-          </>
+          </div>
         )}
 
-        <p style={{ marginTop: 16, fontSize: ".86rem", color: "var(--mute)", lineHeight: 1.5 }}>
+        <p className="mt-4 text-xs text-ink/50 leading-relaxed">
           規則來源：<code>000_Agent/knowledge/maporoo-brand-dna.md</code> 第三節（零商品置入）、
           2.7（禁詞）、2.8（AI 腔），以及 <code>compliance-redlines.md</code>。
         </p>
@@ -127,12 +162,7 @@ export default async function EditArticle({
 
       {/* ── 狀態與動作 ───────────────────────────────────── */}
       <Panel title={`狀態：${STATUS_LABEL[a.status] ?? a.status}`}>
-        <p style={{ marginBottom: 18, color: "var(--soft)", fontSize: ".95rem", lineHeight: 1.5 }}>
-          網址 <code>/read/{a.slug}</code>
-          {a.published_at && `　·　發布於 ${a.published_at.slice(0, 16)}`}
-          　·　最後編輯 {a.updated_at.slice(0, 16)}
-        </p>
-        <div style={{ display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center" }}>
+        <div className="flex gap-4 flex-wrap items-center">
           {published ? (
             <form action={unpublishArticleAction}>
               <input type="hidden" name="id" value={a.id} />
@@ -146,16 +176,10 @@ export default async function EditArticle({
               </AdminSubmit>
             </form>
           )}
-          {published && <AdminLink href={`/read/${a.slug}`}>看前台</AdminLink>}
           {!published && (
             <form action={deleteArticleAction}>
               <input type="hidden" name="id" value={a.id} />
-              <button
-                type="submit"
-                style={{ cursor: "pointer", background: "none", border: "none", padding: 0, fontFamily: "inherit", fontSize: ".92rem", fontWeight: 700, color: "#9B4A2F" }}
-              >
-                刪除草稿
-              </button>
+              <DangerButton>刪除草稿</DangerButton>
             </form>
           )}
         </div>
@@ -163,7 +187,7 @@ export default async function EditArticle({
 
       {/* ── 內容 ─────────────────────────────────────────── */}
       <Panel title="內容">
-        <form action={saveArticleAction} style={{ maxWidth: 760 }}>
+        <form action={saveArticleAction} className="max-w-[760px]">
           <input type="hidden" name="id" value={a.id} />
 
           <AdminField label="標題" name="title" required defaultValue={a.title} />
@@ -174,10 +198,10 @@ export default async function EditArticle({
             hint="搜尋結果顯示的摘要，150 字內。"
           />
 
-          <div className="grid g2" style={{ gap: 20 }}>
+          <FieldRow>
             <AdminSelect label="內容型態" name="kind" defaultValue={a.kind} options={KIND_OPTIONS} />
             <AdminSelect label="分類" name="category" defaultValue={a.category} options={CATEGORY_OPTIONS} />
-          </div>
+          </FieldRow>
 
           <AdminField
             label="閱讀時間"
@@ -204,14 +228,12 @@ export default async function EditArticle({
             hint="型態 B／C 必填。格式建議：媒體或節目名稱 / 日期 / 連結。查不到來源的說法不要寫進文章。"
           />
 
-          <label style={{ display: "block", marginBottom: 24, fontSize: ".95rem", fontWeight: 500, color: "var(--soft)", lineHeight: 1.5 }}>
-            <input type="checkbox" name="disclaimer" defaultChecked={a.disclaimer === 1} style={{ marginRight: 8 }} />
-            文末附非醫療建議聲明（型態 B／C 必勾）
-            <br />
-            <span style={{ marginLeft: 26, color: "var(--mute)", fontSize: ".88rem" }}>
-              會自動加上：「{DISCLAIMER_TEXT}」
-            </span>
-          </label>
+          <AdminCheckbox
+            name="disclaimer"
+            defaultChecked={a.disclaimer === 1}
+            label="文末附非醫療建議聲明（型態 B／C 必勾）"
+            hint={`會自動加上：「${DISCLAIMER_TEXT}」`}
+          />
 
           <AdminSubmit>儲存</AdminSubmit>
         </form>
@@ -221,12 +243,11 @@ export default async function EditArticle({
       <Panel title="預覽">
         {a.body_md.trim() ? (
           <div
-            className="article-body"
-            style={{ maxWidth: 700, color: "var(--soft)", lineHeight: 1.6 }}
+            className="article-body max-w-[700px] text-ink/80 leading-relaxed"
             dangerouslySetInnerHTML={{ __html: renderMarkdown(a.body_md) }}
           />
         ) : (
-          <p style={{ color: "var(--mute)" }}>還沒有內文。</p>
+          <Note>還沒有內文。在上面的「內文」欄位寫，儲存之後這裡就會顯示排版後的樣子。</Note>
         )}
       </Panel>
     </>

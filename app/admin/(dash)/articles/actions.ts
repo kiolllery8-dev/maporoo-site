@@ -42,6 +42,7 @@ export async function createArticleAction(form: FormData) {
   const slug = normalizeSlug(field(form, "slug"));
   const title = field(form, "title");
   const kind = field(form, "kind");
+  const picked = field(form, "category");
 
   if (!slug || !title) redirect("/admin/articles?e=missing");
   if (!KINDS.includes(kind)) redirect("/admin/articles?e=kind");
@@ -49,12 +50,21 @@ export async function createArticleAction(form: FormData) {
     redirect("/admin/articles?e=taken");
   }
 
+  // 表單有選分類就用它；沒選（或送了清單外的值）才照型態推一個預設值。
+  const category = CATEGORIES.includes(picked)
+    ? picked
+    : kind === "D"
+      ? "生活風格"
+      : kind === "C"
+        ? "趨勢觀察"
+        : "日常保健";
+
   const { lastInsertRowid } = run(
     `INSERT INTO articles (slug, kind, category, title, status)
      VALUES (?, ?, ?, ?, 'draft')`,
     slug,
     kind,
-    kind === "D" ? "生活風格" : kind === "C" ? "趨勢觀察" : "日常保健",
+    category,
     title
   );
 
