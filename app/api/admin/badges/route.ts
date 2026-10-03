@@ -19,6 +19,7 @@ export async function GET() {
     {
       newOrders: count(`SELECT COUNT(*) AS c FROM orders WHERE order_status = 'new'`),
       unpaid: count(`SELECT COUNT(*) AS c FROM orders WHERE payment_status = 'pending'`),
+      chat: count(`SELECT COUNT(*) AS c FROM chat_threads WHERE unread_admin > 0`),
       draftArticles: count(`SELECT COUNT(*) AS c FROM articles WHERE status <> 'published'`),
     },
     { headers: { "cache-control": "no-store" } }

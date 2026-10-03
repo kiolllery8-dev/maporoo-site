@@ -20,7 +20,7 @@ type NavItem = {
   icon: string;
   cap: Capability;
   /** 有值的話會去 /api/admin/badges 撈即時數字 */
-  badge?: "newOrders" | "unpaid" | "draftArticles";
+  badge?: "newOrders" | "unpaid" | "draftArticles" | "chat";
 };
 
 const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
@@ -42,7 +42,10 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
   },
   {
     label: "顧客",
-    items: [{ href: "/admin/members", label: "會員", icon: "👥", cap: "members.view" }],
+    items: [
+      { href: "/admin/members", label: "會員", icon: "👥", cap: "members.view" },
+      { href: "/admin/chat", label: "線上客服", icon: "💬", cap: "members.view", badge: "chat" },
+    ],
   },
   {
     label: "設定",
@@ -60,8 +63,8 @@ export default function Sidebar({ role, name }: { role: string; name: string }) 
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
-  const [badges, setBadges] = useState<{ newOrders: number; unpaid: number; draftArticles: number }>({
-    newOrders: 0, unpaid: 0, draftArticles: 0,
+  const [badges, setBadges] = useState<{ newOrders: number; unpaid: number; draftArticles: number; chat: number }>({
+    newOrders: 0, unpaid: 0, draftArticles: 0, chat: 0,
   });
   useEffect(() => {
     let cancelled = false;

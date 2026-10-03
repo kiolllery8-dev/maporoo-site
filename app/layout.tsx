@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Nav from "./components/Nav";
+import ChatWidget from "./components/ChatWidget";
 import { shopCollections, shopIngredientPages } from "./lib/taxonomy";
+import { loadContent, text } from "./lib/content";
 import StorefrontChrome from "./components/StorefrontChrome";
 import Footer from "./components/Footer";
 import { CartProvider } from "./lib/cart";
@@ -60,6 +62,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     { href: "/#story", label: "關於" },
   ];
 
+  // 客服視窗的文字也走後台文案，不寫死在元件裡。
+  const cms = loadContent();
+  const chat = (k: string) => text(cms, k);
+
   return (
     <html lang="zh-Hant-TW">
       <head>
@@ -77,6 +83,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main>{children}</main>
           <StorefrontChrome>
             <Footer />
+          </StorefrontChrome>
+          <StorefrontChrome>
+            <ChatWidget
+              title={chat("chat.title")}
+              greeting={chat("chat.greeting")}
+              placeholder={chat("chat.placeholder")}
+              note={chat("chat.note")}
+            />
           </StorefrontChrome>
         </CartProvider>
       </body>

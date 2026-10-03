@@ -283,3 +283,34 @@ CREATE TABLE IF NOT EXISTS taxonomies (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_taxonomies_kind_slug ON taxonomies(kind, slug);
 CREATE INDEX IF NOT EXISTS idx_taxonomies_kind ON taxonomies(kind, sort);
+
+-- ── 線上客服聊天 ───────────────────────────────────────────
+-- 訪客不需要註冊就能發問。身分靠一個 httpOnly cookie 裡的 token 認，
+-- token 只對應到自己那一條對話，撈不到別人的。
+--
+-- 會員登入後下一次發訊息會把 member_id 補上，後台就看得到是誰。
+CREATE TABLE IF NOT EXISTS chat_threads (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  token           TEXT NOT NULL UNIQUE,          -- 訪客 cookie 的值
+  member_id       INTEGER,                       -- 登入會員才有
+  name            TEXT NOT NULL DEFAULT '',      -- 訪客自己填的稱呼
+  email           TEXT NOT NULL DEFAULT '',      -- 離線時留的聯絡方式
+  status          TEXT NOT NULL DEFAULT 'open',  -- open | closed
+  first_page      TEXT NOT NULL DEFAULT '',      -- 從哪一頁發問，客服判斷情境用
+  unread_admin    INTEGER NOT NULL DEFAULT 0,    -- 客人傳來、客服還沒看
+  unread_visitor  INTEGER NOT NULL DEFAULT 0,    -- 客服回了、客人還沒看
+  last_message_at TEXT,
+  created_at      TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_chat_threads_recent ON chat_threads(last_message_at DESC);
+CREATE INDEX IF NOT EXISTS idx_chat_threads_status ON chat_threads(status, last_message_at DESC);
+
+CREATE TABLE IF NOT EXISTS chat_messages (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  thread_id  INTEGER NOT NULL REFERENCES chat_threads(id) ON DELETE CASCADE,
+  sender     TEXT NOT NULL,                      -- visitor | admin
+  author     TEXT NOT NULL DEFAULT '',           -- 客服的顯示名稱
+  body       TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_chat_messages_thread ON chat_messages(thread_id, id);

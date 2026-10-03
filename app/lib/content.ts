@@ -142,6 +142,22 @@ export const BLOCKS: Block[] = [
   },
   { key: "read.empty", group: "閱讀列表頁", label: "還沒有文章時顯示", fallback: "文章正在準備中。" },
 
+  // ── 線上客服 ──────────────────────────────────────────
+  { key: "chat.title", group: "線上客服", label: "聊天視窗標題", fallback: "線上客服" },
+  {
+    key: "chat.greeting",
+    group: "線上客服",
+    label: "打開時的招呼語",
+    fallback: "有什麼可以幫你的嗎？膚況、成分、訂單都可以問。",
+  },
+  { key: "chat.placeholder", group: "線上客服", label: "輸入框提示字", fallback: "輸入訊息⋯" },
+  {
+    key: "chat.note",
+    group: "線上客服",
+    label: "送出後、還沒有人回時顯示",
+    fallback: "訊息已經送到了。有人在的時候會直接在這裡回你；不在的話，下次你打開這個視窗就會看到回覆。",
+  },
+
   // ── 社群與聯絡 ────────────────────────────────────────
   // 頁尾在根 layout 裡，這幾個 key 是全站共用的。
   // 留空的欄位前台就不顯示那顆按鈕，不會出現連到空白的圖示。
